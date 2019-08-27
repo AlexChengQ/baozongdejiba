@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="quantumCloud-mobile:war">
+    <output-path>$PROJECT_DIR$/quantumCloud-mobile/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>quantumCloud-mobile</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="quantumCloud-mobile-1.0.war">
+      <element id="artifact" artifact-name="quantumCloud-mobile:war exploded" />
+    </root>
+  </artifact>
+</component>

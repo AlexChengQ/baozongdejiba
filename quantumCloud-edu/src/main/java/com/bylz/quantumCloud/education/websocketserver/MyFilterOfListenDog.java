@@ -25,9 +25,10 @@ public class MyFilterOfListenDog implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+        System.out.println(88888);
         if(!request.getServletPath().equals("/InspectHeart/inspect.json")) {
             Session session = AppContextHolder.getSession();
-            if(session != null) {
+            if(session == null) {
                 session.setAttribute("lastPostTime",System.currentTimeMillis());
                 session.setAttribute("invalidTimer",3*1000*60L);
             }

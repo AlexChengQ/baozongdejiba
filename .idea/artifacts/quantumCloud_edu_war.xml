@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="quantumCloud-edu:war">
+    <output-path>$PROJECT_DIR$/quantumCloud-edu/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>quantumCloud-edu</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="quantumCloud-edu-1.0.war">
+      <element id="artifact" artifact-name="quantumCloud-edu:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/quantumCloud.iml" filepath="$PROJECT_DIR$/quantumCloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quantumCloud-admin/quantumCloud-admin.iml" filepath="$PROJECT_DIR$/quantumCloud-admin/quantumCloud-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quantumCloud-edu/quantumCloud-edu.iml" filepath="$PROJECT_DIR$/quantumCloud-edu/quantumCloud-edu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quantumCloud-mobile/quantumCloud-mobile.iml" filepath="$PROJECT_DIR$/quantumCloud-mobile/quantumCloud-mobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quantumCloud-platform/quantumCloud-platform.iml" filepath="$PROJECT_DIR$/quantumCloud-platform/quantumCloud-platform.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quantumCloud-service/quantumCloud-service.iml" filepath="$PROJECT_DIR$/quantumCloud-service/quantumCloud-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quantumCloud-service-core/quantumCloud-service-core.iml" filepath="$PROJECT_DIR$/quantumCloud-service-core/quantumCloud-service-core.iml" />
+    </modules>
+  </component>
+</project>
