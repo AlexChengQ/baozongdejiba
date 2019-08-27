@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+	<util:list id="rootList" list-class="java.util.ArrayList" value-type="java.lang.String">
+		<value>0, 1,首页,/index.html,ADMIN|NONE,true,fa-dashboard</value>
+	</util:list>
+
+	<util:list id="fixRules" list-class="java.util.ArrayList" value-type="java.lang.String">
+		<value>/files/** =  anon</value>
+		<value>/assets/** =  anon</value>
+		<value>/login.* =  anon</value>
+		<value>/m/login.* =  anon</value>
+		<value>/m/register.* =  anon</value>
+		<value>/m/forget.* =  anon</value>
+		<value>/logout.* = logout</value>
+		<value>/doLogin.* =  anon</value>
+		<value>/api/doLogin.* =  anon</value>
+		<value>/Register/* =  anon</value>
+		<value>/ =  anon</value>
+		<value>/EDU/index.html =  anon</value>
+		<value>/EDU/Reading.html =  anon</value>
+		<value>/m/mReading.html =  anon</value>
+		<value>/EDU/video.html =  anon</value>
+		<value>/EDU/library.html =  anon</value>
+		<value>/m/index.html =  anon</value>
+		<value>/m/mVideo.html =  anon</value>
+		<!-- app手机版本下载路径，勿删 -->
+		<value>/eduMobile/appDownload.html =  anon</value>
+		<!-- app手机版本二维码扫描后下载路径，勿删 -->
+		<value>/eduMobile/appdownload.html =  anon</value>
+		<value>/EDU/appdownload.html =  anon</value>
+		<value>/EDU/competition.html =  anon</value>
+		<value>/webview/* =  anon</value>
+		<value>/QCode/webview/* =  anon</value>
+		<value>/QCode/* =  anon</value>
+		<value>/QCode/brief/* =  anon</value>
+		<value>/tutorial/* =  anon</value>
+		<value>/education/getvideoinfo.json =  anon</value>
+		<value>/api/education/getvideoinfo.json =  anon</value>
+		<value>/education/updvideoinfo.json =  anon</value>
+		<value>/api/education/updvideoinfo.json =  anon</value>
+		<value>/education/updexaminfo.json =  anon</value>
+		<value>/api/education/updexaminfo.json =  anon</value>
+		<value>/education/examinfo.json =  anon</value>
+		<value>/education/userexaminfo.json =  anon</value>
+		<value>/api/education/userexaminfo.json =  anon</value>
+		<value>/education/examAnswerInfo.json =  anon</value>
+		<value>/education/videoinfo.json =  anon</value>
+		<value>/UserInfo/api/updUserInfo.json =  anon</value>
+		<value>/UserInfo/getUserStdLogAndBouns.json =  anon</value>
+		<value>/Mine/modify.html =  anon</value>
+		<value>/Mine/forget.html =  anon</value>
+		<value>/Mine/modifySave.json =  anon</value>
+		<value>/Mine/sendCheckEmail.json =  anon</value>
+		<value>/EduTutorial/updReadCount.json = anon</value>
+		<value>/EduTutorial/getReply.json = anon</value>
+		<value>/EduTutorial/api/getReply.json = anon</value>
+		<value>/EduTutorial/api/getParentReplyApi.json = anon</value>
+		<value>/m/quantumLearning.html = anon</value>
+		<value>/m/personal.html = anon</value>
+		<value>/m/mVideo.html= anon</value>
+		<value>/m/index.html= anon</value>
+		<value>/m/appCompetition.html= anon</value>
+		<value>/m/dashboard.html= anon</value>
+		<value>/m/login.html= anon</value>
+		<value>/m/forget.html= anon</value>
+		<value>/m/register.html= anon</value>
+		<value>/api/QCode/createKey.json= anon</value>
+		<value>/api/Edu/education/videoinfo.json= anon</value>
+		<value>/api/Edu/education/examinfo.json= anon</value>
+		<value>/api/Edu/education/allexaminfo.json= anon</value>
+		<value>/api/Edu/education/uexaminfobyid.json= anon</value>
+		<value>/api/Edu/education/examAnswerInfo.json= anon</value>
+		<value>/api/Edu/downloadVideo.json= anon</value>
+		<value>/api/Edu/education/qualitycourse.json= anon</value>
+		<value>/api/Edu/education/getcatalog.json= anon</value>
+		<value>/api/Edu/education/getvideoinfo.json= anon</value>
+		<value>/api/Edu/education/updvideoinfo.json= anon</value>
+		<value>/api/Edu/education/updexaminfo.json= anon</value>
+		<value>/api/Edu/education/userexaminfo.json= anon</value>
+		<value>/api/ForumTopic/addForumTopic.json= anon</value>
+		<value>/api/ForumTopic/addForumReply.json= anon</value>
+		<value>/api/ForumTopic/updReplyLike.json= anon</value>
+		<value>/api/ForumTopic/updForumTopicLike.json= anon</value>
+		<value>/api/ForumTopic/updCollect.json= anon</value>
+		<value>/api/ForumTopic/delReply.json= anon</value>
+		<value>/api/ForumTopic/focusForum.json= anon</value>
+		<value>/api/ForumTopic/sharStatistics.json= anon</value>
+		<value>/api/ForumTopic/queryUser.json= anon</value>
+		<value>/api/ForumTopic/reportTopicReply.json= anon</value>
+		<value>/api/ForumTopic/feedback.json= anon</value>
+		<value>/api/ForumTopic/upload.json= anon</value>
+		<value>/api/ForumTopic/getAllNotic.json= anon</value>
+		<value>/api/ForumTopic/setTop.json= anon</value>
+		<value>/api/ForumTopic/delForum.json= anon</value>
+		<value>/api/ForumTopic/insertLabel.json= anon</value>
+		<value>/api/ForumTopic/forumTopicListPage.json= anon</value>
+		<value>/api/ForumTopic/forumDetailsById.json= anon</value>
+		<value>/api/ForumTopic/myForumPage.json= anon</value>
+		<value>/api/ForumTopic/forumFocusPage.json= anon</value>
+		<value>/api/ForumTopic/myCollectPage.json= anon</value>
+		<value>/api/ForumTopic/queryHot.json= anon</value>
+		<value>/api/ForumTopic/queryMyCollect.json= anon</value>
+		<value>/api/ForumTopic/queryMyForumReply.json= anon</value>
+		<value>/api/ForumTopic/getReply.json= anon</value>
+		<value>/api/ForumTopic/getParentReplyApi.json= anon</value>
+		<value>/api/Mine/modifySave.json= anon</value>
+		<value>/api/Mine/sendCheckEmail.json= anon</value>
+		<value>/api/Tutorial/addEduTutorialReply.json= anon</value>
+		<value>/api/Tutorial/getReply.json= anon</value>
+		<value>/api/Tutorial/getParentReply.json= anon</value>
+		<value>/api/Tutorial/askAndanswer.json= anon</value>
+		<value>/api/Tutorial/updReadCount.json= anon</value>
+		<value>/api/Tutorial/getPagerNumById.json= anon</value>
+		<value>/api/Tutorial/feedback.json= anon</value>
+		<value>/api/Tutorial/getCollect.json= anon</value>
+		<value>/api/Tutorial/collect.json= anon</value>
+		<value>/api/Tutorial/myCertificate.json= anon</value>
+		<value>/api/UpdateUserScore/exchangeMedal.json= anon</value>
+		<value>/api/UpdateUserScore/compoundBonus.json= anon</value>
+		<value>/api/UpdateUserScore/signIn.json= anon</value>
+		<value>/api/UserInfo/getUserStdLogAndBouns.json= anon</value>
+		<value>/api/UserInfo/updPwd.json= anon</value>
+		<value>/api/UserInfo/getAnswerNum.json= anon</value>
+		<value>/api/UserInfo/getNewest.json= anon</value>
+		<value>/api/UserInfo/getNewExam.json= anon</value>
+		<value>/api/UserInfo/getNewVideo.json= anon</value>
+		<value>/api/UserInfo/updUserInfo.json= anon</value>
+		<value>/api/ForumTopic/queryQualityForumTopic.json= anon</value>
+		<value>/api/ForumTopic/recommendedNews.json= anon</value>
+		<value>/education/qualitycourse.json= anon</value>
+		<value>/education/getcatalog.json= anon</value>
+		<value>/api/Edu/education/videoinfoByBlockId.json= anon</value>
+		<value>/api/Edu/education/getVideoInfoExamInfoByVid.json= anon</value>
+		<value>/api/Tutorial/uploadImg.json = anon</value>
+		<value>/api/ForumTopic/getMyLike.json = anon</value>
+		<value>/api/UpdateUserScore/getScoreTurnover.json= anon</value>
+		<value>/api/Edu/bannerDetail.json = anon</value>
+		<value>/api/Edu/getVideoListByKey.json = anon</value>
+		<value>/QCode/brief/posPage.html= anon</value>
+		<value>/api/Edu/updVersion.json = anon</value>
+		<value>/api/Tutorial/getCanChangeCertificate.json = anon</value>
+
+
+		<value>/api/App/Push/updPushid.json= anon</value>
+		<value>/api/ThirdBind/loginByWeiXin.json= anon</value>
+		<value>/api/ThirdBind/thirdRegisterSave.json= anon</value>
+		<value>/api/ThirdBind/thirdRegisterSave.json= anon</value>
+		<value>/api/ThirdBind/requestWeChatInfo.json= anon</value>
+		<!-- 去除微信公众分享拦截，勿删 -->
+		<value>/MP_verify_Rn38TNchKaVJmP7H.txt =  anon</value>
+		<!-- 		<value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value>
+                <value>/education/updvideoinfo.json =  anon</value> -->
+		<value>/test/ShareLearning.json=  anon</value>
+		<value>/test/Requset.json=  anon</value>
+		<value>/Wechat/ShareLearning.json=  anon</value>
+		<value>/EDU/Share/Wechat/**=  anon</value>
+		<value>/EDU/Share/Bonus/**=  anon</value>
+		<value>/QCode/projectShow.html =  anon</value>
+
+
+		<value>/QCode/library.html =  anon</value>
+
+		<value>/QCode/visitorSaveProject.json=  anon</value>
+		<value>/QCode/visitorIndex.html=  anon</value>
+
+		<value>/api/weChatEvent =  anon</value>
+		<value>/QCode/test.json = anon</value>
+		<value>/loginByWeiXin.html = anon</value>
+		<value>/loginByWeiBo.html = anon</value>
+		<value>/loginByQQ.html = anon</value>
+		<value>/authorizationWeiBo.html = anon</value>
+		<value>/QCode/getUserStatus.json = anon</value>
+		<value>/EDU/share.html = anon</value>
+		<value>/api/UpdateUserScore/addScoreByShare.json = anon</value>
+		<value>/test.html = anon</value>
+		<value>/api/Edu/getSysNotice.json = anon</value>
+		<value>/api/ThirdBind/sendPhoneMsg.json = anon</value>
+		<value>/api/ThirdBind/loginByPhone.json = anon</value>
+		<value>/api/ThirdBind/loginByThird.json = anon</value>
+		<value>/api/ThirdBind/bindPhone.json = anon</value>
+		<value>/api/ThirdBind/thirdRegisterSave1.json = anon</value>
+		<value>/api/ThirdBind/bindStepOut.json = anon</value>
+
+		<value>/statisticsDownload.json = anon</value>
+		<value>/EDU/Reading.json = anon</value>
+		<value>/api/ThirdBind/bindEmail.json = anon</value>
+		<value>/api/ThirdBind/sendEmail.json = anon</value>
+		<value>/api/doLoginNew.json = anon</value>
+		<value>/api/Edu/saveEquipment.json = anon</value>
+		<value>/api/Edu/delEquipment.json = anon</value>
+
+
+		<value>/** =autoLogin, authc</value>
+	</util:list>
+</beans>

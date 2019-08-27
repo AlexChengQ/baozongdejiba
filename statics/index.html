@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="font-size: 100px">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="applicable-device" content="pc">
+    <title>本源量子计算云服务平台</title>
+    <!--<link href="./main/bootstrap.min.css" rel="stylesheet">-->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <!--<link href="./main/style.css" rel="stylesheet">-->
+    <script language="javascript">
+        image = new Image();
+        image.src = 'images/bg_1_1.jpg';
+        image.src = 'images/bg1.jpg';
+
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?f1954891ab72948425e7ca63a204c510";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <style>
+        a:active,a:focus{text-decoration:none;}
+        p{outline: none;}
+        /* Header */
+        .htmleaf-header{padding: 1em 190px 1em;letter-spacing: -1px;text-align: center;background: #66677c;}
+        .htmleaf-header h1 {color: #D5D6E2;font-weight: 600;font-size: 2em;line-height: 1;margin-bottom: 0;}
+        .htmleaf-header h1 span {display: block;font-size: 60%;font-weight: 400;padding: 0.8em 0 0.5em 0;color: #c3c8cd;}
+        /*nav*/
+        .htmleaf-demo a{color: #fff;text-decoration: none;}
+        .htmleaf-demo{width: 100%;padding-bottom: 1.2em;}
+        .htmleaf-demo a{display: inline-block;margin: 0.5em;padding: 0.6em 1em;border: 3px solid #fff;font-weight: 700;}
+        .htmleaf-demo a:hover{opacity: 0.6;}
+        .htmleaf-demo a.current{background:#1d7db1;color: #fff; }
+        /* Top Navigation Style */
+        .htmleaf-links {position: relative;display: inline-block;white-space: nowrap;font-size: 1.5em;text-align: center;}
+        .htmleaf-links::after {position: absolute;top: 0;left: 50%;margin-left: -1px;width: 2px;height: 100%;background: #dbdbdb;content: '';-webkit-transform: rotate3d(0,0,1,22.5deg);transform: rotate3d(0,0,1,22.5deg);}
+        .htmleaf-icon {display: inline-block;margin: 0.5em;padding: 0em 0;width: 1.5em;text-decoration: none;}
+        .htmleaf-icon span {display: none;}
+        .htmleaf-icon:before {margin: 0 5px;text-transform: none;font-weight: normal;font-style: normal;font-variant: normal;font-family: 'icomoon';line-height: 1;speak: none;-webkit-font-smoothing: antialiased;}
+        /* footer */
+        .htmleaf-footer{width: 100%;padding-top: 10px;}
+        .htmleaf-small{font-size: 0.8em;}
+        .center{text-align: center;}
+        /****/
+        .related {color: #fff;background: #494A5F;text-align: center;font-size: 1.25em;padding: 0.5em 0;overflow: hidden;}
+        .related > a {vertical-align: top;width: calc(100% - 20px);max-width: 340px;display: inline-block;text-align: center;margin: 20px 10px;padding: 25px;font-family: "Source Han Sans","å®‹ä½“","Segoe UI", "Lucida Grande", Helvetica, Arial,sans-serif, FreeSans, Arimo;}
+        .related a {display: inline-block;text-align: left;margin: 20px auto;padding: 10px 20px;opacity: 0.8;-webkit-transition: opacity 0.3s;transition: opacity 0.3s;-webkit-backface-visibility: hidden;}
+        .related a:hover,
+        .related a:active {opacity: 1;}
+        .related a img {max-width: 100%;opacity: 0.8;border-radius: 4px;}
+        .related a:hover img,
+        .related a:active img {opacity: 1;}
+        .related h3{font-family: "Source Han Sans", sans-serif;font-size: 1.2em}
+        .related a h3 {font-size: 0.85em;font-weight: 300;margin-top: 0.15em;color: #fff;}
+        /* icomoon */
+        .icon-htmleaf-home-outline:before {content: "\e5000";}
+        .icon-htmleaf-arrow-forward-outline:before {content: "\e5001";}
+        @media screen and (max-width: 1024px) {
+            .htmleaf-header {padding: 2em 10% 2em;}
+            .htmleaf-header h1 {font-size:1.4em;}
+            .htmleaf-links{font-size: 1.4em}
+        }
+        @media screen and (max-width: 960px) {
+            .htmleaf-header {padding: 2em 10% 2em;}
+            .htmleaf-header h1 {font-size:1.2em;}
+            .htmleaf-links{font-size: 1.2em}
+            .related h3{font-size: 1em;}
+            .related a h3 {font-size: 0.8em;}
+        }
+
+        @media screen and (max-width: 766px) {
+            .htmleaf-header h1 {font-size:1.3em;}
+            .htmleaf-links{font-size: 1.3em}
+        }
+
+        @media screen and (max-width: 640px) {
+            .htmleaf-header {padding: 2em 10% 2em;}
+            .htmleaf-header h1 {font-size:1em;}
+            .htmleaf-links{font-size: 1em}
+            .related h3{font-size: 0.8em;}
+            .related a h3 {font-size: 0.6em;}
+        }
+        /*
+        author:zhangmin;
+        update:2018-07-11;
+        */
+        .header{position: fixed;_position: absolute;top: 0;left: 0;width: 100%;+zoom: 1;z-index: 10;height: 85px;}
+        .header .nav_list{position: absolute;top: 0;right: 0;}
+        .header .nav_list a:hover{text-decoration: none;}
+        .header .nav_li{float: left;width: 162px;position: relative;+zoom: 1;height: 84px;}
+        .header .btn_nav{display: block;width: 136px;height: 38px;text-align: center;line-height: 38px;position: absolute;top: 50%;left: 50%;margin: -19px 0 0 -68px;font-size: 16px;color:#fff;z-index: 6;}
+        .header .btn_nav:hover{text-decoration: none;}
+        .header .btn_nav i{display: inline-block;+display: inline;+zoom: 1;background-image: url('images/nav.png');position: relative;background-repeat: no-repeat;cursor: pointer;}
+        .header .ic_product{background-position: 0 0;width: 29px;height: 19px;margin-right: 13px;top: 3px;+top: 0;_margin-top: 9px;}
+        .header .ic_more{width: 26px;height: 19px;margin-right: 11px;top: 4px;+top: 0;_margin-top: 9px;}
+        .header .more_nav{position: absolute;top: 0;right: -162px;width: 162px;height: 9999px;padding-top: 100px;background: rgba(0,0,0,0.5);transition: right .3s;-webkit-transition: right .3s;}
+        .header .nav_li .show{right: 0;}
+        .header .more_nav .opc_bg{position: absolute;width: 100%;height: 100%;background: #000;filter:alpha(opacity=50);top: 0;_left: 1px;}
+        .header .more_nav ul{position: relative;z-index: 5;}
+        .header .more_nav li{padding-bottom: 45px;+zoom: 1;position: relative;}
+        .header .more_nav a{color:#c5c8d0;}
+        .header .more_nav a:hover{color:#edf2fe;}
+        .header .btn_snav{display: block;text-align: center;font-size: 18px;line-height: 24px;height: 24px;position: relative;color:#edf3ff;}
+        .header .more_nav .ic_bdot{position: absolute;background: url('images/nav.png') no-repeat -36px 0;width: 12px;height: 12px;left: -9999px;font-size: 0;line-height: 0;transition: top .2s;-webkit-transition: top .2s;}
+        .header .sub_nav dd{padding: 12px 0;}
+        .header .sub_nav dt{margin-bottom: 12px;line-height: 24px;}
+        .header .sub_nav dd a{font-size: 14px;text-align: center;position: relative;display: block;line-height: 20px;}
+        .header .btn_snav{display: block;text-align: center;font-size: 18px;line-height: 24px;height: 24px;position: relative;color:#edf3ff;}
+        .header .more_nav .ic_sdot{position: absolute;background: url('images/nav.png') no-repeat -36px -16px;width: 10px;height: 10px;left: -9999px;font-size: 0;line-height: 0;transition: top .2s;-webkit-transition: top .2s;}
+        .logoSvg{width: 120px;height: 100%;position: absolute;top: 20px;left: 40px;}
+        .header .btn_nav.act{font-size: 14px;}
+        .header .btn_nav.act i{background-size: 100%;width: 20px;height: 14px;margin-right: 11px;top: 2px;}
+        @keyframes bounceInRight{
+            0%{opacity:0;transform:translateX(2000px);}
+            60%{opacity:1;transform:translateX(-30px);}
+            80%{transform:translateX(10px);}
+            100%{transform:translateX(0);}
+        }
+        @-webkit-keyframes bounceInRight{
+            0%{opacity:0;-webkit-transform:translateX(2000px);}
+            60%{opacity:1;-webkit-transform:translateX(-30px);}
+            80%{-webkit-transform:translateX(10px);}
+            100%{-webkit-transform:translateX(0);}
+        }
+
+        /*
+        author:zhangmin;
+        design:huangjunkai;
+        update:2018-07-12;
+        */
+        html{height: 100%;position: relative;overflow: hidden;}
+        body{position: relative;width: 100%;height: 100%;position: relative;overflow: hidden;font:12px/1.5 tahoma,arial,\5FAE\8F6F\96C5\9ED1,sans-serif;font-family: "Source Han Sans","å¾®è½¯é›…é»‘",tahoma,arial,simsun,"å®‹ä½“";background: #000;}
+        body,div,p,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,p,table,input{margin:0;padding:0;font-weight: normal;}
+        table{width:auto;border-collapse: collapse;border-spacing: 0;}
+        li{list-style: none;vertical-align: bottom;}
+        em,i{font-style: normal;}
+        a{outline: none;text-decoration: none;transition: color .3s,opacity .3s,transform .3s;-webkit-transition: color .3s,opacity .3s,transform .3s;}
+        a:hover{outline: none;text-decoration: none;}
+        img{border: 0;}
+        .hidden{display: none;}
+        .hide_txt{text-indent: -9999em;font-size: 0;line-height: 0;}
+        .clearfix:after{display:block;content:"";visibility:hidden;clear:both;height:0;}
+        .clearfix{zoom:1;}
+        .footer{position: absolute;bottom: -91px;left: 0;transition: bottom .3s;-webkit-transition: bottom .3s;z-index: 8;}
+        .footer.show{bottom: 0;}
+
+        .wrap{height: 100%;position: relative;overflow: hidden;}
+        .wrapper{height: 100%;position: relative;overflow: hidden;}
+        .content{position: relative;width: 1200px;margin: 0 auto;}
+        .small2{transform:scale(0.6,0.6);-webkit-transform:scale(0.6,0.6);}
+        .small3{transform:scale(0.65,0.65);-webkit-transform:scale(0.65,0.65);}
+        .small4{transform:scale(0.7,0.7);-webkit-transform:scale(0.7,0.7);}
+        .small5{transform:scale(0.75,0.75);-webkit-transform:scale(0.75,0.75);}
+        .small6{transform:scale(0.8,0.8);-webkit-transform:scale(0.8,0.8);}
+        .small7{transform:scale(0.85,0.85);-webkit-transform:scale(0.85,0.85);}
+        .small8{transform:scale(0.9,0.9);-webkit-transform:scale(0.9,0.9);}
+        .small9{transform:scale(0.95,0.95);-webkit-transform:scale(0.95,0.95);}
+
+        .product_list{position: relative;height: 100%;}
+        .product_box{position: absolute;width: 100%;height: 100%;top: 0;left: -9999px;}
+        .bg_box{position: absolute;width: 100%;height: 100%;top: 0;left: 0;background-position: center center;background-repeat: no-repeat;}
+        .bg_main{width: 1000px;height: 100%;position: absolute;top: 0;left: 50%;margin-left: -500px;background-position: center center;background-repeat: no-repeat;}
+        .bg_box img{position: absolute;top: 0;left: 0;}
+        /*.bg_box img{position: absolute;top: 50%;left: 50%;}*/
+
+        .product_box .content{width: 1000px;height: 100%;position: absolute;top: 0;left: 50%;margin-left: -500px;z-index: 5;transform-origin: center center;-webkit-transform-origin: center center;}
+        .product_box .main_box{position: relative;height: 100%;left: -9999px;top: 50%;}
+        .product_list .show{left: 0;}
+        .product_list .show .main_box{left: 0;}
+        .product_box h2{position: absolute;top: 50%;left: 50%;background-size: 100% 100%;}
+        .product_box h2 span{position: absolute;}
+        .btn_product{position: absolute;top: 50%;left: 50%;text-align: center;border-width: 1px;border-style: solid;transition: transform .3s;-webkit-transition: transform .3s;}
+        .btn_product:hover{text-decoration: none;transform: scale(1.04);-webkit-transform: scale(1.04);}
+        .product_box.show h2{animation:tt_effect .6s .3s linear both;-webkit-animation:tt_effect .6s .3s linear both;}
+        .product_box.show .btn_product{animation:opacity .5s 1s linear both;-webkit-animation:opacity .5s 1s linear both;}
+
+        /*.product_list .sheji .bg_box{background-image: url('images/bg_1.jpg');}
+        .product_list .sheji .bg_main{background-image: url('images/main_1.jpg');}*/
+        .sheji .btn_product{border-color: #62615d;border-color: rgba(0,0,0,0.6);color:#000;}
+
+        /*.product_list .xnet .bg_box{background-image: url('images/bg_2.jpg');}
+        .product_list .xnet .bg_main{background-image: url('images/main_2.jpg');}*/
+        .xnet .btn_product{border-color: #88b1eb;border-color: rgba(255,255,255,0.3);color:#fff;}
+
+        /*.product_list .member .bg_box{background-image: url('images/bg_3.jpg');}
+        .product_list .member .bg_main{background-image: url('images/main_3.jpg');}*/
+        .member .btn_product{border-color: #b3a38b;border-color: rgba(255,255,255,0.3);color:#fff;}
+
+        /*.product_list .xkn .bg_box{background-image: url('images/bg_4.jpg');}
+        .product_list .xkn .bg_main{background-image: url('images/main_4.jpg');}*/
+        .xkn .btn_product{border-color: #7e7a60;border-color: rgba(0,0,0,0.5);color:#000;}
+
+        /*.product_list .xav .bg_box{background-image: url('images/bg_5.jpg');}
+        .product_list .xav .bg_main{background-image: url('images/main_5.jpg');}*/
+        .xav .btn_product{border-color: #a1b3cb;border-color: rgba(255,255,255,0.5);color:#fff;}
+
+
+        .product_btns{position: absolute;width: 100%;bottom: 0px;z-index: 6;transition: bottom .3s;-webkit-transition: bottom .3s;z-index: 10;}
+        .product_btns.show{bottom: 100px;}
+        .product_btns .content{width: 1000px;position: absolute;bottom: 0;left: 50%;margin-left: -500px;}
+        .product_btns .btns_area{margin: 0 auto;border-bottom: 1px solid #827471;border-color: rgba(255,255,255,0.2);+zoom: 1;}
+        .product_btns .btns_box{position: absolute;width: 100%;height: 84px;top: 3px;font-size: 0;line-height: 0;}
+        .product_btns .btns_box a{display: inline-block;+display: inline;+zoom: 1;position: relative;}
+        .product_btns .btns_box a span{display: block;background-repeat: no-repeat;cursor: pointer;position: absolute;top: -22px;left: 50%;}
+        .product_btns .btns_box a:hover,.product_btns .btns_box a.cur{background: transparent;}
+
+        .product_btns .ic_line{position: absolute;height: 2px;background: #fff;left: 0;bottom: -14px;transition: left .3s;-webkit-transition: left .3s;}
+
+        .rpt_bg{position: absolute;bottom: 0;left: 0;width: 100%;height: 238px;background: url('http://demo.htmleaf.com/1611/201611281500/img/rpt_bg.png') repeat-x;opacity: 0;transition: opacity .3s;-webkit-transition: opacity .3s;z-index: 5;left: -9999px;}
+        .rpt_bg.show{opacity: 1;left: 0;}
+
+        /*big size*/
+        .big_view .btn_product{margin-left: -75px;width: 148px;height: 40px;line-height: 40px;font-size: 18px;}
+
+
+        .big_view .product_btns .btns_area{width: 640px;_width: 309px;/*width: 242px;_width: 243px;*/height: 70px;}
+        .big_view .product_btns .btns_box{height: 54px;}
+        .big_view .product_btns .btns_box a{width: 114px;height: 54px;margin: 0 30px;text-align: center}
+        .big_view .product_btns .btns_box a:first-child{margin-left: 0;}
+        .big_view .product_btns .btns_box a:last-child{margin-left: 0;}
+        .big_view .product_btns .btns_box a.btn_sheji{width: 114px;height: 100%;}
+        .big_view .product_btns .btns_box a.btn_sheji img,
+        .big_view .product_btns .btns_box a.btn_xnet img,
+        .big_view .product_btns .btns_box a.btn_member img,
+        .big_view .product_btns .btns_box a.btn_xkn img{opacity: 0.7;  }
+        .big_view a:hover .ic_sheji,.big_view a.cur  img{opacity: 1!important;}
+        .big_view .product_btns .ic_line{width: 114px;}
+
+
+        .big_view  .product_box .content{width: 1200px;margin-left: -600px;}
+        .big_view .product_box .content .main_box{display: flex;padding-top: 20%;}
+        .big_view  .product_box .content .contentList{cursor: pointer;text-align: center; /*flex: 1;*/height: 369px;width: 55%;padding-left: 13px;background: url("images/black.png") no-repeat 100%;margin-right:5%;background-size: 100% 100%;margin-top: 0;transition:margin-top 0.6s cubic-bezier(0.28, -0.01, 0.41, 1) ;}
+        .big_view .product_box .content .contentList:hover{margin-top: -15px;}
+        .big_view .product_box .content .contentList:last-child{margin-right: 0;}
+        .big_view .product_box .content .contentList .conParticularsImg {margin-top:66px;height:74px;}
+        .big_view .product_box .bg_box .bigImg {display:block;}
+        .big_view .product_box .bg_box  .smallImg {display:none;}
+        .big_view .product_box .content .contentList .conParticularsTitle {padding:48px 0;margin:0;font-size:22px;color:#fff;line-height: 22px}
+        .big_view .product_box .content .contentList .conParticularsTip {font-size:18px;line-height:26px;color:#fff;font-family:"Arial","Source Han Sans","Helvetica Neue","Helvetica","sans-serif";}
+        .big_view .product_box .content .contentList .conParticularsTip2 {display:none;}
+        .big_view .product_box.xnet .content {width:854px;margin-left:-427px;}
+        .big_view .product_box.xnet .content .main_box {display:block;}
+        .big_view  .product_box.xnet .content .contentList {width:30%;float:left;}
+        .big_view  .product_box.member .content .contentList {margin-right:18%;/*float:left;*/}
+        .big_view  .product_box.member .content .contentList:last-child {margin-right:0;}
+        .big_view  .product_box.xkn .content .contentList {width:256px;margin:0 auto;}
+
+        /*mid size*/
+        .mid_view .btn_product{margin-left: -75px;width: 148px;height: 40px;line-height: 40px;font-size: 18px;}
+        .mid_view .product_btns .btns_area{width: 640px;_width: 309px;/*width: 242px;_width: 243px;*/height: 70px;}
+        .mid_view .product_btns .btns_box{height: 54px;}
+        .mid_view .product_btns .btns_box a{width: 114px;height: 54px;margin: 0 30px;text-align: center}
+        .mid_view .product_btns .btns_box a:first-child{margin-left: 0;}
+        .mid_view .product_btns .btns_box a:last-child{margin-left: 0;}
+        .mid_view .product_btns .btns_box a.btn_sheji{width: 114px;height: 100%;}
+        .mid_view .product_btns .btns_box a.btn_sheji img,
+        .mid_view .product_btns .btns_box a.btn_xnet img,
+        .mid_view .product_btns .btns_box a.btn_member img,
+        .mid_view .product_btns .btns_box a.btn_xkn img{opacity: 0.7;  }
+        .mid_view a:hover .ic_sheji,.big_view a.cur  img{opacity: 1!important;}
+        .mid_view .product_btns .ic_line{width: 114px;}
+        .mid_view  .product_box .content{width: 1000px;margin-left: -500px;}
+        .mid_view .product_box .content .main_box{display: flex;padding-top: 20%;}
+        .mid_view  .product_box .content .contentList{cursor: pointer;text-align: center; /*flex: 1;*/height: 369px;width: 55%;padding-left: 13px;background: url("images/black.png") no-repeat 100%;margin-right:5%;background-size: 100% 100%;margin-top: 0;transition:margin-top 0.6s cubic-bezier(0.28, -0.01, 0.41, 1) ;}
+        .mid_view .product_box .content .contentList:hover {margin-top:-15px!important;}
+        .mid_view .product_box .content .contentList:last-child {margin-right:0;}
+        .mid_view .product_box .content .contentList .conParticularsImg {margin-top:66px;height:74px;}
+        .mid_view .product_box .bg_box .bigImg {display:block;}
+        .mid_view .product_box .bg_box  .smallImg {display:none;}
+        .mid_view .product_box .content .contentList .conParticularsTitle {padding:48px 0;margin:0;font-size:18px;color:#fff;}
+        .mid_view .product_box .content .contentList .conParticularsTip {font-size:14px;line-height:26px;color:#fff;font-family:"Arial","Source Han Sans","Helvetica Neue","Helvetica","sans-serif";}
+        .mid_view .product_box .content .contentList .conParticularsTip2 {display:none;}
+        .mid_view .product_box.xnet .content {width:854px;margin-left:-427px;}
+        .mid_view .product_box.xnet .content .main_box {display:block;}
+        .mid_view  .product_box.xnet .content .contentList {width:30%;float:left;}
+        .mid_view  .product_box.member .content .contentList {margin-right:18%;/*float:left;*/}
+        .mid_view  .product_box.member .content .contentList:last-child {margin-right:0;}
+        .big_view .product_box.xnet .content .main_box {padding-top:28%;}
+        .mid_view .product_box.xnet .content .main_box {padding-top:24%;}
+        .mid_view  .product_box.xkn .content .contentList {width:256px;margin:0 auto;}
+        .mid_view .product_box .content .contentList .conParticularsTitle span{
+            font-size: 14px!important;
+        }
+        .small_view .product_box .content .contentList .conParticularsTitle span{
+           font-size: 12px!important;
+            line-height: 14px!important;
+            margin-top: 0!important;
+        }
+
+
+        /*small size*/
+        .nav_menu{padding-top: 10px;display: none;}
+        .nav_menu li {font-size: 14px;line-height: 34px;padding: 0!important;color: #d9d9d9;text-align: center;}
+        #h_nav li.open .nav_menu{display: block;}
+        /*small size*/
+        .small_view .btn_product{margin-left: -48px;width: 94px;height: 26px;line-height: 26px;font-size: 11px;}
+        .small_view .product_btns .btns_area{width: 264px;_width: 309px;/*width: 242px;_width: 243px;*/height: 54px;}
+        .small_view .product_btns .btns_box{height: 54px;    height: 28px;top: 12px;}
+        .small_view .product_btns .btns_box a{ /*width: 77px;height: 54px;margin: 0 0px;text-align: center;*/width: 66px;line-height: 55px;height: auto;margin: 0 0px;text-align: center;vertical-align: middle;}
+        .small_view .product_btns .btns_box a img{ /*width: 100%;*/width: 36%;}
+        .small_view .product_btns .ic_line{width: 66px;}
+
+        .small_view .big_view .product_box .content {width:320px;margin-left:0px;}
+        .small_view .product_box .content {width:100%;margin:0;position:relative;left:0;}
+        .small_view .product_box .content .main_box {display:block;padding-top:10%;}
+        .small_view  .product_box .content .contentList {/*margin-bottom:24px;*/            padding:0.12rem;cursor:pointer;text-align:center;/* flex:1;*/            height:0.71rem;width:82%;margin:0 auto;/* padding-left:13px;*/            background:url(images/bgiphoneNor.png) no-repeat 100%;/* margin-right:5%;*/            background-size:100% 100%;margin-top:0;transition:margin-top 0.6s cubic-bezier(0.28,-0.01,0.41,1);}
+        .small_view  .product_box.xkn .content .contentList {background:url(images/bgiponeLt.png) no-repeat 100%;margin-top:0;float: none!important;background-size:100% 100%;}
+        .small_view .product_box.xkn .content .main_box{padding-top: 50%;}
+        .big_view .product_box .content .contentList:hover {margin-top:-15px;}
+        .big_view .product_box .content .contentList:last-child {margin-right:0;}
+        .small_view .product_box .content .contentList .conParticularsImg {/*margin-top:0px;*/            height:37px;width:37px;margin:0.15rem 0rem 0 0.22rem;float:left;}
+        .small_view .product_box .content .contentList .conParticularsImg img {width:100%;}
+        .small_view .product_box .bg_box .bigImg {display:none;}
+        .small_view .product_box .bg_box  .smallImg {display:block;}
+        .small_view .product_box .content .contentList .conParticularsTitle {padding:0.15rem 0 0.00rem 0!important;margin:0;font-size:0.14rem;color:#fff;}
+        .small_view .product_box .content .contentList .conParticularsTip {font-size:0.10rem;line-height:0.26rem;color:#fff;font-family:"Arial","Source Han Sans","Helvetica Neue","Helvetica","sans-serif";}
+        .small_view .product_box.sheji .content .contentList .conParticularsTip {display:none;}
+        .small_view .product_box.sheji .content .contentList .conParticularsTip2 {display:block;font-size:0.10rem;line-height:0.16rem;color:#fff;font-family:"Arial","Source Han Sans","Helvetica Neue","Helvetica","sans-serif";}
+        .big_view .product_box.xnet .content {width:854px;margin-left:-427px;}
+        .big_view .product_box.xnet .content .main_box {display:block;}
+        .small_view  .product_box.xnet .content .contentList {/*width:30%;*/            float:none!important;}
+        .big_view  .product_box.member .content .contentList {margin-right:18%;/*float:left;*/}
+        .big_view  .product_box.member .content .contentList:last-child {margin-right:0;}
+        .big_view  .product_box.xkn .content .contentList {width:256px;margin:0 auto;}
+        .companyProfile2 {font-size:0.12rem;text-align:center;padding:0.01rem 0;padding-top:39px;padding-bottom:10px;color:#fff;}
+        .companyProfile {font-size:0.12rem;text-align:center;padding:20px 0;color:#fff;}
+
+
+        .small_view .product_box.sheji .content .contentList .conParticularsTitle.conParticularsTitle1{
+            padding-top: 0.05rem!important;
+        }
+        .small_view .product_box.sheji .content .contentList .conParticularsTitle.conParticularsTitle2{
+            padding-top: 0.05rem!important;
+        }
+        @keyframes pulse{
+            0%{transform:scale(1);}
+            50%{transform:scale(1.1);}
+            100%{transform:scale(1);}
+        }
+        @-webkit-keyframes pulse{
+            0%{-webkit-transform:scale(1);}
+            50%{-webkit-transform:scale(1.1);}
+            100%{-webkit-transform:scale(1);}
+        }
+
+        @keyframes swing{
+            20%,40%,60%,80%,100%{transform-origin:top center;}
+            20%{transform:rotate(15deg);}
+            40%{transform:rotate(-10deg);}
+            60%{transform:rotate(5deg);}
+            80%{transform:rotate(-5deg);}
+            100%{transform:rotate(0deg);}
+        }
+        @-webkit-keyframes swing{
+            20%,40%,60%,80%,100%{-webkit-transform-origin:top center;}
+            20%{-webkit-transform:rotate(15deg);}
+            40%{-webkit-transform:rotate(-10deg);}
+            60%{-webkit-transform:rotate(5deg);}
+            80%{-webkit-transform:rotate(-5deg);}
+            100%{-webkit-transform:rotate(0deg);}
+        }
+        @keyframes flash{
+            0%,66.66%{opacity: 0;}
+            33.33%,100%{opacity: 1;}
+        }
+        @-webkit-keyframes flash{
+            0%,66.66%{opacity: 0;}
+            33.33%,100%{opacity: 1;}
+        }
+        @keyframes tada{
+            0%{transform:scale(1);}
+            10%,20%{transform:scale(0.9) rotate(-3deg);}
+            30%,50%,70%,90%{transform:scale(1.1) rotate(3deg);}
+            40%,60%,80%{transform:scale(1.1) rotate(-3deg);}
+            100%{transform:scale(1) rotate(0);}
+        }
+        @-webkit-keyframes tada{
+            0%{-webkit-transform:scale(1);}
+            10%,20%{-webkit-transform:scale(0.9) rotate(-3deg);}
+            30%,50%,70%,90%{-webkit-transform:scale(1.1) rotate(3deg);}
+            40%,60%,80%{-webkit-transform:scale(1.1) rotate(-3deg);}
+            100%{-webkit-transform:scale(1) rotate(0);}
+        }
+
+        @keyframes rotateX{
+            0%{transform: perspective(400px) rotateX(90deg);}
+            40%{transform: perspective(400px) rotateX(-30deg);}
+            70%{transform: perspective(400px) rotateX(30deg);}
+            100%{transform: perspective(400px) rotateX(0deg);}
+        }
+        @-webkit-keyframes rotateX{
+            0%{-webkit-transform: perspective(400px) rotateX(90deg);}
+            40%{-webkit-transform: perspective(400px) rotateX(-30deg);}
+            70%{-webkit-transform: perspective(400px) rotateX(30deg);}
+            100%{-webkit-transform: perspective(400px) rotateX(0deg);}
+        }
+
+        @keyframes rotateY{
+            0%{transform: perspective(400px) rotateY(90deg);}
+            40%{transform: perspective(400px) rotateY(-20deg);}
+            70%{transform: perspective(400px) rotateY(20deg);}
+            100%{transform: perspective(400px) rotateY(0deg);}
+        }
+        @-webkit-keyframes rotateY{
+            0%{-webkit-transform: perspective(400px) rotateY(90deg);}
+            40%{-webkit-transform: perspective(400px) rotateY(-20deg);}
+            70%{-webkit-transform: perspective(400px) rotateY(20deg);}
+            100%{-webkit-transform: perspective(400px) rotateY(0deg);}
+        }
+        @keyframes bounce{
+            0%,20%,50%,80%,100%{transform:translateY(0);}
+            40%{transform:translateY(-20px);}
+            60%{transform:translateY(-10px);}
+        }
+        @-webkit-keyframes bounce{
+            0%,20%,50%,80%,100%{-webkit-transform:translateY(0);}
+            40%{-webkit-transform:translateY(-20px);}
+            60%{-webkit-transform:translateY(-10px);}
+        }
+        @keyframes bounceInDown{
+            0%{opacity:0;transform:translateY(-2000px);}
+            60%{opacity:1;transform:translateY(30px);}
+            80%{transform:translateY(-10px);}
+            100%{transform:translateY(0);}
+        }
+        @-webkit-keyframes bounceInDown{
+            0%{opacity:0;-webkit-transform:translateY(-2000px);}
+            60%{opacity:1;-webkit-transform:translateY(30px);}
+            80%{-webkit-transform:translateY(-10px);}
+            100%{-webkit-transform:translateY(0);}
+        }
+        @keyframes opacity{
+            0%{opacity: 0;}
+            100%{opacity: 1;}
+        }
+        @-webkit-keyframes opacity{
+            0%{opacity: 0;}
+            100%{opacity: 1;}
+        }
+        @keyframes tt_effect{
+            0%{transform:translateY(-20px);opacity:0;}
+            100%{transform:translateY(0);opacity:1;}
+        }
+        @-webkit-keyframes tt_effect{
+            0%{-webkit-transform:translateY(-20px);opacity:0;}
+            100%{-webkit-transform:translateY(0);opacity:1;}
+        }
+        @keyframes bg_effect{
+            0%{transform:scale(1,1);}
+            100%{transform:scale(1.05,1.05);}
+        }
+        @-webkit-keyframes bg_effect{
+            0%{-webkit-transform:scale(1,1);}
+            100%{-webkit-transform:scale(1.05,1.05);}
+        }
+    </style>
+</head>
+<body style="background: rgb(35, 35, 35);">
+<div class="header">
+    <div class="logoSvg">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="图层_1" x="0px" y="0px" width="293.286px" height="34.772px" viewBox="0 0 293.286 34.772" enable-background="new 0 0 293.286 34.772" xml:space="preserve">
+            <g>
+	<path fill="#FFFFFF" d="M17.859,1.756C9.44,1.613,2.504,8.333,2.367,16.765c-0.137,8.432,6.577,15.381,14.996,15.524   c1.792,0.029,3.516-0.254,5.123-0.795c-3.056-0.648-5.531-2.74-6.573-5.477c-4.283-0.863-7.51-4.655-7.51-9.205   c0-5.186,4.192-9.39,9.364-9.39c4.495,0,8.249,3.176,9.154,7.413c2.53,0.653,4.62,2.305,5.762,4.478   c0.1-0.664,0.161-1.342,0.172-2.032C32.992,8.85,26.279,1.899,17.859,1.756z"/>
+	<path fill="#FFFFFF" d="M25.983,18.538c-2.041-0.708-4.287,0.497-5.017,2.689c-0.732,2.193,0.331,4.544,2.37,5.25   c2.04,0.709,4.286-0.495,5.017-2.687C29.083,21.598,28.022,19.246,25.983,18.538z"/>
+	<path fill="#FFFFFF" d="M51.953,11.314h7.939V9.869h-8.496V6.354h-1.523v3.516h-8.496v1.445h7.881   c-1.836,3.392-4.606,6.608-8.311,9.648c0.352,0.3,0.781,0.69,1.289,1.172c3.431-3.073,5.977-6.263,7.637-9.57v7.734h-4.629v1.367   h4.629v4.004h1.523v-4.004h4.473v-1.367h-4.473v-7.734c1.875,3.796,4.388,6.907,7.539,9.336c0.547-0.573,0.99-1.028,1.328-1.367   C56.793,18.28,54.023,15.208,51.953,11.314z"/>
+	<path fill="#FFFFFF" d="M63.232,17.174c-0.521,2.5-1.159,5.085-1.914,7.754l1.504,0.508c0.664-2.852,1.263-5.384,1.797-7.598   C64.163,17.694,63.701,17.474,63.232,17.174z"/>
+	<path fill="#FFFFFF" d="M65.322,14.342c-1.276-1.016-2.422-1.888-3.438-2.617l-0.977,1.113c0.951,0.742,2.051,1.667,3.301,2.773   C64.495,15.312,64.866,14.889,65.322,14.342z"/>
+	<path fill="#FFFFFF" d="M76.044,20.67c1.081,1.315,2.083,2.669,3.008,4.063l1.23-0.938c-0.885-1.237-1.92-2.546-3.105-3.926   L76.044,20.67z"/>
+	<path fill="#FFFFFF" d="M66.767,14.693c0,4.505-0.898,7.761-2.695,9.766c0.443,0.403,0.82,0.808,1.133,1.211   c2.005-2.214,3.008-5.879,3.008-10.996V9.049h4.941c-0.267,0.801-0.541,1.569-0.82,2.305h-2.539v8.008h1.406v-0.508h2.363v4.453   c0,0.625-0.299,0.938-0.898,0.938c-0.482,0-1.048-0.026-1.699-0.078c0.117,0.508,0.208,0.957,0.273,1.348   c0.69,0.013,1.256,0.02,1.699,0.02c1.354,0,2.031-0.696,2.031-2.09v-4.59h2.52v0.508h1.406v-8.008H73.74   c0.377-0.755,0.746-1.523,1.104-2.305h5.479V7.721H66.767V14.693z M77.49,17.564h-6.289v-1.855h6.289V17.564z M77.49,12.643v1.816   h-6.289v-1.816H77.49z"/>
+	<path fill="#FFFFFF" d="M70.966,19.967c-0.859,1.484-1.842,2.819-2.949,4.004l1.152,0.898c1.042-1.185,2.057-2.565,3.047-4.141   L70.966,19.967z"/>
+	<path fill="#FFFFFF" d="M65.908,9.342c-1.094-0.989-2.155-1.868-3.184-2.637l-0.996,1.074c0.873,0.716,1.875,1.634,3.008,2.754   C65.062,10.182,65.452,9.784,65.908,9.342z"/>
+	<path fill="#FFFFFF" d="M85.458,12.252h10.43v0.527h1.328V7.193H84.13v5.586h1.328V12.252z M85.458,8.209h10.43v1.035h-10.43V8.209   z M85.458,10.182h10.43v1.055h-10.43V10.182z"/>
+	<path fill="#FFFFFF" d="M91.318,22.799h7.852v-1.016h-7.852V20.67h4.707v0.508h1.328v-5.996H83.974v5.996h1.328V20.67h4.648v1.113   h-7.832v1.016h7.832v1.113h-8.965v1.055h19.297v-1.055h-8.965V22.799z M91.318,16.197h4.707v1.25h-4.707V16.197z M91.318,18.385   h4.707v1.27h-4.707V18.385z M89.951,19.654h-4.648v-1.27h4.648V19.654z M89.951,17.447h-4.648v-1.25h4.648V17.447z"/>
+	<rect x="81.142" y="13.189" fill="#FFFFFF" width="19.063" height="1.055"/>
+	<path fill="#FFFFFF" d="M111.767,13.854l6.543-4.785V7.545h-15.234V9.01h12.637l-5.605,4.082v2.148h-9.082v1.465h9.082v5.742   c0,0.938-0.462,1.406-1.387,1.406c-1.055-0.013-2.058-0.078-3.008-0.195c0.104,0.664,0.183,1.257,0.234,1.777   c1.458,0.026,2.487,0.039,3.086,0.039c1.823,0,2.734-0.872,2.734-2.617v-6.152h8.555V15.24h-8.555V13.854z"/>
+	<path fill="#FFFFFF" d="M126.025,9.967c-0.638-0.703-1.667-1.784-3.086-3.242l-1.191,1.035c1.12,1.159,2.09,2.278,2.91,3.359   L126.025,9.967z"/>
+	<path fill="#FFFFFF" d="M125.283,22.564v-9.492h-4.336v1.406h2.773v7.734c0,0.794-0.228,1.387-0.684,1.777l0.938,1.328   c1.354-0.964,3.073-2.097,5.156-3.398c-0.052-0.456-0.098-1.022-0.137-1.699C127.653,21.093,126.416,21.874,125.283,22.564z"/>
+	<polygon fill="#FFFFFF" points="134.56,6.471 132.88,6.471 132.88,13.189 127.197,13.189 127.197,14.596 132.88,14.596    132.88,25.611 134.56,25.611 134.56,14.596 140.283,14.596 140.283,13.189 134.56,13.189  "/>
+	<path fill="#FFFFFF" d="M141.884,11.9c0.989-0.827,1.868-1.726,2.637-2.695h1.641l-0.703,0.508c0.481,0.521,0.964,1.081,1.445,1.68   h-3.242v8.789h1.367v-0.645h11.348v0.645h1.367v-8.789h-1.514l0.947-0.762c-0.469-0.488-0.983-0.964-1.543-1.426h4.453V8.072   h-6.191c0.313-0.547,0.618-1.126,0.918-1.738h-1.68c-0.716,1.55-1.628,2.903-2.734,4.063c0.456,0.313,0.853,0.618,1.191,0.918   c0.554-0.618,1.087-1.321,1.602-2.109h1.943l-0.674,0.508c0.605,0.547,1.155,1.106,1.65,1.68h-9.004l0.928-0.703   c-0.469-0.515-0.938-1.009-1.406-1.484h4.395V8.072h-5.684c0.371-0.56,0.71-1.14,1.016-1.738h-1.66   c-0.925,1.797-2.188,3.32-3.789,4.57C141.272,11.243,141.598,11.575,141.884,11.9z M156.376,18.443h-11.348v-1.309h11.348V18.443z    M156.376,16.119h-11.348v-1.309h11.348V16.119z M156.376,12.486v1.309h-11.348v-1.309H156.376z"/>
+	<path fill="#FFFFFF" d="M155.693,19.928h-1.445v1.211h-6.396c0.046-0.384,0.068-0.794,0.068-1.23h-1.426   c0,0.449-0.026,0.859-0.078,1.23h-5.313v1.211h5.02c-0.481,1.081-1.804,1.804-3.965,2.168c0.325,0.456,0.612,0.886,0.859,1.289   c2.617-0.554,4.16-1.706,4.629-3.457h6.602v3.281h1.445V22.35h4.629v-1.211h-4.629V19.928z"/>
+	<rect x="162.978" y="7.818" fill="#FFFFFF" width="15.449" height="1.445"/>
+	<path fill="#FFFFFF" d="M161.162,15.26h7.041c-1.185,1.979-2.478,3.815-3.877,5.508c-0.521,0.625-1.172,1.126-1.953,1.504   l0.781,1.797c0.495-0.144,1.022-0.247,1.582-0.313c3.216-0.208,7.161-0.394,11.836-0.557c0.469,0.612,0.938,1.24,1.406,1.885   l1.465-1.094c-1.901-2.409-3.815-4.688-5.742-6.836l-1.289,0.859c1.042,1.23,2.08,2.507,3.115,3.828   c-2.402,0.098-5.823,0.202-10.264,0.313c1.419-1.687,3.105-3.984,5.059-6.895h9.941v-1.445h-19.102V15.26z"/>
+	<path fill="#FFFFFF" d="M182.314,18.795c0,2.461-0.437,4.362-1.309,5.703c0.43,0.352,0.788,0.716,1.074,1.094   c1.12-1.575,1.66-3.86,1.621-6.855h2.734v4.492c0,0.534-0.267,0.801-0.801,0.801c-0.481,0-1.055-0.052-1.719-0.156   c0.104,0.534,0.183,0.996,0.234,1.387c0.573,0.039,1.191,0.059,1.855,0.059c1.211,0,1.816-0.651,1.816-1.953V7.525h-5.508V18.795z    M183.701,8.795h2.734v3.75h-2.734V8.795z M183.701,13.756h2.734v3.77h-2.734V13.756z"/>
+	<path fill="#FFFFFF" d="M199.169,15.729v-1.152h-8.242V8.951h6.66c-0.026,0.403-0.059,0.774-0.098,1.113   c-0.091,1.106-0.696,1.641-1.816,1.602c-0.769-0.026-1.634-0.098-2.598-0.215c0.091,0.521,0.176,1.035,0.254,1.543   c1.146,0.039,1.985,0.065,2.52,0.078c1.953,0.039,2.981-0.95,3.086-2.969c0.039-0.612,0.091-1.445,0.156-2.5h-9.648v17.949h1.484   v-9.707h0.918c0.403,2.292,1.24,4.251,2.51,5.879c-0.944,0.925-2.067,1.719-3.369,2.383c0.286,0.43,0.554,0.859,0.801,1.289   c1.341-0.749,2.51-1.614,3.506-2.598c1.113,1.113,2.471,2.044,4.072,2.793c0.313-0.417,0.69-0.886,1.133-1.406   c-1.667-0.593-3.063-1.423-4.189-2.49C197.695,20.003,198.649,18.014,199.169,15.729z M193.183,15.846h4.443   c-0.449,1.829-1.211,3.425-2.285,4.785C194.306,19.315,193.586,17.721,193.183,15.846z"/>
+	<path fill="#FFFFFF" d="M209.97,15.533h-1.582c-0.065,0.774-0.144,1.478-0.234,2.109h-5.684v1.387h5.41   c-0.69,2.461-2.903,4.297-6.641,5.508c0.339,0.442,0.657,0.879,0.957,1.309c4.16-1.413,6.585-3.685,7.275-6.816h6.514   c-0.052,1.106-0.137,2.148-0.254,3.125c-0.117,1.094-0.729,1.653-1.836,1.68c-0.977-0.013-2.214-0.085-3.711-0.215   c0.117,0.599,0.215,1.14,0.293,1.621c1.536,0.065,2.688,0.091,3.457,0.078c1.979-0.013,3.073-0.938,3.281-2.773   c0.117-0.938,0.241-2.571,0.371-4.902h-7.881C209.797,17.011,209.885,16.308,209.97,15.533z"/>
+	<path fill="#FFFFFF" d="M217.685,9.537V8.229h-10.566c0.319-0.456,0.625-0.925,0.918-1.406l-1.465-0.625   c-1.159,2.239-2.937,4.31-5.332,6.211c0.325,0.286,0.684,0.638,1.074,1.055c1.224-1.022,2.341-2.132,3.35-3.33   c0.892,1.237,2.08,2.308,3.564,3.213c-2.402,0.918-5.234,1.628-8.496,2.129c0.313,0.508,0.579,0.964,0.801,1.367   c3.665-0.638,6.79-1.507,9.375-2.607c2.298,1.067,5.144,1.826,8.535,2.275c0.313-0.508,0.677-1.055,1.094-1.641   c-3.027-0.188-5.635-0.681-7.822-1.475C214.817,12.294,216.474,11.009,217.685,9.537z M206.875,9.518h8.721   c-1.237,1.191-2.796,2.227-4.678,3.105C209.27,11.81,207.922,10.774,206.875,9.518z"/>
+	<path fill="#FFFFFF" d="M234.189,16.061c1.276-1.367,2.649-3.06,4.121-5.078l-1.465-0.938c-1.146,1.823-2.435,3.489-3.867,5   L234.189,16.061z"/>
+	<polygon fill="#FFFFFF" points="231.455,8.834 239.306,8.834 239.306,7.33 222.041,7.33 222.041,8.834 229.814,8.834    229.814,16.998 221.162,16.998 221.162,18.502 229.814,18.502 229.814,25.689 231.455,25.689 231.455,18.502 240.166,18.502    240.166,16.998 231.455,16.998  "/>
+	<path fill="#FFFFFF" d="M224.267,10.123l-1.23,0.859c1.406,1.784,2.61,3.489,3.613,5.117l1.387-1.035   C226.982,13.476,225.725,11.829,224.267,10.123z"/>
+	<path fill="#FFFFFF" d="M243.662,25.592h1.602v-1.289h10.742v1.289h1.602v-8.867h-13.945V25.592z M245.263,18.17h10.742v4.727   h-10.742V18.17z"/>
+	<path fill="#FFFFFF" d="M254.736,8.971l-1.133,0.977c0.918,0.918,1.823,1.862,2.715,2.832c-3.86,0.163-7.786,0.306-11.777,0.43   c2.122-1.784,4.16-3.821,6.113-6.113l-1.465-0.898c-1.849,2.383-3.887,4.485-6.113,6.309c-0.481,0.391-1.022,0.696-1.621,0.918   l0.645,1.68c0.664-0.156,1.354-0.261,2.07-0.313c3.086-0.176,7.552-0.388,13.398-0.635c0.534,0.593,1.062,1.194,1.582,1.807   l1.387-1.152C258.713,12.818,256.78,10.872,254.736,8.971z"/>
+	<path fill="#FFFFFF" d="M270.507,10.445v-0.02c0.413-0.133,0.738-0.36,0.974-0.679c0.236-0.319,0.354-0.687,0.354-1.104   c0-0.524-0.198-0.945-0.596-1.262s-0.928-0.476-1.592-0.476h-2.222v7.563h2.28c0.729,0,1.327-0.201,1.794-0.603   c0.468-0.402,0.701-0.929,0.701-1.58c0-0.508-0.154-0.927-0.461-1.257C271.432,10.698,271.022,10.504,270.507,10.445z    M268.403,7.76h0.977c0.95,0,1.426,0.356,1.426,1.069c0,0.407-0.135,0.725-0.402,0.955c-0.27,0.229-0.64,0.344-1.111,0.344h-0.889   V7.76z M270.758,13.26c-0.277,0.236-0.673,0.354-1.184,0.354h-1.172v-2.637h1.011c1.175,0,1.763,0.433,1.763,1.299   C271.176,12.696,271.038,13.024,270.758,13.26z"/>
+	<polygon fill="#FFFFFF" points="274.677,11.061 277.382,11.061 277.382,10.196 274.677,10.196 274.677,7.774 277.597,7.774    277.597,6.905 273.701,6.905 273.701,14.469 277.768,14.469 277.768,13.604 274.677,13.604  "/>
+	<polygon fill="#FFFFFF" points="283.789,6.905 278.452,6.905 278.452,7.774 280.625,7.774 280.625,14.469 281.606,14.469    281.606,7.774 283.789,7.774  "/>
+	<path fill="#FFFFFF" d="M287.202,6.905h-1.045l-2.881,7.563h1.079l0.728-2.07h3.149l0.771,2.07h1.079L287.202,6.905z    M285.39,11.544l1.133-3.145c0.046-0.124,0.086-0.299,0.122-0.527h0.024c0.042,0.25,0.081,0.426,0.117,0.527l1.143,3.145H285.39z"/>
+</g>
+        </svg>
+    </div>
+    <ul class="nav_list">
+        <li class="nav_li">
+            <a href="javascript:;" class="btn_nav" id="nav_more"><i class="ic_more png"></i>导航</a>
+            <div class="more_nav" id="more_nav">
+                <!--[if lt IE 9]>
+                <span class="opc_bg"></span>
+                <![endif]-->
+                <i class="ic_bdot png" id="h_bdot"></i>
+                <ul id="h_nav">
+                    <li><a href="javascript:;" class="btn_snav">首页</a></li>
+                    <li><a href="#" class="btn_snav">设计</a>
+                        <div class="nav_menu">
+                            <ul>
+                                <li><a href="http://qcode.qubitonline.cn/QCode/index.html">32位量子虚拟机</a></li>
+                                <li><a href="https://qcode.qubitonline.cn/QCode/apply.html">64位虚拟机申请</a></li>
+                                <li><a href="http://qcode.qubitonline.cn/QCode/semiQuantumComputer.html">半导体量子计算机</a></li>
+                                <li><a href="http://qcode.qubitonline.cn/QCode/superQuantumComputer.html">超导量子计算机</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="btn_snav">量子软件</a>
+                        <div class="nav_menu">
+                            <ul>
+                                <li><a href="https://github.com/OriginQ/QPanda/blob/master/QRunes/README.md">量子语言</a></li>
+                                <li><a href="http://www.originqc.com.cn/QPanda/download.html">量子软件</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="btn_snav">科普与教程</a>
+                        <div class="nav_menu">
+                            <ul>
+                                <li><a href="https://qcode.qubitonline.cn/QCode/library.html">教程</a></li>
+                                <li><a href="https://qcode.qubitonline.cn/tutorial/quantumApps.html?defaultIndex=1">应用领域</a></li>
+                                <li><a href="https://qcode.qubitonline.cn/tutorial/quantumLooking.html"> 未来发展</a></li>
+                                <li><a href="http://game.qubitonline.cn">小游戏</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="https://qcode.qubitonline.cn/qcode/forumtopic/community.html" class="btn_snav">论坛</a></li>
+                    <li>
+                        <a href="#" class="btn_snav">加入我们</a>
+                        <div class="nav_menu">
+                            <ul>
+                                <li><a href="http://www.originqc.com.cn/">关于我们</a></li>
+                                <li><a href="http://www.originqc.com.cn/website/socialRecruit.html">人才招聘</a></li>
+                                <li><a href="https://qcode.qubitonline.cn/QCode/community.html">联系我们</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!--<li>-->
+                    <!--<i class="ic_sdot png" id="h_sdot"></i>-->
+                    <!--<dl class="sub_nav" id="h_subnav">-->
+                    <!--<dt><a href="#" class="btn_snav">迅雷9</a></dt>-->
+                    <!--<dd><a href="#">公司简介</a></dd>-->
+                    <!--<dd><a href="#">发展历程</a></dd>-->
+                    <!--<dd><a href="#">管理团队</a></dd>-->
+                    <!--<dd><a href="#">联系我们</a></dd>-->
+                    <!--</dl>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="wrap big_view" id="wrap">
+    <div class="wrapper">
+        <div class="product_list" id="product_list">
+            <div class="product_box sheji show">
+                <div class="bg_box">
+                    <img class="bigImg" src="images/bg_1_1.jpg">
+                    <img class="smallImg" src="images/bg1.jpg">
+                </div>
+                <div class="content" style="display:none;">
+                    <div class="main_box">
+                        <div class="contentList">
+                            <a href="https://qcode.qubitonline.cn/QCode/index.html">
+                                <div class="conParticularsImg">
+                                    <img  src="images/32.png" alt="">
+                                </div>
+                                <p class="conParticularsTitle">32位量子虚拟机</p>
+                                <p class="conParticularsTip">32-Qubit Quantum</br>
+                                    Virtual Mechine</p>
+                                <p class="conParticularsTip2">32-Qubit Quantum Virtual Mechine</p>
+                            </a>
+                        </div>
+                        <div class="contentList">
+                            <a href="https://qcode.qubitonline.cn/QCode/apply.html" target="_blank">
+                                <div class="conParticularsImg">
+                                    <img  src="images/64.png" alt="">
+                                </div>
+                                <p class="conParticularsTitle">64位虚拟机申请入口</p>
+                                <p class="conParticularsTip">Request Access to</br>
+                                    64-Qubit QVM</p>
+                                <p class="conParticularsTip2">Request Access to 64-Qubit QVM</p>
+                            </a>
+                        </div>
+                        <div class="contentList">
+                            <a href="http://qcode.qubitonline.cn/QCode/semiQuantumComputer.html">
+                                <div class="conParticularsImg"><img  src="images/semi.png" alt=""></div>
+                                <p class="conParticularsTitle conParticularsTitle1" style="padding-bottom: 28px;padding-top: 38px;">半导体量子计算机<br><span style="font-size: 20px;margin-top: 10px;display: inline-block;line-height: 20px;">(通过量子测控一体机接入)</span></p>
+                                <p class="conParticularsTip"> Semiconductor</br>Quantum Computer</p>
+                                <p class="conParticularsTip2"> Semiconductor Quantum Computer</p>
+                            </a>
+                        </div>
+                        <div class="contentList">
+                            <a href="http://qcode.qubitonline.cn/QCode/superQuantumComputer.html">
+                                <div class="conParticularsImg"><img  src="images/super.png" alt=""></div>
+                                <p class="conParticularsTitle conParticularsTitle2" style="padding-bottom: 28px;padding-top: 38px;">超导量子计算机<br><span style="font-size: 20px;margin-top: 10px;display: inline-block;line-height: 20px;">(通过量子测控一体机接入)</span></p>
+                                <p class="conParticularsTip">Superconductor</br>Quantum Computer</p>
+                                <p class="conParticularsTip2">Superconductor Quantum Computer</p>
+                            </a>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="product_box xnet">
+                <div class="bg_box">
+                    <img class="bigImg" thissrc="images/bg_2.jpg">
+                    <img class="smallImg" thissrc="images/bg2.jpg">
+                </div>
+                <div class="content" style="display:none;">
+                    <div class="main_box">
+                        <div class="contentList">
+                            <a href="https://github.com/OriginQ/QPanda/blob/master/QRunes/README.md">
+                                <div class="conParticularsImg"><img  thissrc="images/Qruns.png" alt=""></div>
+                                <p class="conParticularsTitle">量子语言</p>
+                                <p class="conParticularsTip">OriginIR</p>
+                            </a>
+                        </div>
+                        <div class="contentList" style="float: right;">
+                            <a href="http://www.originqc.com.cn/QPanda/download.html">
+                                <div class="conParticularsImg"><img  thissrc="images/QPanda.png" alt=""></div>
+                                <p class="conParticularsTitle">量子软件开发包</p>
+                                <p class="conParticularsTip">QPanda</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="product_box xkn">
+                <div class="bg_box">
+                    <img class="bigImg" thissrc="images/bg_4.jpg">
+                    <img class="smallImg" thissrc="images/bg4.jpg">
+                </div>
+                <div class="content" style="display:none;">
+
+                    <div class="main_box">
+                        <div class="contentList">
+                            <a href="https://learn-quantum.com/EDU/index.html">
+                                <div class="conParticularsImg"><img  thissrc="images/Education.png" alt=""></div>
+                                <p class="conParticularsTitle">教育</p>
+                                <p class="conParticularsTip">Education</p>
+                            </a>
+                        </div>
+                        <div class="contentList" style="float: right;">
+                            <a href="https://qcode.qubitonline.cn/qcode/forumtopic/community.html">
+                                <div class="conParticularsImg"><img  thissrc="images/forum.png" alt=""></div>
+                                <p class="conParticularsTitle">论坛</p>
+                                <p class="conParticularsTip">Forum</p>
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="product_box member">
+                <div class="bg_box">
+                    <img class="bigImg" thissrc="images/bg_3.jpg">
+                    <img class="smallImg" thissrc="images/bg3.jpg">
+                </div>
+                <div class="content" style="display:none;">
+                    <div class="main_box">
+                        <div class="contentList">
+                            <a href="https://qcode.qubitonline.cn/QCode/library.html">
+                                <div class="conParticularsImg"><img  thissrc="images/Course.png" alt=""></div>
+                                <p class="conParticularsTitle">教程</p>
+                                <p class="conParticularsTip">Course</p>
+                            </a>
+                        </div>
+                        <div class="contentList">
+                            <a href="https://qcode.qubitonline.cn/tutorial/quantumApps.html?defaultIndex=1">
+                                <div class="conParticularsImg"><img  thissrc="images/PolularScience.png" alt=""></div>
+                                <p class="conParticularsTitle">科普</p>
+                                <p class="conParticularsTip">Polular Science</p>
+                            </a>
+                        </div>
+                        <div class="contentList">
+                            <a href="http://game.qubitonline.cn/">
+                                <div class="conParticularsImg"><img  thissrc="images/Game.png" alt=""></div>
+                                <p class="conParticularsTitle">小游戏</p>
+                                <p class="conParticularsTip">Game</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="product_btns" id="product_btns">
+            <div class="content" style="display: none">
+                <div class="btns_area">
+                    <div class="btns_box" id="control_box">
+                        <a href="#" class="btn_ipr btn_sheji cur" title="量子虚拟机" ><img src="images/sheji.png" alt="设计"></a>
+                        <a href="#" class="btn_xnet" title="量子语言"><img src="images/lzrj.png" alt="量子软件"></a>
+                        <a href="#" class="btn_xkn" title="论坛"><img src="images/lz.png" alt="论坛"></a>
+                        <a href="#" class="btn_member" title="教程"><img src="images/jc.png" alt="教程"></a>
+                        <span class="ic_line" id="ic_line"></span>
+                    </div>
+                </div>
+                <div class="companyProfile">©2017-2019 <a href="http://www.originqc.com.cn/" style="color:#fff;">合肥本源量子计算科技有限责任公司</a>  鄂ICP备15015800号-2 皖公网安备 34011102000802号</div>
+                <div class="companyProfile2">©2017-2019 <a href="http://www.originqc.com.cn/" style="color:#fff;">合肥本源量子计算科技有限责任公司</a></div>
+            </div>
+        </div>
+        <div class="rpt_bg png" id="rpt_bg"></div>
+    </div>
+</div>
+<script src="qubit-download/js/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="qubit-download/js/jquery-1.11.0.min.js"><\/script>')</script>
+<script type="text/javascript">
+
+    var $wrap,$pages,$controlBox,$productBtns,$controls,$icLine,$listTops,$hNav,$hNavli,$hSubnav,$hSubDD,$hBdot,$hSdot,$footer,$bgs,$mainBoxs,$moreNav,$rptBg,data,aDD,cId,isCss3,isIE6,w,h,resize,pageChange,isBottom,bAni,bottomHide,bottomShow;for($(".sheji .bg_box img").eq(0).attr("src","images/bg_1.jpg"),imgs=document.getElementsByTagName("img"),imgsnum=imgs.length,imgi=0;imgsnum>imgi;imgi++)"undefined"!=typeof imgs[imgi].src&&""!=imgs[imgi].src||null==imgs[imgi].getAttribute("thissrc")||(imgs[imgi].src=imgs[imgi].getAttribute("thissrc"));$wrap=$("#wrap"),$pages=$("#product_list").find(".product_box"),$controlBox=$("#control_box"),$productBtns=$("#product_btns"),$controls=$controlBox.find("a"),$icLine=$("#ic_line"),$listTops=$("#list_top").find("li"),$hNav=$("#h_nav"),$hNavli=$hNav.find("li"),$hSubnav=$("#h_subnav"),$hSubDD=$hSubnav.find("dd"),$hBdot=$("#h_bdot"),$hSdot=$("#h_sdot"),$footer=$("#footer"),$bgs=$pages.find(".bg_box img"),$mainBoxs=$pages.find(".main_box"),$moreNav=$("#more_nav"),$rptBg=$("#rpt_bg"),data={pLength:$pages.length,curP:0,isCan:!0,isOnbtn:!1,fColor:[2,2,1,1,1],dur:9e8,cNum:0},aDD=$controls.eq(0).width()+2*parseInt($controls.eq(0).css("margin-right").slice(0,-2)),isCss3=function(){var b,a=document.createElement("div").style;for(b in a)if(b.toLowerCase().indexOf("animation")>0)return!1;return!1}(),isIE6=navigator.userAgent.indexOf("MSIE 6.0")>0,w=$(window).width(),h=$(window).height(),resize=function(){var a,b,c,d;if(w=$(window).width(),h=$(window).height(),$wrap.height(h),$moreNav.height(h),1920/1080>w/h?w>768?($(".logoSvg").attr({style:""}),$(".logoSvg svg").attr({style:""}),$(".header .nav_list").attr({style:""}),$("#nav_more").removeClass("act"),$bgs.height(h).css({width:"auto",margin:-.5*h+"px 0 0 "+-960/1080*h+"px",top:"50%",left:"50%"})):($(".logoSvg").css({top:"10px",left:"15px"}),$(".logoSvg svg").css({width:"180px"}),$(".header .nav_list").css({top:"-15px",right:"-20px"}),$("#nav_more").addClass("act"),$bgs.height(h).css({width:"100%",margin:"0",top:"0",left:"0"})):($(".logoSvg").attr({style:""}),$(".logoSvg svg").attr({style:""}),$(".header .nav_list").attr({style:""}),$("#nav_more").removeClass("act"),$bgs.width(w).css({height:"auto",margin:-.5*$(window).height()+"px 0 0 "+-.5*w+"px",top:"50%",left:"50%"}),"1920"==w?$bgs.height(1080):$bgs.css({height:$(window).height()})),a=$(window).height(),750>w?$mainBoxs.height(a).css({"margin-top":"66px",top:"0px"}):$mainBoxs.height(a).css({"margin-top":-.5*a+"px",top:"50%"}),isCss3){switch(document.getElementById("wrap").className="wrap big_view xbig",!0){case w>=1920:b="";break;case 1920>w&&w>=1680:b="small9";break;case 1680>w&&w>=1600:b="small8";break;case 1600>w&&w>=1536:b="small7";break;case 1536>w&&w>=1440:b="small6";break;case 1440>w&&w>=1366:b="small5";break;case 1366>w&&w>=1280:b="small4";break;case 1280>w&&w>=1024:b="small3";break;case 1024>w:b="small2"}for(c=0;c<data.pLength;c++)$pages.eq(c).find(".content").attr("class","content "+b);$productBtns.find(".content").attr("class","content "+b)}else{switch(!0){case w>=1600:b="big_view",$(".companyProfile").show(),$(".companyProfile2").hide();break;case 1600>w&&w>768:b="mid_view",$(".companyProfile").show(),$(".companyProfile2").hide();break;case 768>=w:b="small_view",$(".companyProfile").hide(),$(".companyProfile2").show()}d=$wrap[0].className,!isIE6||-1==d.indexOf("big")&&-1==d.indexOf("mid")&&-1==d.indexOf("small")||-1!=d.indexOf(b)||location.reload(),wrap.className="wrap "+b}aDD=$controls.eq(0).width()+2*parseInt($controls.eq(0).css("margin-right").slice(0,-2)),$(".content").attr("style","")},resize(),$(window).resize(resize),pageChange=function(a){data.isOnbtn||a>=-1&&a<data.pLength&&a!=data.curP&&data.isCan&&(data.isCan=!1,data.cNum++,clearInterval(cId),a=-1==a?data.pLength-1:a,$controls.removeClass("cur").eq(a).addClass("cur"),$pages.eq(data.curP).css({zIndex:0}),$icLine.css({left:aDD*a}),$pages.eq(a).addClass("show").css({opacity:0,zIndex:1}).animate({opacity:1},400,function(){$pages.eq(data.curP).removeClass("show"),$(this).addClass("show"),data.isCan=!0,data.curP=a,data.cNum--,0==data.cNum&&(cId=setInterval(function(){pageChange((data.curP+1)%data.pLength)},data.dur))}))},$controls.on("click",function(){data.isCan=!0,pageChange($controls.index(this)),$icLine.css({left:aDD*$controls.index(this)}),data.isOnbtn=!0}),$controls.on("mouseleave",function(){data.isOnbtn=!1}),isBottom=!1,bottomHide=function(){isBottom&&(isBottom=!1,bAni&&(clearTimeout(bAni),bAni=null),$footer.removeClass("show"),$productBtns.removeClass("show"),$rptBg.removeClass("show"))},bottomShow=function(){isBottom||(isBottom=!0,$footer.addClass("show"),$productBtns.addClass("show"),$rptBg.addClass("show"),bAni&&clearTimeout(bAni),bAni=setTimeout(bottomHide,2e3))},$footer.on("mouseenter",function(){bAni&&(clearTimeout(bAni),bAni=null)}),$footer.on("mouseleave",function(){bAni&&clearTimeout(bAni),bAni=setTimeout(bottomHide,2e3)}),$(document).on("mousewheel DOMMouseScroll",function(a){{a.originalEvent.wheelDelta||-1*a.originalEvent.detail}}),cId=setInterval(function(){pageChange((data.curP+1)%data.pLength)},data.dur),$("#nav_more").on("click",function(a){$moreNav.addClass("show"),a.stopPropagation()}),$moreNav.on("mouseleave",function(){$moreNav.removeClass("show"),$hBdot.css({left:-9999,top:106})}),$hNavli.on("mouseenter",function(a){$(this).addClass("open"),a.stopPropagation()}),$hNavli.on("click",function(a){$(this).addClass("open"),a.stopPropagation()}),$hNavli.on("mouseleave",function(){$(this).removeClass("open")}),$hSubnav.find("dt").on("mouseenter",function(){$hBdot.css({left:18}),$hSdot.css({left:-9999})}),$hSubDD.on("mouseenter",function(){$hSdot.css({left:18,top:53+44*$hSubDD.index(this)}),$hBdot.css({left:-9999})}),$hSubnav.on("mouseleave",function(){$hSdot.css({left:-9999})}),$("body").click(function(){$moreNav.hasClass("show")&&($moreNav.removeClass("show"),$hBdot.css({left:-9999,top:106}))});
+</script>
+</body>
+</html>

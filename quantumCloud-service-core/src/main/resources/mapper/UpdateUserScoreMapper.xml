@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserBonusVo">
+    <!--合成勋章-->
+    <update id="compoundBonus" parameterType="filter">
+        UPDATE user_bonus SET badge1=badge1-1,badge2=badge2-1,badge3 = badge3-1,badge4 = badge4-1,badge5 = badge5-1,badge6 = badge6+1 WHERE userid = #{userId}
+    </update>
+
+    <!--修改勋章信息-->
+    <update id="updBonusInfo" parameterType="filter">
+        UPDATE user_bonus SET
+        <if test="badge1 != null and badeg1 != ''">
+            badge1 = badge1+1
+        </if>
+        <if test="badge2 != null and badeg2 != ''">
+            badge2 = badge2+1
+        </if>
+        <if test="badge3 != null and badeg3 != ''">
+            badge3 = badge3+1
+        </if>
+        <if test="badge4 != null and badeg4 != ''">
+            badge4 = badge4+1
+        </if>
+        <if test="badge5 != null and badeg5 != ''">
+            badge5 = badge5+1
+        </if>
+        ,score = IFNULL(score,0)+#{score}
+        WHERE userid = #{userId}
+    </update>
+
+    <!--添加勋章信息-->
+    <insert id="addExchangeBonus" parameterType="filter">
+        INSERT INTO user_bonus
+        (
+        <if test="badge1 != null and badeg1 != ''">
+            badge1
+        </if>
+        <if test="badge2 != null and badeg2 != ''">
+            badge2
+        </if>
+        <if test="badge3 != null and badeg3 != ''">
+            badge3
+        </if>
+        <if test="badge4 != null and badeg4 != ''">
+            badge4
+        </if>
+        <if test="badge5 != null and badeg5 != ''">
+            badge5
+        </if>
+        ,score
+        ,userid
+        ,updtime
+        ) VALUES
+        (
+        <if test="badge1 != null and badeg1 != ''">
+            #{badge1},#{badge1}*#{score}
+        </if>
+        <if test="badge2 != null and badeg2 != ''">
+            #{badge2},#{badge2}*#{score}
+        </if>
+        <if test="badge3 != null and badeg3 != ''">
+            #{badge3},#{badge3}*#{score}
+        </if>
+        <if test="badge4 != null and badeg4 != ''">
+            #{badge4},#{badge4}*#{score}
+        </if>
+        <if test="badge5 != null and badeg5 != ''">
+            #{badge5},#{badge5}*#{score}
+        </if>
+        ,#{userId}
+        ,NOW()
+        )
+    </insert>
+
+    <!--查询浏览表中是否有记录-->
+    <select id="getBrowseDetail" parameterType="filter" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM browse_detail t WHERE t.user_id = #{userId} AND type = #{type}
+    </select>
+
+    <!--添加签到记录-->
+    <insert id="saveBrowseDetail" parameterType="filter">
+        INSERT INTO browse_detail(user_id,add_time,type) VALUES (#{userId},NOW(),#{type})
+    </insert>
+
+    <!--添加积分明细-->
+    <insert id="addScoreDetails" parameterType="filter">
+        INSERT INTO
+        score
+        (
+        minusscore,
+        addscore,
+        userid,
+        DATETIME,
+        usename,
+        detail
+        )
+        VALUES
+        (
+        #{minusScore},
+        #{addScore},
+        #{userId},
+        NOW(),
+        #{userName},
+        #{detail}
+        )
+    </insert>
+
+    <!--查询勋章信息-->
+    <select id="getBonusInfo" parameterType="filter" resultType="com.bylz.quantumCloud.model.UserBonusVo">
+        SELECT
+        badge1,
+        badge2,
+        badge3,
+        badge4,
+        badge5,
+        badge6,
+        score,
+        updtime updTime,
+        stdtime stdTime
+        FROM
+        user_bonus
+        WHERE
+        userid = #{userId}
+        <if test="medal != null and medal != ''">
+            AND badge${medal} != 0
+        </if>
+    </select>
+
+    <!--插入签到信息-->
+    <insert id="insertSignInfo" parameterType="filter">
+        INSERT INTO user_bonus(updtime,userid,stdtime) VALUES (NOW(),#{userId},1)
+    </insert>
+
+    <!--修改签到信息-->
+    <update id="updSignInfo" parameterType="filter">
+        UPDATE user_bonus SET stdtime = stdtime+1 WHERE userid = #{userId}
+    </update>
+
+
+    <!--查询积分明细-->
+    <select id="getScoreDetail" parameterType="filter" resultType="Map">
+        SELECT
+          <choose>
+              <when test="type == 1">
+                  s.addscore,
+              </when>
+              <otherwise>
+                  s.minusscore,
+              </otherwise>
+          </choose>
+            CASE
+            WHEN substring(s.detail,1,4) = 'vide' THEN '看视频增加分数'
+            WHEN substring(s.detail,1,4) = 'exam' THEN '答题增加分数'
+            ELSE s.detail END AS detail,
+            s.DATETIME addTime
+        FROM
+            score s
+        WHERE
+            s.userid = #{userId}
+            <if test="type == 1">
+                AND s.addscore >  0 AND s.minusscore = 0
+            </if>
+            <if test="type == 2">
+                AND s.minusscore &lt; 0 AND s.addscore = 0
+            </if>
+            ORDER BY s.DATETIME DESC
+    </select>
+
+    <insert id="saveVideoStatis" parameterType="filter">
+        INSERT INTO video_statis(`vid`,`type`,`add_time`,`ip`)VALUES (#{vid},#{type},NOW(),#{ip})
+    </insert>
+</mapper>

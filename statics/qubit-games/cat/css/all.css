@@ -1,0 +1,37 @@
+*{margin: 0;padding: 0;}
+.box{background: #f5f5f5;position: relative;width: 100%;height: 100%;
+    -webkit-background-size: 100% 100%;
+    background-size: 100% 100%;}
+.cat_container{width: 876px;height:624px;position: absolute;left: 50%;top:50%;margin-left: -438px;margin-top: -312px;background: #fff;box-shadow: 0 0 20px #ccc;}
+.cat_container > img{position: absolute;}
+.cat_box{width: 232px;height: 146px;background: url("../images/box_close.png") no-repeat;position: absolute;bottom: 34px;left: 205px;z-index: 999;}
+.cat_box.active{background: url("../images/box_open.png") no-repeat}
+.cat{right: 115px;bottom: 50px;}
+.gif{display: none;}
+.f_list{text-align: center; position: relative;width:500px;height:106px;margin: 20px auto;}
+.zz-span{position: absolute;height:210px;width:210px;text-align: center;left:50%;top:50%;margin-left: -105px;margin-top: -105px;display: none;}
+.zz-span img{width: 100%;}
+.cat_alive,.cat_dead{position: absolute;top: 25px;left: 0;right: 0;display: none;}
+.cat_alive img,.cat_dead img{margin: 0 auto;display: block;}
+.reset{width: 110px;height: 45px;margin: 0 auto;text-align: center;background: #23A5DF;color: #fff;border: none;cursor: pointer;position: absolute;right: 305px;bottom: 220px; font-size: 16px;letter-spacing: 2px;border-radius: 5px;display: none;z-index: 999;}
+
+.check_msg{position: absolute;width: 215px;height: 176px;right: 50px;top: 220px;background: url("../images/clound.png") no-repeat;display: none;}
+.check_msg h2{font-size: 20px;color: #666;letter-spacing: 1px;height: 25px;line-height: 25px;margin: 40px 0 12px 65px;}
+.check_msg a{font-size: 16px;color: #c31125;border: 1px solid #c31125;border-radius: 5px;text-decoration: none;letter-spacing: 3px; display: block; width: 100px; font-weight: bold; text-align: center; height: 30px; line-height: 30px; margin-left: 65px;cursor: pointer;}
+
+.overlay{position: absolute;width: 100%;height: 100%;left: 0;top: 0;z-index: 100;background: rgba(0,0,0,0.5);display: none;}
+.tips_words{width: 160px;height: 40px;line-height: 40px;background: #fff;border-radius: 5px;position: absolute;right: 212px;top: 250px;text-align: center;color:#157c51}
+.tips_01{left: 60px;top: 185px;z-index: 999;display: none;}
+.tips_02{right: 138px;bottom: 122px;z-index: 999;display: none;}
+.tips_06{right: 68px;top: 115px;z-index: 999;display: none;}
+.tips_03{left: 360px;bottom: 180px;z-index: 999;display: none;cursor: pointer;}
+.tips_04{left: 205px;bottom: 30px;z-index: 999;display: none;}
+.tips_05{left: 215px;bottom: 30px;z-index: 999;display: none;}
+.gif_01{left: 245px;bottom: 50px;z-index: 999;width: 80px;display: none;-ms-transform: rotateZ(1deg);-moz-transform: rotateZ(1deg);-webkit-transform: rotateZ(1deg);-o-transform: rotateZ(1deg);transform: rotateZ(1deg);}
+.img_one{left: 18px;top: 50px;z-index: 999;display: none;}
+.tips_07{left: 250px;top: 145px;z-index: 999;display: none;}
+.bg_img01{display: none;}
+
+.cat_title{font-size: 20px;margin: 40px 0;font-weight: bold;letter-spacing: 2px;padding-left: 20px;position: absolute;left: 0;top:-108px;}
+.cat_title span{font-size: 16px;font-weight: normal;}
+

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysConfig" >
+	<!--
+	author liuxiantao
+	since  2017-04-06 	
+	id : id
+	descn : 描述
+	keyname : 变量名
+	val : 变量值
+	category : 分类
+	category_desc : 分类描述
+	order_no : 排序
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`descn`,`keyname`,`val`,`category`,`category_desc`,`order_no`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id`  = #{id}
+		</if>
+		<if test="descn != null and descn != ''">
+			AND `descn` like CONCAT('%', #{escape_descn}, '%')
+		</if>
+		<if test="keyname != null and keyname != ''">
+			AND `keyname` like CONCAT('%', #{escape_keyname}, '%')
+		</if>
+		<if test="val != null and val != ''">
+			AND `val` like CONCAT('%', #{escape_val}, '%')
+		</if>
+		<if test="category != null and category != ''">
+			AND `category` like CONCAT('%', #{escape_category}, '%')
+		</if>
+		<if test="categoryDesc != null and categoryDesc != ''">
+			AND `category_desc` like CONCAT('%', #{escape_categoryDesc}, '%')
+		</if>
+		<if test="orderNo != null">
+			AND `order_no`  = #{orderNo}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_config 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysConfig" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_config 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="SysConfig">
+		insert into sys_config  (
+		`descn` ,`keyname` ,`val` ,`category` ,`category_desc` ,`order_no` 
+		)
+		values (
+		#{descn},#{keyname},#{val},#{category},#{categoryDesc},#{orderNo}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="SysConfig">
+		UPDATE sys_config
+		<set>
+			<if test="descn != null">
+				`descn` = #{descn},
+			</if>
+			<if test="keyname != null">
+				`keyname` = #{keyname},
+			</if>
+			<if test="val != null">
+				`val` = #{val},
+			</if>
+			<if test="category != null">
+				`category` = #{category},
+			</if>
+			<if test="categoryDesc != null">
+				`category_desc` = #{categoryDesc},
+			</if>
+			<if test="orderNo != null">
+				`order_no` = #{orderNo}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from sys_config
+		where
+		`id`=#{id}
+	</delete>
+	
+	<!-- 根据关键字及分类查询参数 -->
+	<select id="selectConfigByKeyNameAndCategroy" parameterType="filter" resultType="SysConfig">
+		SELECT * FROM sys_config 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+           <if test="category != null and category != ''">
+				 AND `category`= #{category}
+			</if>
+			<if test="keyname != null and keyname != ''">
+				AND `keyname`= #{keyname}
+			</if>
+        </trim> 
+	</select>
+	
+	<update id="updateByKeyNameAndCategroy" parameterType="filter">
+		UPDATE sys_config
+		<set>
+			<if test="descn != null">
+				`descn` = #{descn},
+			</if>
+			<if test="val != null">
+				`val` = #{val},
+			</if>
+			<if test="categoryDesc != null">
+				`category_desc` = #{categoryDesc},
+			</if>
+			<if test="orderNo != null">
+				`order_no` = #{orderNo}
+			</if>
+		</set>
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+          	<if test="category != null">
+				AND `category` = #{category}
+			</if>
+			<if test="keyname != null">
+				AND `keyname` = #{keyname}
+			</if>
+        </trim>
+	</update>
+
+
+	<update id="updateDownloadCount" parameterType="filter">
+		UPDATE sys_config
+		SET
+			val = val+1
+		WHERE keyname = #{keyName}
+	</update>
+</mapper>

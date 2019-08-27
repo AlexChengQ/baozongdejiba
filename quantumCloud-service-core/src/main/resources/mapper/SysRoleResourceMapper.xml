@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysRoleResource" >
+	<!--
+	author liuxiantao
+	since  2017-04-06 	
+	role_id : 角色ID
+	resource : 资源名
+	-->
+	
+	<sql id="fields_sql">
+	`role_id`,`resource`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="roleId != null">
+			AND `role_id`  = #{roleId}
+		</if>
+		<if test="resource != null and resource != ''">
+			AND `resource` like CONCAT('%', #{escape_resource}, '%')
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_role_resource 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysRoleResource" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_role_resource 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="SysRoleResource">
+		insert into sys_role_resource  (
+		`role_id` ,`resource` 
+		)
+		values (
+		#{roleId},#{resource}
+		)
+	</insert>
+	
+	<update id="update" parameterType="SysRoleResource">
+		UPDATE sys_role_resource
+		<set>
+			<if test="roleId != null">
+				`role_id` = #{roleId},
+			</if>
+			<if test="resource != null">
+				`resource` = #{resource}
+			</if>
+		</set>
+		WHERE
+		`role_id` = #{roleId} and
+		`resource` = #{resource}
+	</update>
+
+	<delete id="delete" parameterType="SysRoleResource">
+		delete from sys_role_resource
+		where
+		`role_id` = #{roleId}
+	</delete>
+
+	<select id="selectAuthorization" parameterType="filter" resultType="SysRoleResource" >
+		SELECT r.* FROM sys_role_resource r WHERE r.role_id=
+		(SELECT ur.role_id FROM sys_user_role ur WHERE ur.user_id=
+		(SELECT u.id FROM sys_user u WHERE u.username=#{username}))
+	</select>
+	
+</mapper>

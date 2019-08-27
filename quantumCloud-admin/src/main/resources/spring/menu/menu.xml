@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+    <util:list id="rootList" list-class="java.util.ArrayList" value-type="java.lang.String">
+		<value>0, 1,首页,/index.html,ADMIN|NONE,true,fa-dashboard</value>
+		<!-- <value>0, 1957174781, 平台管理员, /SysUser/index.html, ADMIN|SysUser:index,true,fa-angle-right</value>-->
+		<value>0, 50000000,系统管理,/systemManager/index.html,ADMIN|:sys:systemManager,true,fa-gears</value>
+ 		<value>50000000, 1957174781,管理员管理,/SysUser/index.html,ADMIN|:sys:sysUserManager,true,fa-angle-right</value>
+		<value>1957174781, 195717478101, 新增, /SysUser/(add|save).html, ADMIN|SysUser:save,false,double-angle-right</value>
+		<value>1957174781, 195717478102, 查看, /SysUser/detail.html, ADMIN|SysUser:detail,false,double-angle-right</value>
+		<value>1957174781, 195717478103, 编辑, /SysUser/(edit|update).html, ADMIN|SysUser:update,false,double-angle-right</value>
+		<value>1957174781, 195708176805, 授权, /SysUser/authorization.html, ADMIN|SysUser:authorization,false,double-angle-right</value>
+		<value>1957174781, 195708176806, 删除, /SysUser/delete.html, ADMIN|SysUser:delete,false,double-angle-right</value>
+		<value>1957174781, 195708176807, 重置密码, /SysUser/reset.json, ADMIN|SysUser:reset,false,double-angle-right</value>
+		<value>50000000, 1957081768, 系统角色, /SysRole/index.html, ADMIN|SysRole:index,true,fa-angle-right</value>
+		<value>1957081768, 195708176801, 新增, /SysRole/(add|save).html, ADMIN|SysRole:save,false,double-angle-right</value>
+		<value>1957081768, 195708176802, 查看, /SysRole/detail.html, ADMIN|SysRole:detail,false,double-angle-right</value>
+		<value>1957081768, 195708176803, 编辑, /SysRole/(edit|update).html, ADMIN|SysRole:update,false,double-angle-right</value>
+		<value>1957081768, 195708176804, 删除, /SysRole/delete.html, ADMIN|SysRole:delete,false,double-angle-right</value>
+		<value>50000000, 869469964, 参数配置, /SysConfig/index.html, ADMIN|SysConfig:index,true,fa-angle-right</value>
+		<value>869469964, 86946996401, 新增, /SysConfig/(add|save).html, ADMIN|SysConfig:save,false,double-angle-right</value>
+		<value>869469964, 86946996402, 查看, /SysConfig/detail.html, ADMIN|SysConfig:detail,false,double-angle-right</value>
+		<value>869469964, 86946996403, 编辑, /SysConfig/(edit|update).html, ADMIN|SysConfig:update,false,double-angle-right</value>
+		<value>869469964, 86946996404, 删除, /SysConfig/delete.html, ADMIN|SysConfig:delete,false,double-angle-right</value>
+		<!-- <value>50000000, 1956718510, 文件管理, /SysFile/index.html, ADMIN|SysFile:index,true,fa-angle-right</value>
+		<value>1956718510, 195671851001, 新增, /SysFile/(add|save).html, ADMIN|SysFile:save,false,double-angle-right</value>
+		<value>1956718510, 195671851002, 查看, /SysFile/detail.html, ADMIN|SysFile:detail,false,double-angle-right</value>
+		<value>1956718510, 195671851003, 编辑, /SysFile/(edit|update).html, ADMIN|SysFile:update,false,double-angle-right</value>
+		<value>1956718510, 195671851004, 删除, /SysFile/delete.html, ADMIN|SysFile:delete,false,double-angle-right</value> -->
+		<value>50000000, 1737989422, 系统日志, /SysLog/index.html, ADMIN|SysLog:index,true,fa-angle-right</value>
+		<value>1737989422, 173798942201, 新增, /SysLog/(add|save).html, ADMIN|SysLog:save,false,double-angle-right</value>
+		<value>1737989422, 173798942202, 查看, /SysLog/detail.html, ADMIN|SysLog:detail,false,double-angle-right</value>
+		<value>1737989422, 173798942203, 编辑, /SysLog/(edit|update).html, ADMIN|SysLog:update,false,double-angle-right</value>
+		<value>1737989422, 173798942204, 删除, /SysLog/delete.html, ADMIN|SysLog:delete,false,double-angle-right</value>		
+		
+<!-- 		<value>50000000, 1800000000, 用户管理, /QcodeUser/index.html, ADMIN|QcodeUser:index,true,fa-angle-right</value>
+		<value>1737989422, 173798942201, 新增, /QcodeUser/(add|save).html, ADMIN|QcodeUser:save,false,double-angle-right</value>
+		<value>1737989422, 173798942202, 查看, /QcodeUser/detail.html, ADMIN|QcodeUser:detail,false,double-angle-right</value>
+		<value>1737989422, 173798942203, 编辑, /QcodeUser/(edit|update).html, ADMIN|QcodeUser:update,false,double-angle-right</value>
+		<value>1737989422, 173798942204, 删除, /QcodeUser/delete.html, ADMIN|QcodeUser:delete,false,double-angle-right</value> -->		
+
+		<value>0, 60000000,云平台管理,/dynamicManager/index.html,ADMIN|:sys:dynamicManager,true,fa-gears</value>
+		<value>60000000, 2957174781,用户管理,/QcodeUser/index.html,ADMIN|:sys:QcodeUserManager,true,fa-angle-right</value>
+		<value>2957174781, 295717478101, 新增, /QcodeUser/(add|save).html, ADMIN|QcodeUser:save,false,double-angle-right</value>
+		<value>2957174781, 295717478102, 查看, /QcodeUser/detail.html, ADMIN|QcodeUser:detail,false,double-angle-right</value>
+		<value>2957174781, 295717478103, 编辑, /QcodeUser/(edit|update).html, ADMIN|QcodeUser:update,false,double-angle-right</value>
+		<value>2957174781, 295708176804, 删除, /QcodeUser/delete.html, ADMIN|QcodeUser:delete,false,double-angle-right</value>
+		<value>60000000, 2957081768, 用户申请, /QcodeUserApplication/index.html, ADMIN|QcodeUserApplication:index,true,fa-angle-right</value>
+		<value>2957081768, 295708176801, 新增, /QcodeUserApplication/(add|save).html, ADMIN|QcodeUserApplication:save,false,double-angle-right</value>
+		<value>2957081768, 295708176802, 查看, /QcodeUserApplication/detail.html, ADMIN|QcodeUserApplication:detail,false,double-angle-right</value>
+		<value>2957081768, 295708176803, 编辑, /QcodeUserApplication/(edit|update).html, ADMIN|QcodeUserApplication:update,false,double-angle-right</value>
+		<value>2957081768, 295708176804, 删除, /QcodeUserApplication/delete.html, ADMIN|QcodeUserApplication:delete,false,double-angle-right</value>
+		<value>60000000, 969469964, 项目管理, /QcodeProject/index.html, ADMIN|QcodeProject:index,true,fa-angle-right</value>
+		<!--<value>969469964, 96946996401, 新增, /QcodeProject/add.html, ADMIN|QcodeProject:save,false,double-angle-right</value>-->
+		<value>969469964, 96946996402, 查看, /QcodeProject/detail.html, ADMIN|QcodeProject:detail,false,double-angle-right</value>
+		<value>969469964, 96946996403, 编辑, /QcodeProject/update.html, ADMIN|QcodeProject:update,false,double-angle-right</value>
+		<!--<value>969469964, 96946996404, 删除, /QcodeProject/delete.html, ADMIN|QcodeProject:delete,false,double-angle-right</value>-->
+		<value>60000000, 2956718510, 任务管理, /QcodeTask/index.html, ADMIN|QcodeTask:index,true,fa-angle-right</value>
+		<!--<value>2956718510, 295671851001, 新增, /QcodeTask/(add|save).html, ADMIN|QcodeTask:save,false,double-angle-right</value>-->
+		<value>2956718510, 295671851002, 查看, /QcodeTask/detail.html, ADMIN|QcodeTask:detail,false,double-angle-right</value>
+		<value>2956718510, 295671851003, 编辑, /QcodeTask/(edit|update).html, ADMIN|QcodeTask:update,false,double-angle-right</value>
+		<!--<value>2956718510, 295671851004, 删除, /QcodeTask/delete.html, ADMIN|QcodeTask:delete,false,double-angle-right</value>-->
+		<value>60000000, 2737989422, 留言管理, /QcodeMessage/index.html, ADMIN|QcodeMessage:index,true,fa-angle-right</value>
+		<!--<value>2737989422, 273798942201, 新增, /QcodeMessage/(add|save).html, ADMIN|QcodeMessage:save,false,double-angle-right</value>-->
+		<value>2737989422, 273798942202, 查看, /QcodeMessage/detail.html, ADMIN|QcodeMessage:detail,false,double-angle-right</value>
+		<!--<value>2737989422, 273798942203, 编辑, /QcodeMessage/(edit|update).html, ADMIN|QcodeMessage:update,false,double-angle-right</value>-->
+		<!--<value>2737989422, 273798942204, 删除, /QcodeMessage/delete.html, ADMIN|QcodeMessage:delete,false,double-angle-right</value>-->
+		<value>60000000, 2737989430, 红包管理, /QcodeRedPacket/index.html, ADMIN|QcodeRedPacket:index,true,fa-angle-right</value>
+		<value>2737989430, 273798943002, 查看, /QcodeRedPacket/detail.html, ADMIN|QcodeRedPacket:detail,false,double-angle-right</value>
+
+		<value>60000000, 2737989440, 推送管理, /QcodePush/index.html, ADMIN|QcodePush:index,true,fa-angle-right</value>
+		<value>2737989440, 2737989440001, 编辑, /QcodePush/edit.html,
+			ADMIN|QcodePush:edit,false,double-angle-right</value>
+		<value>2737989440, 2737989440002, 预览, /QcodePush/preview.html,
+			ADMIN|QcodePush:preview,false,double-angle-right</value>
+		<value>2737989440, 2737989440003, 发送, /QcodePush/detail.html,
+			ADMIN|QcodePush:detail,false,double-angle-right</value>
+
+		<value>60000000, 2737989450, 虚拟机申请管理, /qcodeApply/index.html, ADMIN|qcodeApply:index,true,fa-angle-right</value>
+		<value>60000000, 2737989451, 论坛管理, null, ADMIN|forumtopic:index,true,fa-angle-right</value>
+		<value>2737989451, 2737989480, 帖子管理, /qcode/forumtopic/community.html, ADMIN|forumtopic:index,true,fa-angle-right</value>
+		<value>2737989451, 2737989590, 版主管理, /qcode/forumtopic/belonged.html, ADMIN|forumtopic:index,true,fa-angle-right</value>
+		<value>60000000, 2737989430,帖子举报管理, /qcodereport/index.html, ADMIN|qcodereport:index,true,fa-angle-right</value>
+		<value>60000000, 2737989431,反馈建议, /qcode/forumtopic/feedback.html, ADMIN|forumtopic:index,true,fa-angle-right</value>
+		<!--<value>2737989430, 273798943002, 查看, /qcodereport/detail.html, ADMIN|qcodereport:detail,false,double-angle-right</value>-->
+
+		<value>50000000, 273798943008, 字典管理, /Qcode/dic/dicIndex.html, ADMIN|dic:index,true,fa-angle-right</value>
+		<value>60000000, 2957174880,统计信息,/statistics/statisticsCount.html,ADMIN|:/statistics:index,true,fa-angle-right</value>
+		<value>60000000, 3000000000, 敏感词管理, /SensitiveConfig/index.html, ADMIN|SensitiveConfig:index,true,fa-angle-right</value>
+		<value>3000000000, 300000000001, 新增, /SensitiveConfig/(add|save).html, ADMIN|SensitiveConfig:save,false,double-angle-right</value>
+		<value>3000000000, 300000000002, 删除, /SensitiveConfig/delete.html, ADMIN|SensitiveConfig:delete,false,double-angle-right</value>
+
+
+		<value>60000000, 40000000000000, App管理, null, ADMIN|appPush:index,true,fa-angle-right</value>
+		<value>40000000000000, 40000000000001, App推送管理, /appPush/index.html, ADMIN|appPush:index,true,fa-angle-right</value>
+		<value>40000000000000, 40000000000002, App下载次数, /appPush/appDownCount.html, ADMIN|appPush:index,true,fa-angle-right</value>
+
+		<value>60000000, 50000000000000, 版块管理, /blockConfig/index.html, ADMIN|blockConfig:index,true,fa-angle-right</value>
+		<value>60000000, 60000000000000, 视频管理, /videoConfig/index.html, ADMIN|videoConfig:index,true,fa-angle-right</value>
+		<value>60000000, 70000000000000, 试题管理, /examConfig/index.html, ADMIN|examConfig:index,true,fa-angle-right</value>
+
+		<value>60000000, 41000000000000, 推荐阅读, /readBook/index.html, ADMIN|readBook:index,true,fa-angle-right</value>
+		<value>60000000, 80000000000000, 论坛版块管理, /platformBlock/index.html, ADMIN|platformBlock:index,true,fa-angle-right</value>
+
+		<value>60000000, 42000000000000, 赛事报名, /matchSignUp/index.html, ADMIN|matchSignUp:index,true,fa-angle-right</value>
+
+		<value>60000000, 43000000000000, 数据概览, /EduStatics/details.html, ADMIN|eduStatics:details,true,fa-angle-right</value>
+		<value>60000000, 44000000000000, 视频数据概览, /videoDetail/index.html, ADMIN|videoDetail:index,true,fa-angle-right</value>
+
+	</util:list>
+	
+    <util:list id="fixRules" list-class="java.util.ArrayList" value-type="java.lang.String">
+		<value>/files/** =  anon</value>
+		<value>/assets/** =  anon</value>
+		<value>/login.* =  anon</value>
+		<value>/logout.* = logout</value>
+		<value>/doLogin.* =  anon</value>
+
+		<value>/** =  authc</value>
+	</util:list>
+</beans>

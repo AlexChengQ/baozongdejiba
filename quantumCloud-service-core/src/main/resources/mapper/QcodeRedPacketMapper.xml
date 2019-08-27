@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeRedPacket" >
+	<!--
+	author JT
+	since  2018-01-29 	
+	id : id
+	open_id : 微信openId
+	weChat_name : 微信名称
+	user_mail：user_mail
+	user_id : 用户Id
+	user_name : 量子云用户名称
+	status : 状态(0:失败,1:成功)
+	reason : 结果信息
+	moneny : 金额
+	create_time : 生成时间
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`open_id`,`weChat_name`,`user_mail`,`user_id`,`user_name`,`status`,`reason`,`moneny`,`create_time`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="openId != null and openId != ''">
+			AND `open_id`  =   #{openId}
+		</if>
+		<if test="wechatName != null and wechatName != ''">
+			AND `weChat_name` = CONCAT('"', #{escape_wechatName}, '"')
+		</if>
+		<if test="userId != null">
+			AND `user_id` =${userId}
+		</if>
+		<if test="userMail != null">
+			AND `user_mail` like CONCAT('%', #{escape_userMail}, '%')
+		</if>		
+		<if test="userName != null and userName != ''">
+			AND `user_name` like CONCAT('%', #{escape_userName}, '%')
+		</if>
+		<if test="status != null">
+			AND `status` =${status}
+		</if>
+		<if test="reason != null and reason != ''">
+			AND `reason` like CONCAT('%', #{escape_reason}, '%')
+		</if>
+		<if test="moneny != null">
+			AND `moneny` =${moneny}
+		</if>
+		<if test="createTime != null">
+			AND `create_time`  = #{createTime}
+		</if>
+		<if test="createTime_range_start != null">
+			AND  DATE_FORMAT(`create_time`,'%Y-%m-%d')  <![CDATA[>= ]]>  DATE_FORMAT(#{createTime_range_start},'%Y-%m-%d')
+		</if>
+		<if test="createTime_range_end != null">
+				AND  DATE_FORMAT(`create_time`,'%Y-%m-%d')  <![CDATA[<= ]]>  DATE_FORMAT(#{createTime_range_end},'%Y-%m-%d')
+		</if>		
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_red_packet 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeRedPacket" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_red_packet 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>     
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeRedPacket">
+		insert into qcode_red_packet  (
+		`open_id` ,`weChat_name` ,`user_mail`,`user_id` ,`user_name` ,`status` ,`reason` ,`moneny` ,`create_time` 
+		)
+		values (
+		#{openId},#{wechatName},#{userMail},#{userId},#{userName},#{status},#{reason},#{moneny},#{createTime}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeRedPacket">
+		UPDATE qcode_red_packet
+		<set>
+			<if test="openId != null">
+				`open_id` = #{openId},
+			</if>
+			<if test="wechatName != null">
+				`weChat_name` = #{wechatName},
+			</if>
+			<if test="userMail != null">
+				`user_mail` = #{userMail},
+			</if>			
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="userName != null">
+				`user_name` = #{userName},
+			</if>
+			<if test="status != null">
+				`status` = #{status},
+			</if>
+			<if test="reason != null">
+				`reason` = #{reason},
+			</if>
+			<if test="moneny != null">
+				`moneny` = #{moneny},
+			</if>
+			<if test="createTime != null">
+				`create_time` = #{createTime}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from qcode_red_packet
+		where
+		`id`=#{id}
+	</delete>
+	
+</mapper>

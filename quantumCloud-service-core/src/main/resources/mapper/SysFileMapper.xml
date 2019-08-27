@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysFile" >
+	<!--
+	author liuxiantao
+	since  2017-04-07 	
+	id : id
+	file_name : 文件名
+	descn : 描述
+	path : 文件路径
+	type : 文件类型
+	extension : 扩展名
+	size : 文件大小
+	ref_id : 对象主键
+	ref_obj : 引用对象
+	locked : 是否锁定(0:否,1:是)
+	user_id : 上传人ID
+	username : 上传人名称
+	ext_field : 扩展字段
+	create_time : 创建时间
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`file_name`,`descn`,`path`,`type`,`extension`,`size`,`ref_id`,`ref_obj`,`locked`,`user_id`,`username`,`ext_field`,`create_time`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="fileName != null and fileName != ''">
+			AND `file_name` like CONCAT('%', #{escape_fileName}, '%')
+		</if>
+		<if test="descn != null and descn != ''">
+			AND `descn` like CONCAT('%', #{escape_descn}, '%')
+		</if>
+		<if test="path != null and path != ''">
+			AND `path` like CONCAT('%', #{escape_path}, '%')
+		</if>
+		<if test="type != null and type != ''">
+			AND `type` like CONCAT('%', #{escape_type}, '%')
+		</if>
+		<if test="extension != null and extension != ''">
+			AND `extension` like CONCAT('%', #{escape_extension}, '%')
+		</if>
+		<if test="size != null">
+			AND `size` =${size}
+		</if>
+		<if test="refId != null and refId != ''">
+			AND `ref_id` like CONCAT('%', #{escape_refId}, '%')
+		</if>
+		<if test="refObj != null and refObj != ''">
+			AND `ref_obj` like CONCAT('%', #{escape_refObj}, '%')
+		</if>
+		<if test="locked != null">
+			AND `locked` =${locked}
+		</if>
+		<if test="userId != null">
+			AND `user_id` =${userId}
+		</if>
+		<if test="username != null and username != ''">
+			AND `username` like CONCAT('%', #{escape_username}, '%')
+		</if>
+		<if test="extField != null and extField != ''">
+			AND `ext_field` like CONCAT('%', #{escape_extField}, '%')
+		</if>
+		<if test="createTime != null">
+			AND `create_time`  = #{createTime}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_file 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysFile" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_file 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="SysFile">
+		insert into sys_file  (
+		`file_name` ,`descn` ,`path` ,`type` ,`extension` ,`size` ,`ref_id` ,`ref_obj` ,`locked` ,`user_id` ,`username` ,`ext_field` ,`create_time` 
+		)
+		values (
+		#{fileName},#{descn},#{path},#{type},#{extension},#{size},#{refId},#{refObj},#{locked},#{userId},#{username},#{extField},#{createTime}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="SysFile">
+		UPDATE sys_file
+		<set>
+			<if test="fileName != null">
+				`file_name` = #{fileName},
+			</if>
+			<if test="descn != null">
+				`descn` = #{descn},
+			</if>
+			<if test="path != null">
+				`path` = #{path},
+			</if>
+			<if test="type != null">
+				`type` = #{type},
+			</if>
+			<if test="extension != null">
+				`extension` = #{extension},
+			</if>
+			<if test="size != null">
+				`size` = #{size},
+			</if>
+			<if test="refId != null">
+				`ref_id` = #{refId},
+			</if>
+			<if test="refObj != null">
+				`ref_obj` = #{refObj},
+			</if>
+			<if test="locked != null">
+				`locked` = #{locked},
+			</if>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="username != null">
+				`username` = #{username},
+			</if>
+			<if test="extField != null">
+				`ext_field` = #{extField},
+			</if>
+			<if test="createTime != null">
+				`create_time` = #{createTime}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from sys_file
+		where
+		`id`=#{id}
+	</delete>
+
+	<delete id="delRefPic" parameterType="filter">
+		delete from sys_file
+		where 1=1
+		<if test="refId != null">
+			AND `ref_id` = #{refId}
+		</if>
+		<if test="refObj != null">
+			AND `ref_obj` = #{refObj}
+		</if>		
+	</delete>			
+</mapper>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeTask" >
+	<!--
+	author JT
+	since  2017-07-27 	
+	id : id
+	version_id : 项目版本id
+	task_id : 任务编号
+	classic_register_name : 经典寄存器名
+	start_time : 执行时间
+	end_time : 结束时间
+	repeat : 重复次数
+	meaarr : 测量比特数组
+	type ： 任务类型
+	status : 状态
+	ans : 应答
+	is_del : 是否删除(0:否,1:是)
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`version_id`,`task_id`,`classic_register_name`,`start_time`,`end_time`,`repeat`,`meaarr`,`type`,`status`,`ans`,`is_del`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="versionId != null">
+			AND `version_id` =${versionId}
+		</if>
+		<if test="taskId != null and taskId != ''">
+			AND `task_id` = #{taskId}
+		</if>
+		<if test="classicRegisterName != null and classicRegisterName != ''">
+			AND `classic_register_name` like CONCAT('%', #{escape_classicRegisterName}, '%')
+		</if>
+		<if test="startTime != null">
+			AND `start_time`  = #{startTime}
+		</if>
+		<if test="endTime != null">
+			AND `end_time`  = #{endTime}
+		</if>
+		<if test="repeat != null">
+			AND `repeat` =${repeat}
+		</if>
+		<if test="meaarr != null">
+			AND `meaarr` =${meaarr}
+		</if>
+		<if test="type != null">
+			AND `type` =${type}
+		</if>		
+		<if test="status != null">
+			AND `status` =${status}
+		</if>
+		<if test="ans != null and ans != ''">
+			AND `ans` like CONCAT('%', #{escape_ans}, '%')
+		</if>
+		<if test="ansLength != null">
+			AND `ans_length` =${ansLength}
+		</if>
+		<if test="isDel != null">
+			AND `is_del` =${isDel}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_task 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeTask" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_task 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+
+    <select id="getTaskNotComplete_count" parameterType="filter" resultType="int" >
+    	SELECT count(1)
+	    FROM qcode_task 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+            AND status NOT IN(101,-3,-4,-5)
+        </trim>
+    </select>
+    	
+    <select id="getTaskNotComplete" parameterType="filter" resultType="QcodeTask" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_task 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+            AND status NOT IN(101,-3,-4,-5)
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+    	
+	<insert id="save" parameterType="QcodeTask">
+		insert into qcode_task  (
+		`version_id` ,`task_id` ,`classic_register_name` ,`start_time` ,`end_time` ,`repeat` ,`meaarr` ,`type` ,`status` ,`ans` ,`is_del` 
+		)
+		values (
+		#{versionId},#{taskId},#{classicRegisterName},#{startTime},#{endTime},#{repeat},#{meaarr},#{type},#{status},#{ans},#{isDel}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeTask">
+		UPDATE qcode_task
+		<set>
+			<if test="versionId != null">
+				`version_id` = #{versionId},
+			</if>
+			<if test="taskId != null">
+				`task_id` = #{taskId},
+			</if>
+			<if test="classicRegisterName != null">
+				`classic_register_name` = #{classicRegisterName},
+			</if>
+			<if test="startTime != null">
+				`start_time` = #{startTime},
+			</if>
+			<if test="endTime != null">
+				`end_time` = #{endTime},
+			</if>
+			<if test="repeat != null">
+				`repeat` = #{repeat},
+			</if>
+			<if test="meaarr != null">
+				`meaarr` = #{meaarr},
+			</if>
+			<if test="type != null">
+				`type` = #{type},
+			</if>			
+			<if test="status != null">
+				`status` = #{status},
+			</if>
+			<if test="ans != null">
+				`ans` = #{ans},
+			</if>
+			<if test="isDel != null">
+				`is_del` = #{isDel}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<update id="updateByVersionId" parameterType="filter">
+		UPDATE qcode_task
+		<set>
+			<if test="taskId != null">
+				`task_id` = #{taskId},
+			</if>
+			<if test="classicRegisterName != null">
+				`classic_register_name` = #{classicRegisterName},
+			</if>
+			<if test="startTime != null">
+				`start_time` = #{startTime},
+			</if>
+			<if test="endTime != null">
+				`end_time` = #{endTime},
+			</if>
+			<if test="repeat != null">
+				`repeat` = #{repeat},
+			</if>
+			<if test="meaarr != null">
+				`meaarr` = #{meaarr},
+			</if>
+			<if test="type != null">
+				`type` = #{type},
+			</if>			
+			<if test="status != null">
+				`status` = #{status},
+			</if>
+			<if test="ans != null">
+				`ans` = #{ans},
+			</if>
+			<if test="isDel != null">
+				`is_del` = #{isDel}
+			</if>
+		</set>
+		WHERE
+		`version_id` = #{versionId}
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		delete from qcode_task
+		where
+		`id`=#{id}
+	</delete>
+
+    <select id="getRunningTask_count" parameterType="filter" resultType="int" >
+    	SELECT count(1)
+		FROM
+			qcode_task qt
+		LEFT JOIN qcode_project_version qpv ON qpv.id = qt.version_id
+		LEFT JOIN qcode_project qp ON qp.id = qpv.project_id
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>	
+			<if test="minQubitNum != null">
+				AND qp.qubit_num &gt; #{minQubitNum}
+			</if>
+			<if test="isDel != null">
+				AND qt.is_del = #{isDel}
+			</if>				
+			<if test="statusList != null">
+				AND qt.`status` in 
+				<foreach collection="statusList" open="(" separator="," close=")" item="item">
+					${item}
+				</foreach>
+			</if>	
+        </trim>
+    </select>
+    	
+    <select id="getRunningTask" parameterType="filter" resultType="QcodeTask" >
+		SELECT
+			qt.*, qp.user_id
+		FROM
+			qcode_task qt
+		LEFT JOIN qcode_project_version qpv ON qpv.id = qt.version_id
+		LEFT JOIN qcode_project qp ON qp.id = qpv.project_id
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>	
+			<if test="minQubitNum != null">
+				AND qp.qubit_num &gt; #{minQubitNum}
+			</if>	
+			<if test="isDel != null">
+				AND qt.is_del = #{isDel}
+			</if>						
+			<if test="statusList != null">
+				AND qt.`status` in 
+				<foreach collection="statusList" open="(" separator="," close=")" item="item">
+					${item}
+				</foreach>
+			</if>	
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+     </select>	
+     
+	 <sql id="fields_selectIndexList">
+		QU.name AS username ,QU.email,
+		QP.`id` AS project_id ,QP.`name`,QP.`user_id`,QP.`create_time`,QP.`task_type_id`,QP.`analog_type`,
+		QPV.`name` AS version_name ,
+		QT.`id`,QT.`version_id`,QT.`task_id`,QT.`classic_register_name`,QT.`start_time`,QT.`end_time`,QT.`repeat`,QT.`meaarr`,QT.`type`,QT.`status`,QT.`ans`,QT.`is_del`
+	</sql>
+    <sql id="where_selectIndexList">
+   		<if test="username != null and username != ''">
+			AND  QU.name LIKE  CONCAT('%',#{username}, '%') 
+		</if>
+		<if test="email != null and email != ''">
+			AND  QU.`email` LIKE  CONCAT('%',#{email}, '%') 
+		</if>
+		<if test="name != null and name != ''">
+			AND ( QP.`name` LIKE CONCAT('%', #{name} ,'%')  OR  QP.`name_english` LIKE CONCAT('%', #{name} ,'%') )
+		</if>
+		<if test="taskTypeId != null">
+			AND QP.`task_type_id` =${taskTypeId}
+		</if>
+		<if test="type != null">
+			AND QT.`type` =${type}
+		</if>		
+		<if test="status != null">
+			AND QT.`status` =${status}
+		</if>
+		<if test="startTime != null">
+			AND QT.`start_time`  = #{startTime}
+		</if>
+		<if test="startTime_range_start != null">
+			AND  DATE_FORMAT(QT.`start_time`,'%Y-%m-%d')  <![CDATA[>= ]]>  DATE_FORMAT(#{startTime_range_start},'%Y-%m-%d')
+		</if>
+		<if test="startTime_range_end != null">
+				AND  DATE_FORMAT(QT.`start_time`,'%Y-%m-%d')  <![CDATA[<= ]]>  DATE_FORMAT(#{startTime_range_end},'%Y-%m-%d')
+		</if>
+		<if test="endTime != null">
+			AND QT.`end_time`  = #{endTime}
+		</if>
+		<if test="endTime_range_start != null">
+			AND  DATE_FORMAT(QT.`end_time`,'%Y-%m-%d')  <![CDATA[>= ]]>  DATE_FORMAT(#{endTime_range_start},'%Y-%m-%d')
+		</if>
+		<if test="endTime_range_end != null">
+				AND  DATE_FORMAT(QT.`end_time`,'%Y-%m-%d')  <![CDATA[<= ]]>  DATE_FORMAT(#{endTime_range_end},'%Y-%m-%d')
+		</if>
+    </sql>
+    
+    <select id="selectIndexList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM  qcode_task QT 
+		LEFT JOIN   qcode_project_version QPV  ON QT.version_id = QPV.id
+		LEFT JOIN   qcode_project QP   ON QP.id = QPV.project_id   
+		LEFT JOIN qcode_user QU ON QP.user_id = QU.id
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+             QT.task_id != 0  <!-- 去除教程 -->
+            <include refid="where_selectIndexList"/>
+        </trim>
+    </select>
+    
+    <select id="selectIndexList" parameterType="filter" resultType="Map" >
+    	SELECT
+		<include refid="fields_selectIndexList"/>
+	    FROM  qcode_task QT 
+		LEFT JOIN   qcode_project_version QPV  ON QT.version_id = QPV.id
+		LEFT JOIN   qcode_project QP   ON QP.id = QPV.project_id   
+		LEFT JOIN qcode_user QU ON QP.user_id = QU.id
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+             QT.task_id != 0  <!-- 去除教程 -->
+            <include refid="where_selectIndexList"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>		
+</mapper>

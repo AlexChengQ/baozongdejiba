@@ -1,0 +1,97 @@
+一：添加表
+1.字典表 dic表
+CREATE TABLE `dic` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id(唯一主键)',
+  `dic_name` varchar(36) DEFAULT NULL COMMENT '字典名称',
+  `desc` varchar(36) DEFAULT NULL COMMENT '字典描述',
+  `add_time` datetime DEFAULT NULL COMMENT '添加时间',
+  `add_user_id` bigint(20) DEFAULT NULL COMMENT '添加人id',
+  `update_user_id` bigint(20) DEFAULT NULL COMMENT '修改人id',
+  `deflag` char(1) DEFAULT NULL COMMENT '是否有效（0：无效，1：有效）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='字典表';
+
+2.字典内容表
+CREATE TABLE `dic_context` (
+  `id` bigint(20) NOT NULL COMMENT 'id(唯一主键)',
+  `dic_id` bigint(20) DEFAULT NULL COMMENT '字典表id',
+  `dic_context` varchar(36) DEFAULT NULL COMMENT '字典内容',
+  `desc` varchar(255) DEFAULT NULL COMMENT '描述',
+  `add_time` datetime DEFAULT NULL COMMENT '添加时间',
+  `add_user_id` bigint(20) DEFAULT NULL COMMENT '添加人id',
+  `upd_user_id` bigint(20) DEFAULT NULL COMMENT '修改人id',
+  `deflag` char(1) DEFAULT NULL COMMENT '是否有效（0：无效，1：有效）',
+  `dic_flag` char(10) DEFAULT NULL COMMENT '字典值',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字典内容表';
+
+3.浏览情况表
+CREATE TABLE `browse_detail` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id(主键，唯一标识)',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '浏览人id',
+  `add_time` datetime DEFAULT NULL COMMENT '浏览时间',
+  `ip` varchar(20) DEFAULT NULL COMMENT 'ip',
+  `forum_top_id` bigint(20) DEFAULT NULL COMMENT '帖子id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='浏览情况表';
+
+
+4.关注表
+CREATE TABLE `focus_details` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键（唯一标识）',
+  `focus_user_id` bigint(20) DEFAULT NULL COMMENT '被关注人id(论坛用户)',
+  `focus_date` datetime DEFAULT NULL COMMENT '关注时间',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '关注人id(论坛用户id)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 COMMENT='关注表';
+
+5.标签表
+CREATE TABLE `forum_label` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键（唯一标识）',
+  `forum_topic_id` bigint(20) DEFAULT NULL COMMENT '帖子id',
+  `label_id` bigint(20) DEFAULT NULL COMMENT '标签id',
+  `add_time` datetime DEFAULT NULL COMMENT '添加时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COMMENT='论坛属性表（标签）';
+
+
+5.不在线时数据表
+CREATE TABLE `forum_notonline` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `op_count` int(255) DEFAULT NULL COMMENT '操作数量',
+  `type` char(20) DEFAULT NULL COMMENT '类型（1：关注，2：收藏，3：评论，4：点赞，5：系统）',
+  `status` char(1) DEFAULT NULL COMMENT '是否已读',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '被操作人（被点赞，被关注的人等）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8 COMMENT='不在线时数据表';
+
+
+6 反馈建议表
+CREATE TABLE `feedback` (
+  `id` varchar(36) NOT NULL COMMENT '唯一标示（主键）',
+  `belonged` char(10) DEFAULT NULL,
+  `problem_type` char(10) DEFAULT NULL COMMENT '问题类型',
+  `title` varchar(80) DEFAULT NULL COMMENT '问题简述（主题）',
+  `content` varchar(1000) DEFAULT NULL COMMENT '问题内容',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `add_time` datetime DEFAULT NULL COMMENT '添加时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='反馈建议表';
+
+7 关联文件表
+CREATE TABLE `relation_files` (
+  `id` varchar(36) NOT NULL COMMENT '唯一标示（主键）',
+  `relation_id` varchar(36) DEFAULT NULL COMMENT '关联id',
+  `file_type` char(10) DEFAULT NULL COMMENT '预留字段（类型）',
+  `relation_file` mediumblob COMMENT '文件',
+  `file_size` bigint(20) DEFAULT NULL COMMENT '文件大小',
+  `file_name` varchar(36) DEFAULT NULL COMMENT '文件名',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='关联文件表';
+
+
+
+二、修改表
+1.论坛主题表forum_topic 添加表字段浏览次数 see_count,所属板块belonged，主题图片topic_face
+
+2.用户表添加字段，用户签名autograph,用户星座constellation，用户电话tel，用户性别sex，用户生日birthday
+

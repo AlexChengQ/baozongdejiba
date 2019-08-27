@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BlockConfigVo">
+
+    <insert id="save" parameterType="filter">
+        INSERT INTO video_block (
+            name,
+            brief,
+            catalog,
+            img,
+            type,
+            url
+        )
+        VALUES
+            (
+                #{name},
+                #{brief},
+                #{cataLog},
+                #{img},
+                #{type},
+                #{url}
+             )
+    </insert>
+    
+    <update id="update" parameterType="filter">
+        UPDATE
+        video_block
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="brief != null and brief != ''">
+                brief = #{brief},
+            </if>
+            <if test="cataLog != null and cataLog != ''">
+                catalog = #{cataLog},
+            </if>
+            <if test="img != null and img != ''">
+                img = #{img},
+            </if>
+            <if test="type != null and type != ''">
+                type != #{type},
+            </if>
+            <if test="url != null and url != ''">
+                url = #{url}
+            </if>
+        </trim>
+        WHERE
+          blockid = #{blockId}
+    </update>
+
+    <select id="selectList" parameterType="filter" resultType="BlockConfigVo">
+    	SELECT
+            blockid blockId,
+            name,
+            brief,
+            catalog cataLog,
+            img,
+            type,
+            url
+    	FROM
+        video_block
+        <where>
+          <if test="name != null and name != ''">
+              name LIKE CONCAT('%',#{name},'%')
+          </if>
+          <if test="catalog != null and catalog != ''">
+              catalog LIKE CONCAT('%',#{catalog},'%')
+          </if>
+          <if test="blockId != null and blockId != ''">
+              blockid = #{blockId}
+          </if>
+        </where>
+
+        <if test="start != null and limit != ''">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectList_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        video_block
+        <where>
+            <if test="name != null and name != ''">
+                name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="catalog != null and catalog != ''">
+                catalog LIKE CONCAT('%',#{catalog},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="delete" parameterType="filter">
+        DELETE FROM video_block WHERE blockid = #{block}
+    </delete>
+
+    <select id="getVideoList" parameterType="filter" resultType="com.bylz.quantumCloud.model.VideoInfoVo">
+        SELECT * FROM video_info vi WHERE block = #{block}
+    </select>
+
+    <select id="getExamList" parameterType="filter" resultType="com.bylz.quantumCloud.model.ExamQuestionSet">
+        SELECT * FROM exam_question_set WHERE block_id = #{block}
+    </select>
+
+    <select id="getHaveBlockName" parameterType="filter" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM video_block WHERE name = #{blockName}
+    </select>
+</mapper>

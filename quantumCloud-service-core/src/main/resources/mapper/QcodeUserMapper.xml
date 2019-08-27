@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeUser">
+    <!--
+    author JT
+    since  2017-07-25
+    id : 客户代码
+    name : 姓名
+    email : email
+    pwd : 密码
+    org_name : 机构
+    level ：用户等级
+    register_time : 注册时间
+    is_disable : 是否禁用(0:否,1:是)
+    deleted : 删除状态(0.未删除;1.已删除)
+    face : 头像
+    api_key : API KEY
+    token ：token
+    is_old_user ：是否为老用户（0、否，1、是）
+    -->
+
+    <sql id="fields_sql">
+	`id`,`name`,`email`,`pwd`,`org_name`,`level`,`register_time`,`is_disable`,`deleted`,`face`,`api_key`,`token`,`is_old_user`,`score`,`tel`
+	</sql>
+
+    <sql id="where_sql">
+        <if test="id != null">
+            AND `id` =${id}
+        </if>
+        <if test="name != null and name != ''">
+            AND `name` like CONCAT('%', #{escape_name}, '%')
+        </if>
+        <if test="userName != null and userName != ''">
+            AND `email` = #{userName}
+        </if>
+        <if test="email != null and email != ''">
+            AND `email` = #{escape_email}
+        </if>
+        <if test="pwd != null and pwd != ''">
+            AND `pwd` like CONCAT('%', #{escape_pwd}, '%')
+        </if>
+        <if test="orgName != null and orgName != ''">
+            AND `org_name` like CONCAT('%', #{escape_orgName}, '%')
+        </if>
+        <if test="level != null">
+            AND `level` =${level}
+        </if>
+        <if test="registerTime != null">
+            AND `register_time` like CONCAT('%', #{registerTime}, '%')
+        </if>
+        <if test="registerTime_range_start != null">
+            AND  DATE_FORMAT(`register_time`,'%Y-%m-%d')  <![CDATA[>= ]]>  DATE_FORMAT(#{registerTime_range_start},'%Y-%m-%d')
+        </if>
+        <if test="registerTime_range_end != null">
+            AND  DATE_FORMAT(`register_time`,'%Y-%m-%d')  <![CDATA[<= ]]>  DATE_FORMAT(#{registerTime_range_end},'%Y-%m-%d')
+        </if>
+        <if test="isDisable != null">
+            AND `is_disable` =${isDisable}
+        </if>
+        <if test="deleted != null">
+            AND `deleted` =${deleted}
+        </if>
+        <if test="face != null and face != ''">
+            AND `face` like CONCAT('%', #{escape_face}, '%')
+        </if>
+        <if test="apiKey != null">
+            AND `api_key` = #{apiKey}
+        </if>
+        <if test="token != null">
+            AND `token` = #{token}
+        </if>
+        <if test="tel != null and tel != ''">
+            AND `tel` = #{tel}
+        </if>
+    </sql>
+
+    <select id="login" parameterType="filter" resultType="QcodeUser" >
+        select qu.*,
+            case when
+            qu.score is NULL THEN NULL
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0))  >= 3000 then '量子传奇'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >= 600 then '量子巨匠'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >= 400 then '量子大师'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >=200 then '量子名士'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >=50 then '量子剑心'
+            else '量子浪客' end as userTitle
+        from qcode_user qu LEFT JOIN user_bonus ub ON qu.id = ub.userid WHERE
+        qu.`email` = #{email}
+    </select>
+
+
+    <select id="selectList_count" parameterType="filter" resultType="int">
+        SELECT count(1)
+        FROM qcode_user
+        <trim
+                prefix="WHERE"
+                prefixOverrides="AND |OR">
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+
+    <select id="selectList" parameterType="filter" resultType="QcodeUser">
+        SELECT
+        <include refid="fields_sql"/>,
+        IFNULL((SELECT sum(TIMESTAMPDIFF(MINUTE,us.login_time,us.logout_time)) FROM user_stdtime us WHERE us.user_id = qcode_user.id GROUP BY us.user_id),0) allStdTime,
+        IFNULL((SELECT TIMESTAMPDIFF(MINUTE,us.login_time,us.logout_time) FROM user_stdtime us WHERE us.user_id = qcode_user.id AND DATE_FORMAT(us.login_time,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d')),0) todayStdTime
+        FROM qcode_user
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            <include refid="where_sql"/>
+        </trim>
+        <if test="order != null">
+            order by ${order} desc
+        </if>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <insert id="save" parameterType="QcodeUser">
+        insert into qcode_user (
+        `name` ,`email` ,`pwd` ,`org_name` ,`level` ,`register_time` ,`is_disable` ,`deleted` ,`face` ,`api_key`
+        ,`token`,tel
+        )
+        values (
+        #{name},#{email},#{pwd},#{orgName},#{level},#{registerTime},#{isDisable},#{deleted},#{face},#{apiKey},#{token},#{tel}
+        )
+        <selectKey keyProperty="id" resultType="Long">
+            SELECT
+            LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="QcodeUser">
+        UPDATE qcode_user
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="email != null">
+                `email` = #{email},
+            </if>
+            <if test="pwd != null">
+                `pwd` = #{pwd},
+            </if>
+            <if test="orgName != null">
+                `org_name` = #{orgName},
+            </if>
+            <if test="level != null">
+                `level` = #{level},
+            </if>
+            <if test="registerTime != null">
+                `register_time` = #{registerTime},
+            </if>
+            <if test="isDisable != null">
+                `is_disable` = #{isDisable},
+            </if>
+            <if test="deleted != null">
+                `deleted` = #{deleted},
+            </if>
+            <if test="face != null">
+                `face` = #{face},
+            </if>
+            <if test="apiKey != null">
+                `api_key` = #{apiKey},
+            </if>
+            <if test="token != null">
+                `token` = #{token},
+            </if>
+            <if test="isOldUser != null">
+                `is_old_user` = #{isOldUser}
+            </if>
+        </set>
+        WHERE
+        `id` = #{id}
+    </update>
+
+    <!--增加用户分数-->
+    <update id="updscore" parameterType="QcodeUser">
+       UPDATE qcode_user
+       SET score=score+#{score} 
+       WHERE id = #{userid}
+
+    </update>
+    <delete id="delete" parameterType="Long">
+		delete from qcode_user
+		where
+		`id`=#{id}
+	</delete>
+
+    <!--查询用户是否版主-->
+    <select id="isModerator" parameterType="filter" resultType="Map">
+        SELECT COUNT(1) isModer,belonged FROM moderator WHERE user_id = #{userId}
+    </select>
+
+
+    <!--查询用户学习记录-->
+    <select id="getUserStuLogList" parameterType="filter" resultType="com.bylz.quantumCloud.model.UserVideo">
+        SELECT progress,vid,title,datatime datetime FROM user_video WHERE userid = #{userId} ORDER BY datatime desc limit 0,#{num}
+    </select>
+
+    <!--插入学习时长和登录时间-->
+    <insert id="addLoginTimeAndStdTime" parameterType="filter">
+        INSERT INTO user_bonus(updtime,userid,logintime,today_stdtime) VALUES (NOW(),#{userId},#{loginTime},#{stdTime})
+    </insert>
+
+    <!--修改学习时长和登录时间-->
+    <update id="updLoginTimeAndStdTime" parameterType="filter">
+        UPDATE user_bonus SET logintime = #{loginTime},stdtime = stdtime+#{stdTime} WHERE userid = #{userId}
+    </update>
+
+    <!--修改个人信息-->
+    <update id="updUserInfo" parameterType="filter">
+        UPDATE qcode_user
+        SET face = #{face},
+        name = #{name},
+        org_name = #{orgName}
+        WHERE id = #{id}
+    </update>
+
+    <!--查询user_video和user_exam表中最新数据-->
+    <select id="getNewest" parameterType="filter" resultType="Map">
+        SELECT
+            t.id,t.dateTime,t.flag,t.userId,progress,blockId,name
+        FROM
+            (
+                SELECT
+                    id,
+                    dateTime,
+                    flag,
+                    userId,
+                    progress,
+                    blockId,
+                    name
+                FROM
+                    (
+                        SELECT
+                            CONCAT(ua.blockid,ua.examid) AS id,
+                            datetime AS dateTime,
+                            'eaxm' AS flag,
+                            userid AS userId,
+                            `status` progress,
+                            ua.blockid blockId,
+                            vb.name
+                        FROM
+                            user_exam ua,video_block vb
+                        WHERE ua.userid = #{userId} AND ua.blockid = vb.blockid
+                        ORDER BY
+                            datetime DESC
+                        LIMIT 1
+                    ) a
+                UNION ALL
+                    SELECT
+                        *
+                    FROM
+                        (
+                            SELECT
+                                uv.vid AS id,
+                                uv.datatime AS dateTime,
+                                'video' AS flag,
+                                uv.userid AS userId,
+                                uv.addscore progress,
+                                vi.block blcokId,
+                                vb.name
+                            FROM
+                                user_video uv,video_info vi,video_block vb
+                            WHERE uv.vid = vi.vid AND vi.block = vb.blockid AND uv.userid = #{userId}
+                            ORDER BY
+                                datatime DESC
+                            LIMIT 1
+                        ) b
+            ) t
+        WHERE
+            userId = #{userId}
+        ORDER BY
+            dateTime DESC limit 1
+    </select>
+
+    <!--查询勋章信息-->
+    <select id="getBonusInfo" parameterType="filter" resultType="com.bylz.quantumCloud.model.UserBonusVo">
+        SELECT
+        IFNULL(badge1,0) badge1,
+        IFNULL(badge2,0) badge2,
+        IFNULL(badge3,0) badge3,
+        IFNULL(badge4,0) badge4,
+        IFNULL(badge5,0) badge5,
+        IFNULL(badge6,0) badge6,
+        IFNULL(score,0) score,
+        updtime updTime,
+        stdtime stdTime
+        FROM
+        user_bonus
+        WHERE
+        userid = #{userId}
+    </select>
+
+    <!--查询我的回答数/获得勋章数-->
+    <select id="getAnswerNum" parameterType="filter" resultType="Map">
+        SELECT
+        (SELECT
+        count(1)
+        FROM
+            tutorial_review tr
+        WHERE
+            tr.parent_id != '0'
+        AND user_id = #{userId}
+        ) myAskNum,
+         IFNULL((
+            SELECT
+                (
+                    badge1 + badge2 + badge3 + badge4 + badge5 + badge6
+                ) bonusNum
+            FROM
+                user_bonus
+            WHERE
+                userid = #{userId}
+        ),0) bonusNum,
+        IFNULL((
+		SELECT
+			stdtime
+		FROM
+			user_bonus
+		WHERE
+			userid = #{userId}
+	),0) stdTime
+        FROM
+            DUAL
+    </select>
+
+    <!--用户分数等级-->
+    <select id="selectlevel" parameterType="filter" resultType="Map">
+        select case
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0))  >= 3000 then '量子传奇'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >= 600 then '量子巨匠'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >= 400 then '量子大师'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >=200 then '量子名士'
+            when
+            SUM(IFNULL(qu.score, 0) + IFNULL(ub.score, 0)) >=50 then '量子剑心'
+            else '量子浪客' end as level
+        from qcode_user qu LEFT JOIN user_bonus ub ON qu.id = ub.userid
+        where id=#{userId}
+    </select>
+
+    <!--修改密码-->
+    <update id="updPassword" parameterType="filter">
+        UPDATE qcode_user SET pwd = #{password} WHERE id = #{userId}
+    </update>
+
+    <!--根据视频id查询答题表最新数据-->
+    <select id="getNewExam" parameterType="filter" resultType="Map">
+        SELECT * FROM user_exam ua WHERE CONCAT(ua.blockid,ua.examid) = #{videoId} AND userid = #{userId} ORDER BY datetime DESC limit 1
+    </select>
+
+    <!--根据视频id查询视频最新数据-->
+    <select id="getNewVideo" parameterType="filter" resultType="Map">
+        SELECT * FROM user_video  WHERE userid = #{userId} AND vid = #{videoId} ORDER BY datatime DESC limit 1
+    </select>
+
+    <!--查询所有用户邮箱-->
+    <select id="getAllUserEmail" resultType="QcodeUser">
+        SELECT email,name FROM qcode_user qu WHERE qu.is_disable = '0' AND qu.deleted = '0'
+    </select>
+
+    <!--查询不在线时被关注，收藏等的数量-->
+    <select id="getNoticeNum" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(sum(t.op_count),0) opCount
+        FROM
+        forum_notonline t
+        WHERE
+        t.`status` = '0'
+        <if test="noticeType != null and noticeType != ''">
+            AND t.type = '3'
+        </if>
+        AND t.user_id = #{userId}
+    </select>
+
+    <!--查询手机号有无注册-->
+    <select id="checkIsExist" parameterType="filter" resultType="java.lang.Integer">
+        SELECT count(1) FROM qcode_user qu WHERE qu.tel = #{phone}
+    </select>
+
+    <!--插入用户登录时间-->
+    <insert id="insertUserStd" parameterType="filter">
+        INSERT INTO user_stdtime (
+            user_id,
+            login_time
+        )
+        VALUES
+            (
+              #{userId},
+              #{loginTime}
+            )
+
+        <selectKey keyProperty="id" resultType="java.lang.Integer">
+            SELECT
+            LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+
+    <!--修改用户登出时间-->
+    <update id="updUserLogoutTime" parameterType="filter">
+        UPDATE
+          user_stdtime
+        SET
+          <if test="logoutTime != null and logoutTime != ''">
+              logout_time = NOW()
+          </if>
+          <if test="halfwayLogoutTime != null and halfwayLogoutTime != ''">
+              Halfway_logout_time = NOW()
+          </if>
+        WHERE
+          user_id = #{userId}
+          AND
+        DATE_FORMAT(login_time,'%Y%m%d') = DATE_FORMAT(#{loginTime},'%Y%m%d')
+    </update>
+
+    <insert id="saveEquipment" parameterType="filter">
+        INSERT
+          INTO
+          user_equipment
+          (
+            user_id,
+            equipment_id
+          )VALUES
+          (
+            #{userId},
+            #{equipmentId}
+          )
+
+    </insert>
+
+    <select id="getEquipment" parameterType="filter" resultType="Map">
+        SELECT
+          id,
+          user_id,
+          equipment_id
+        FROM
+          user_equipment
+        WHERE
+          user_id = #{userId}
+    </select>
+
+    <delete id="delEquipment" parameterType="filter">
+        DELETE FROM user_equipment WHERE user_id = #{userId}
+    </delete>
+</mapper>

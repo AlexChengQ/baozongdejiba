@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeUserApplication" >
+	<!--
+	author JT
+	since  2018-01-10 	
+	id : id
+	name : 姓名
+	email : emil
+	org_name : 机构
+	level : 用户等级(1:一级用户,2:二级用户,3:三级用户)
+	base : 具有基础
+	target : 目标
+	user_id : 申请人id
+	status : 申请状态(0:已拒绝,1:已通过,2:未审核)
+	create_time : 创建时间
+	auditor_id : 审核人id
+	audit_time : 审核时间
+	refuse_reason : 拒绝理由
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`name`,`email`,`org_name`,`level`,`base`,`target`,`user_id`,`status`,`create_time`,`auditor_id`,`audit_time`,`refuse_reason`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="name != null and name != ''">
+			AND `name` like CONCAT('%', #{escape_name}, '%')
+		</if>
+		<if test="email != null and email != ''">
+			AND `email` like CONCAT('%', #{escape_email}, '%')
+		</if>
+		<if test="orgName != null and orgName != ''">
+			AND `org_name` like CONCAT('%', #{escape_orgName}, '%')
+		</if>
+		<if test="level != null">
+			AND `level` =${level}
+		</if>
+		<if test="base != null and base != ''">
+			AND `base` like CONCAT('%', #{escape_base}, '%')
+		</if>
+		<if test="target != null and target != ''">
+			AND `target` like CONCAT('%', #{escape_target}, '%')
+		</if>
+		<if test="userId != null">
+			AND `user_id` =${userId}
+		</if>
+		<if test="status != null">
+			AND `status` =${status}
+		</if>
+		<if test="createTime != null">
+			AND `create_time`  = #{createTime}
+		</if>
+		<if test="auditorId != null">
+			AND `auditor_id` =${auditorId}
+		</if>
+		<if test="auditTime != null">
+			AND `audit_time`  = #{auditTime}
+		</if>
+		<if test="refuseReason != null and refuseReason != ''">
+			AND `refuse_reason` like CONCAT('%', #{escape_refuseReason}, '%')
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_user_application 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeUserApplication" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_user_application 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} 
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeUserApplication">
+		insert into qcode_user_application  (
+		`name` ,`email` ,`org_name` ,`level` ,`base` ,`target` ,`user_id` ,`status` ,`create_time` ,`auditor_id` ,`audit_time` ,`refuse_reason` 
+		)
+		values (
+		#{name},#{email},#{orgName},#{level},#{base},#{target},#{userId},#{status},#{createTime},#{auditorId},#{auditTime},#{refuseReason}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeUserApplication">
+		UPDATE qcode_user_application
+		<set>
+			<if test="name != null">
+				`name` = #{name},
+			</if>
+			<if test="email != null">
+				`email` = #{email},
+			</if>
+			<if test="orgName != null">
+				`org_name` = #{orgName},
+			</if>
+			<if test="level != null">
+				`level` = #{level},
+			</if>
+			<if test="base != null">
+				`base` = #{base},
+			</if>
+			<if test="target != null">
+				`target` = #{target},
+			</if>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="status != null">
+				`status` = #{status},
+			</if>
+			<if test="createTime != null">
+				`create_time` = #{createTime},
+			</if>
+			<if test="auditorId != null">
+				`auditor_id` = #{auditorId},
+			</if>
+			<if test="auditTime != null">
+				`audit_time` = #{auditTime},
+			</if>
+			<if test="refuseReason != null">
+				`refuse_reason` = #{refuseReason}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from qcode_user_application
+		where
+		`id`=#{id}
+	</delete>
+	
+	<select id="selectDetail" parameterType="filter" resultType="map" >
+    	SELECT
+		QUA.`id`,QUA.`name`,QUA.`email`,QUA.`org_name`,QUA.`level`,QUA.`base`,QUA.`target`,QUA.`user_id`,QUA.`status`,QUA.`create_time`,QUA.`audit_time`,QUA.`refuse_reason`,
+		QU.`name` AS username,
+		IF(ISNULL(SU.fullname),SU.username,SU.fullname)  AS auditor
+	    FROM qcode_user_application 	QUA 
+	    LEFT JOIN qcode_user QU ON QUA.user_id = QU.id
+	    LEFT JOIN sys_user SU ON QUA.auditor_id = SU.id
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+           <if test="id != null">
+				AND QUA.`id` =${id}
+			</if>
+        </trim>
+    </select>
+	
+</mapper>

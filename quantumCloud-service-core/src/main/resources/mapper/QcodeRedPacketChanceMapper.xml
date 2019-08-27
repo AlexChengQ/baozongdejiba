@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeRedPacketChance" >
+	<!--
+	author JT
+	since  2018-01-29 	
+	id : id
+	amount : 数值
+	chance_num : 概率区间数值
+	available : 可获得的(0:不可用,1:可用)
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`amount`,`chance_num`,`available`
+	</sql>
+	
+	<sql id="bind">
+		<bind name="AVAILABLE_USABLE" value="@com.bylz.quantumCloud.model.QcodeRedPacketChance@AVAILABLE_USABLE"/>
+	</sql>
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="amount != null">
+			AND `amount` =${amount}
+		</if>
+		<if test="chanceNum != null">
+			AND `chance_num` =${chanceNum}
+		</if>
+		<if test="available != null">
+			AND `available` =${available}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_red_packet_chance 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeRedPacketChance" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_red_packet_chance 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeRedPacketChance">
+		insert into qcode_red_packet_chance  (
+		`amount` ,`chance_num` ,`available` 
+		)
+		values (
+		#{amount},#{chanceNum},#{available}
+		)
+		<selectKey keyProperty="id" resultType="Integer">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeRedPacketChance">
+		UPDATE qcode_red_packet_chance
+		<set>
+			<if test="amount != null">
+				`amount` = #{amount},
+			</if>
+			<if test="chanceNum != null">
+				`chance_num` = #{chanceNum},
+			</if>
+			<if test="available != null">
+				`available` = #{available}
+			</if>
+		</set>
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+           <if test="id != null">
+				`id` = #{id}
+			</if>
+        </trim>
+	</update>
+	
+	<update id="updateByChanceNum" parameterType="QcodeRedPacketChance">
+		UPDATE qcode_red_packet_chance
+		<set>
+			<if test="amount != null">
+				`amount` = #{amount},
+			</if>
+			<if test="chanceNum != null">
+				`chance_num` = #{chanceNum},
+			</if>
+			<if test="available != null">
+				`available` = #{available}
+			</if>
+		</set>
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+           <if test="chanceNum != null">
+				`chance_num` = #{chanceNum}
+			</if>
+        </trim>
+	</update>
+
+	<delete id="delete" parameterType="Integer">
+		delete from qcode_red_packet_chance
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+           <if test="id != null">
+				`id`=#{id}
+			</if>
+        </trim>
+	</delete>
+	<select id="selectAnUsableQcodeRedPacketChance" parameterType="filter" resultType="QcodeRedPacketChance"  >
+		SELECT t1.*   
+		FROM `qcode_red_packet_chance` AS t1 
+		JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM `qcode_red_packet_chance`)-(SELECT MIN(id) FROM `qcode_red_packet_chance`))+(SELECT MIN(id) FROM `qcode_red_packet_chance`)) AS id) AS t2   
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+		 	t1.id >= t2.id  
+           <if test="available != null">
+				AND t1.available =#{available}
+			</if>
+        </trim>
+		ORDER BY t1.id LIMIT 1;  
+	</select>
+</mapper>

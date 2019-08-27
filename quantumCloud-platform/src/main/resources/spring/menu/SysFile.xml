@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+    <util:list id="SysFileMenuList" list-class="java.util.ArrayList" value-type="java.lang.String">
+		<value>0, 1956718510, 文件, /SysFile/index.html, ADMIN|SysFile:index,true,fa-angle-right</value>
+		<value>1956718510, 195671851001, 新增, /SysFile/(add|save).html, ADMIN|SysFile:save,false,double-angle-right</value>
+		<value>1956718510, 195671851002, 查看, /SysFile/detail.html, ADMIN|SysFile:detail,false,double-angle-right</value>
+		<value>1956718510, 195671851003, 编辑, /SysFile/(edit|update).html, ADMIN|SysFile:update,false,double-angle-right</value>
+		<value>1956718510, 195671851004, 删除, /SysFile/delete.html, ADMIN|SysFile:delete,false,double-angle-right</value>
+	</util:list>
+</beans>

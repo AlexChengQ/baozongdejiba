@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PlatformBlockVo">
+    <!--添加推荐阅读-->
+    <insert id="save" parameterType="filter">
+        INSERT INTO block (
+            block_name,
+            block_desc,
+            face,
+            create_time,
+            isApproval
+        )
+        VALUES
+            (
+                #{blockName},
+                #{blockDesc},
+                #{face},
+                NOW(),
+                0
+             )
+    </insert>
+    
+    <!--修改推荐阅读-->
+    <update id="update" parameterType="filter">
+        UPDATE block
+        <trim prefix="set" suffixOverrides=",">
+            <if test="blockName != null and blockName != ''">
+                block_name = #{blockName},
+            </if>
+            <if test="blockDesc != null and blockDesc != ''">
+                block_desc = #{blockDesc},
+            </if>
+            <if test="face != null and face != ''">
+                face = #{face}
+            </if>
+        </trim>
+        WHERE
+           id = #{id}
+    </update>
+
+    <!--查询推荐阅读-->
+    <select id="selectList" parameterType="filter" resultType="PlatformBlockVo">
+    	SELECT
+            id,
+            block_name blockName,
+            block_desc blockDesc,
+            face,
+            create_time createTime
+        FROM
+          block
+        <where>
+            <if test="blockName != null and blockName != ''">
+                block_name LIKE CONCAT('%',#{blockName},'%')
+            </if>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+        <if test="limit != null and start != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectList_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          count(1)
+        FROM
+        block
+        <where>
+            <if test="blockName != null and blockName != ''">
+                block_name LIKE CONCAT('%',#{blockName},'%')
+            </if>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+        <if test="limit != null and start != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--删除推荐视频-->
+    <delete id="delete" parameterType="filter">
+        DELETE FROM block WHERE id = #{id}
+    </delete>
+</mapper>

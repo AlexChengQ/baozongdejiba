@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+      http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	<!-- <context:component-scan base-package="com.**.controller" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.aspectj.lang.annotation.Aspect"/> 
+	</context:component-scan> -->
+
+	<bean id="jacksonObjectMapper" class="com.likegene.framework.core.spring.JacksonObjectMapperFactory" />
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="false">
+			<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"></bean>
+	        <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	        	<property name="writeAcceptCharset" value="false" />
+	        	<property name="supportedMediaTypes">
+	        	    <list>
+	        	      <value>text/html;charset=UTF-8</value>
+	        	    </list>
+	        	</property>
+	        </bean>
+	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	        	<property name="objectMapper" ref="jacksonObjectMapper"/>
+	        </bean>
+	        <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"> 
+	        	<property name="supportedMediaTypes">
+	        	    <list>
+	        	      <value>application/x-www-form-urlencoded;charset=UTF-8</value>
+	        	    </list>
+	        	</property>
+        	</bean>
+	    </mvc:message-converters>
+	</mvc:annotation-driven>
+<!-- 	
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">  
+     <property name="messageConverters">  
+        <list>  
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>  
+        </list>  
+      </property>  
+    </bean>   -->
+	<!-- 存储区域设置信息 -->
+    <bean id="localeResolver"
+        class="org.springframework.web.servlet.i18n.SessionLocaleResolver" >
+        <property name="defaultLocale" value="zh_CN"/>
+    </bean>
+        
+    <!-- 国际化资源文件 -->
+	<mvc:view-controller path="/" view-name="/index" />
+	<mvc:view-controller path="/index" view-name="/index" />
+	<mvc:view-controller path="/login.*" view-name="/login" />
+	
+	<mvc:interceptors>
+		<bean class="com.likegene.framework.core.spring.LogbackMDCInterceptor"/>
+        <bean id="localeChangeInterceptor"
+            class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang" />
+        </bean>
+	</mvc:interceptors>
+	<mvc:default-servlet-handler />  	
+
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="contentNegotiationManager" ref="contentNegotiationManager" />  
+		<property name="defaultViews">
+			<list>
+		        <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+		        	<property name="objectMapper" ref="jacksonObjectMapper" />
+		        </bean>
+			</list>
+		</property>
+	</bean>
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	    <property name="favorPathExtension" value="true" />
+	    <property name="favorParameter" value="false" />
+	    <property name="ignoreAcceptHeader" value="true"/>
+	    <property name="defaultContentType" value="text/html" />
+	    <property name="mediaTypes">
+	        <map>
+	            <entry key="json" value="application/json" />
+	            <entry key="xls" value="application/vnd.ms-excel" />
+	       </map>
+	    </property>
+	</bean>
+	
+	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/"/>
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="xml_escape" value-ref="fmXmlEscape"/>
+			</map>
+		</property>
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="auto_import">spring.ftl as spring,WEB-INF/views/common/main.ftl as main</prop>
+				<prop key="defaultEncoding">UTF-8</prop>
+				<prop key="date_format">yyyy-MM-dd</prop>
+				<prop key="number_format">0</prop>
+				<prop key="locale">zh_CN</prop>
+				<prop key="template_update_delay">0</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="order" value="2"/>
+		<property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>
+		<property name="cache" value="true"/>
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<property name="suffix" value=".ftl"/>
+		<property name="exposeSessionAttributes" value="true"/>
+		<property name="allowSessionOverride" value="true"/>
+		<property name="contentType" value="text/html;charset=UTF-8"/>
+		<property name="requestContextAttribute" value="rc"/>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="prefix" value="/WEB-INF/views"/>
+		<property name="suffix" value=".jsp"/>
+		<property name="order" value="3"/>
+	</bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 设置文件上传大小 -->
+		<property name="maxUploadSize" value="5000000" />
+	</bean>
+
+<!-- freemarker configuration -->  
+<bean id="freemarkerConfiguration"  
+    class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">  
+    <property name="preferFileSystemAccess" value="false" />  
+    <property name="freemarkerSettings">  
+        <props>  
+            <prop key="localized_lookup">false</prop>  
+            <prop key="template_update_delay">5</prop>  
+            <prop key="cache_storage">strong:20, soft:20</prop>  
+            <prop key="url_escaping_charset">UTF-8</prop>  
+            <prop key="output_encoding">UTF-8</prop>  
+        </props>  
+    </property>  
+    <property name="templateLoaderPath" value="classpath:/templates/" />  
+    <property name="defaultEncoding" value="UTF-8" />  
+</bean>  
+  
+  
+<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">  
+    <property name="host" value="${mail.host}" />  
+    <property name="username" value="${mail.username}" />  
+    <property name="password" value="${mail.password}" />
+	<property name="javaMailProperties">
+		<props>
+			<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+			<prop key="mail.smtp.socketFactory.fallback">false</prop>
+			<prop key="mail.smtp.port">465</prop>
+			<prop key="mail.smtp.socketFactory.port">465</prop>
+			<prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+			<prop key="mail.smtp.timeout">25000</prop>
+		</props>
+	</property>
+</bean>  
+  
+<bean id="templateSendEmail" class="com.bylz.quantumCloud.platform.util.TemplateSendEmail">
+    <property name="sender" ref="javaMailSender"></property>       
+    <property name="freemarkerConfiguration" ref="freemarkerConfiguration"></property>       
+</bean>
+</beans>

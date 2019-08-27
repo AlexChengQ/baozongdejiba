@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodePushVo" >
+
+    <select id="selectIndexList_count" parameterType="filter" resultType="int" >
+        SELECT
+        COUNT(1)
+        FROM
+        qcode_push qp
+        LEFT JOIN sys_user su ON qp.user_id = su.id
+        <where>
+            <if test="userName != null">
+                AND su.username LIKE CONCAT(
+                '%',
+                #{userName},'%')
+            </if>
+            <if test="id != null and id != ''">
+                AND qp.id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIndexList" parameterType="filter" resultType="Map" >
+        SELECT
+        su.username,
+        qp.id,
+        qp.title,
+        qp.content,
+        qp.create_time
+        FROM
+        qcode_push qp
+        LEFT JOIN sys_user su ON qp.user_id = su.id
+        <where>
+            <if test="userName != null">
+                AND su.username LIKE CONCAT(
+                '%',
+                #{userName},'%')
+            </if>
+            <if test="id != null and id != ''">
+                AND qp.id = #{id}
+            </if>
+        </where>
+            <if test="order != null">
+                order by ${order}
+            </if>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <insert id="save">
+        insert into qcode_push  (
+        `user_id` ,`title` ,`content` ,`create_time`
+        )
+        values (
+        #{userId},#{title},#{content},NOW()
+        )
+        <selectKey keyProperty="id" resultType="Long">
+            SELECT
+            LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+    <select id="selectList" parameterType="filter" resultType="QcodePushVo" >
+        SELECT
+        su.username,
+        qp.id,
+        qp.title,
+        qp.content,
+        qp.create_time
+        FROM
+        qcode_push qp
+        LEFT JOIN sys_user su ON qp.user_id = su.id
+        WHERE qp.id = #{id}
+    </select>
+    <select id="findEmails" parameterType="filter" resultType ="QcodePushVo">
+        select email from qcode_user WHERE is_disable = 0 and deleted = 0
+    </select>
+
+    <update id="update" parameterType="QcodePushVo">
+        UPDATE qcode_push
+        <set>
+            <if test="userId != null">
+                `user_id` = #{userId},
+            </if>
+            <if test="title != null">
+                `title` = #{title},
+            </if>
+            <if test="content != null">
+                `content` = #{content},
+            </if>
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+        </set>
+        WHERE
+        `id` = #{id}
+    </update>
+</mapper>

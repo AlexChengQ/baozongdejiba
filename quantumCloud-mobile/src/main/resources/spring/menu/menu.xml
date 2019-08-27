@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+    <util:list id="rootList" list-class="java.util.ArrayList" value-type="java.lang.String">
+	</util:list>	
+	
+    <util:list id="fixRules" list-class="java.util.ArrayList" value-type="java.lang.String">
+	<value>/files/** =  anon</value>
+	<value>/assets/** =  anon</value>
+	<value>/login.* =  anon</value>
+	<value>/logout.* = logout</value>
+	<value>/doLogin.* =  anon</value>
+	<value>/register.html =  anon</value>
+	<value>/registerSave.json = anon</value>
+	<value>/Mine/modify.html =  anon</value>
+	<value>/Mine/forget.html =  anon</value>
+	<value>/Mine/modifySave.json =  anon</value>
+	<value>/Mine/sendCheckEmail.json =  anon</value>
+	<value>/ =  anon</value>
+	<value>/index.html =  anon,autoLogin</value>
+	<value>/QCode/semiQuantumComputer.html =  anon</value>
+	<value>/QCode/superQuantumComputer.html =  anon</value>
+	<value>/QCode/commingSoon.html =  anon</value>
+	<value>/QCode/community.html =  anon</value>
+	<value>/QCode/projectShow.html =  anon</value>
+	<value>/QCode/showVersion.json =  anon</value>
+	<value>/QCode/taskShow.html =  anon</value>
+	<value>/QCode/userMsg.json =  anon</value>
+	<value>/QCode/getTaskData.json =  anon</value>
+	<value>/QCode/getTaskRate.json =  anon</value>		
+	<value>/QCode/running.json =  anon</value>
+	<value>/QCode/library.html =  anon</value>
+	<value>/QCode/question.html =  anon</value>
+	<value>/QCode/brief/* =  anon</value>
+	<value>/homePage.html =  anon</value>
+	<value>/api/program.html =  anon</value>
+	<value>/api/add.html =  anon</value>
+	<value>/api/revisions.html =  anon</value>
+	<value>/api/* =  anon</value>
+	<value>/api/QCode/submitTask.json =  anon</value>
+	<value>/api/QCode/queryTask.json =  anon</value>
+	<value>/api/QCode/terminateTask.json =  anon</value>
+	<value>/QCode/test.json = anon</value>
+	<value>/thirdRegisterSave.html = anon</value>
+	<value>//thirdRegisterSave.json = anon</value>
+	
+	<value>/** =autoLogin, authc</value> 
+	</util:list>
+</beans>

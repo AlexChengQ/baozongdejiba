@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="qcodeUserService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}qcodeUserService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.QcodeUserService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysUserRoleService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysUserRoleService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysUserRoleService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysConfigService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysConfigService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysConfigService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysFileService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysFileService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysFileService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysUserResourceService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysUserResourceService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysUserResourceService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysUserService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysUserService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysUserService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysRoleResourceService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysRoleResourceService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysRoleResourceService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysRoleService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysRoleService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysRoleService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sysLogService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}sysLogService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.SysLogService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="qcodeProjectService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="${rmi.service.url}qcodeProjectService" />
+		<property name="serviceInterface"
+			value="com.bylz.quantumCloud.service.QcodeProjectService" />
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="qcodeTaskService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >  
+         <property name="serviceUrl" value="${rmi.service.url}qcodeTaskService" />  
+         <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeTaskService"/>
+		 <property name="lookupStubOnStartup" value="false" />
+		 <property name="refreshStubOnConnectFailure" value="true" />
+     </bean> 
+     
+     <bean id="qcodeMessageService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >  
+         <property name="serviceUrl" value="${rmi.service.url}qcodeMessageService" />  
+         <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeMessageService"/>
+		 <property name="lookupStubOnStartup" value="false" />
+		 <property name="refreshStubOnConnectFailure" value="true" />
+     </bean> 
+     
+     <bean id="qcodeUserApplicationService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >  
+         <property name="serviceUrl" value="${rmi.service.url}qcodeUserApplicationService" />  
+         <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeUserApplicationService"/>
+		 <property name="lookupStubOnStartup" value="false" />
+		 <property name="refreshStubOnConnectFailure" value="true" />
+     </bean> 
+     
+	<bean id="qcodeRedPacketService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >  
+         <property name="serviceUrl" value="${rmi.service.url}qcodeRedPacketService" />  
+         <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeRedPacketService"/>
+		 <property name="lookupStubOnStartup" value="false" />
+		 <property name="refreshStubOnConnectFailure" value="true" />
+     </bean>
+	<!--批量推送消息-->
+	<bean id="qcodePushService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}qcodePushService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodePushService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+	<!--虚拟机申请-->
+	<bean id="qcodeApplyService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}qcodeApplyService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeApplyService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+	<!--论坛主题-->
+	<bean id="forumTopicService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}forumTopicService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ForumTopicService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+	<!--论坛用户-->
+	<bean id="forumUserService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}forumUserService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ForumUserService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="forumBrowseTaskService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}forumBrowseTaskService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ForumBrowseTaskService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="DicService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}dicService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.DicService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="StatisticsCountService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}statisticsCountService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.StatisticsCountService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="sensitiveWordService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}sensitiveWordService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.SensitiveWordService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="appPushServie" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}appPushServie" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.AppPushServie"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="blockConfigService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}blockConfigService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.BlockConfigService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="videoInfoService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}videoInfoService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.VideoInfoService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="examQuestionSetService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}examQuestionSetService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ExamQuestionSetService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="readBookService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}readBookService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ReadBookService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="platformBlockService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}platformBlockService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.PlatformBlockService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="matchSignUpService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}matchSignUpService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.MatchSignUpService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="eduStatisticsService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}eduStatisticsService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.EduStatisticsService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+
+	<bean id="videoDetailService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" >
+		<property name="serviceUrl" value="${rmi.service.url}videoDetailService" />
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.VideoDetailService"/>
+		<property name="lookupStubOnStartup" value="false" />
+		<property name="refreshStubOnConnectFailure" value="true" />
+	</bean>
+</beans>

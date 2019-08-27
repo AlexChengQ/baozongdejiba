@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeThirdLogin" >
+	<!--
+	author houdongdong
+	since  2018-02-26 	
+	id : id
+	user_id : 会员id
+	app_type : 第三方登录类型(如1:qq、2:微信、3:微博)
+	app_id : 第三方唯一id
+	access_token : access_token
+	face : 第三方头像
+	nickname : 第三方的昵称
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`user_id`,`app_type`,`app_id`,`access_token`,`face`,`nickname`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="userId != null">
+			AND `user_id` =${userId}
+		</if>
+		<if test="appType != null">
+			AND `app_type` =${appType}
+		</if>
+		<if test="appId != null and appId != ''">
+			AND `app_id` = #{appId}
+		</if>
+		<if test="accessToken != null and accessToken != ''">
+			AND `access_token` =  #{accessToken}
+		</if>
+		<if test="face != null and face != ''">
+			AND `face` like = #{face}
+		</if>
+		<if test="nickname != null and nickname != ''">
+			AND `nickname` like CONCAT('%', #{escape_nickname}, '%')
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_third_login 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeThirdLogin" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_third_login 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeThirdLogin">
+		insert into qcode_third_login  (
+		`user_id` ,`app_type` ,`app_id` ,`access_token` ,`face` ,`nickname` 
+		)
+		values (
+		#{userId},#{appType},#{appId},#{accessToken},#{face},#{nickname}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeThirdLogin">
+		UPDATE qcode_third_login
+		<set>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="appType != null">
+				`app_type` = #{appType},
+			</if>
+			<if test="appId != null">
+				`app_id` = #{appId},
+			</if>
+			<if test="accessToken != null">
+				`access_token` = #{accessToken},
+			</if>
+			<if test="face != null">
+				`face` = #{face},
+			</if>
+			<if test="nickname != null">
+				`nickname` = #{nickname}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+	
+	<update id="updateUserIdByAppId" parameterType="filter">
+		UPDATE qcode_third_login
+		<set>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+		</set>
+		WHERE
+		`app_id` = #{appId}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from qcode_third_login
+		where
+		`id`=#{id}
+	</delete>
+	
+	<!-- 根据第三方登录信息查询用户 -->
+	<select id="selectByAppId" parameterType="filter" resultType="QcodeUser" >
+    	SELECT
+			QU.`id`,QU.`name`,QU.`email`,QU.`pwd`,QU.`org_name`,QU.`level`,QU.`register_time`,QU.`is_disable`,QU.`deleted`,QU.`face`,QU.`api_key`,QU.`token`,QU.score
+	    FROM qcode_third_login 	QTL
+	   	LEFT JOIN qcode_user QU ON QTL.user_id = QU.id
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+           <if test="appType != null">
+				AND QTL.`app_type` =${appType}
+			</if>
+			<if test="appId != null and appId != ''">
+				AND QTL.`app_id` = #{appId}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND QU.`email` = #{userName}
+			</if>		
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+
+
+	<!--查询email是否已绑定第三方-->
+	<select id="getHasBingThird" parameterType="filter" resultType="QcodeThirdLogin">
+		SELECT
+		qtl.*
+		FROM qcode_third_login qtl,qcode_user qu
+		WHERE
+		qu.id = qtl.user_id AND qu.email = #{email}
+	</select>
+</mapper>

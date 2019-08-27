@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ExamQuestionSet">
+
+    <!--查试卷-->
+    <select id="selectQuestion" parameterType="filter" resultType="ExamQuestionSet">
+        SELECT
+            question_id,exam_id,block_id, content, question_type,resolutiontype,examPic pic
+        FROM
+            exam_question_set
+        where 
+            exam_id=#{examid}
+        AND 
+            question_id=#{questionid}
+        AND
+            block_id=#{blockid}
+    </select>
+
+
+    <select id="selectAllQuestion" parameterType="filter" resultType="ExamQuestionSet">
+         SELECT question_id,block_id,exam_id,resolutiontype
+         From exam_question_set
+         Group By block_id,exam_id,question_id
+    </select>
+
+
+    <!--查答案-->
+    <select id="selectAnswer" parameterType="filter" resultType="ExamQuestionSet">
+        SELECT
+            answer,question_id,exam_id,block_id,answerdetail,resolutiontype
+        FROM
+            exam_question_set
+        where 
+            exam_id=#{examid}
+        AND 
+            question_id=#{questionid}
+        AND
+            block_id=#{blockid}
+    </select>
+
+
+
+    <!--插入视频观看记录-->
+    <insert id="save" parameterType="UserExam">
+        INSERT INTO forum_topic (
+        `userid`,
+        `vid`,
+        progress,
+        title,
+        datatime
+        )
+        VALUES
+        (#{userId},
+        #{vid},
+        #{progress},
+        #{title},
+        NOW()
+        )
+    </insert>
+
+
+    <insert id="saveExam" parameterType="filter">
+        INSERT INTO exam_question_set (
+        answer,
+        question_id,
+        content,
+        block_id,
+        question_type,
+        exam_id,
+        answerdetail,
+        resolutiontype,
+        examPic
+        )
+        VALUES
+        (
+        #{answer},
+        #{questionid},
+        #{content},
+        #{blockid},
+        '0',
+        #{examid},
+        #{answerdetail},
+        #{resolutiontype},
+        #{pic}
+        )
+    </insert>
+
+    <select id="selectList" parameterType="filter" resultType="ExamQuestionSet">
+        SELECT
+            eqs.answer,
+            eqs.answerdetail,
+            eqs.block_id blockid,
+            eqs.content,
+            eqs.exam_id examid,
+            eqs.question_id questionid,
+            eqs.question_type questiontype,
+            eqs.resolutiontype,
+            eqs.examPic pic
+        FROM
+            exam_question_set eqs
+        <where>
+            <if test="content != null and content != ''">
+                eqs.content LIKE CONCAT('%',#{content},'%')
+            </if>
+            <if test="questionid != null and questionid != ''">
+                eqs.question_id = #{questionid}
+            </if>
+        </where>
+
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectList_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM
+          exam_question_set eqs
+        <where>
+            <if test="content != null and content != ''">
+                eqs.content LIKE CONCAT('%',#{content},'%')
+            </if>
+            <if test="questionid != null and questionid != ''">
+                eqs.question_id = #{questionid}
+            </if>
+        </where>
+    </select>
+
+    <select id="getBlock" resultType="com.bylz.quantumCloud.model.BlockConfigVo">
+        SELECT name,blockid blockId FROM video_block
+    </select>
+
+    <select id="getVideoByBlock" resultType="com.bylz.quantumCloud.model.VideoInfoVo">
+        SELECT vid,title FROM video_info WHERE block = #{blockId}
+    </select>
+
+    <!--查询试题表中最大的试题根据版块id-->
+    <select id="getMaxQuestionId" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(MAX(question_id),0)
+        FROM
+        exam_question_set
+        WHERE
+        block_id = #{blockId}
+        AND
+        exam_id = #{examId}
+    </select>
+
+    <delete id="delete" parameterType="filter">
+        DELETE FROM exam_question_set WHERE question_id = #{questionId}
+    </delete>
+
+    <update id="update" parameterType="filter">
+        UPDATE
+         exam_question_set eqs
+        SET
+         answer = #{answer},
+         content = #{content},
+         block_id = #{blockid},
+         question_type = #{questiontype},
+         exam_id = #{examid},
+         answerdetail = #{answerdetail},
+         resolutiontype = #{resolutiontype}
+         <if test="pic != null and pic != ''">
+             ,examPic = #{pic}
+         </if>
+
+        WHERE
+          question_id = #{questionid}
+    </update>
+</mapper>

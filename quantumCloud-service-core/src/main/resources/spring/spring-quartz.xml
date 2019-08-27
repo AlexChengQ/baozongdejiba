@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+      http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 实例化bean -->
+	<bean id="quartzUpdateTask" class="com.bylz.quantumCloud.service.impl.QuartzUpdateTask" />
+
+	<!-- 配置调度工厂 -->
+	<bean id="schedulerFactory"
+		  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="updateTaskTrigger" />
+				<ref bean="terminateTaskTrigger" />
+				<ref bean="browseTaskTrigger" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置MethodInvokingJobDetailFactoryBean -->
+	<bean id="updateTaskMethod"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzUpdateTask" />
+		<property name="targetMethod" value="updateTaskMethod" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 配置定时表达式 -->
+	<bean id="updateTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="updateTaskMethod" />
+		<!-- 每5分钟执行一次 -->
+		<property name="cronExpression" value="0 */5 * * * ?" />
+	</bean>
+
+	<!-- 实例化bean -->
+	<bean id="terminateTaskQuartz" class="com.bylz.quantumCloud.service.impl.QuartzUpdateTask" />
+
+	<!-- 配置MethodInvokingJobDetailFactoryBean -->
+	<bean id="terminateTaskMethod"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="terminateTaskQuartz" />
+		<property name="targetMethod" value="terminateTaskMethod" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 配置定时表达式 -->
+	<bean id="terminateTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="terminateTaskMethod" />
+		<!-- 每59分钟执行一次 -->
+		<property name="cronExpression" value="0 */59 * * * ?" />
+	</bean>
+
+
+	<!-- 实例化bean -->
+	<bean id="browseTaskQuartz" class="com.bylz.quantumCloud.service.impl.ForumBrowseTask" />
+
+	<!-- 配置MethodInvokingJobDetailFactoryBean -->
+	<bean id="browseTaskMethod"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="browseTaskQuartz" />
+		<property name="targetMethod" value="delForumBrowse" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 配置定时表达式 -->
+	<bean id="browseTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="browseTaskMethod" />
+		<!-- 每59分钟执行一次 -->
+		<property name="cronExpression" value="0 0 0 * * ?" />
+	</bean>
+
+</beans>

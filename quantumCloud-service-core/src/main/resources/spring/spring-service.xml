@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<bean id="qcodeProjectServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeProjectServiceImpl" />
+	<bean id="qcodeProjectService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeProjectService" />  
+	    <property name="service"             ref="qcodeProjectServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeProjectService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>  
+    
+	<bean id="qcodeProjectVersionServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeProjectVersionServiceImpl" />
+	<bean id="qcodeProjectVersionService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeProjectVersionService" />  
+	    <property name="service"             ref="qcodeProjectVersionServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeProjectVersionService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>  
+    
+	<bean id="qcodeTaskServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeTaskServiceImpl" />
+	<bean id="qcodeTaskService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeTaskService" />  
+	    <property name="service"             ref="qcodeTaskServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeTaskService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>  
+    
+	<bean id="qcodeUserServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeUserServiceImpl" />
+	<bean id="qcodeUserService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeUserService" />  
+	    <property name="service"             ref="qcodeUserServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeUserService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>   
+    
+	<bean id="sysConfigServiceImpl" class="com.bylz.quantumCloud.service.impl.SysConfigServiceImpl">
+		<property name="scheduler">
+			<ref bean="schedulerFactory" />
+		</property>
+	</bean>  
+	<bean id="sysConfigService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="sysConfigService" />  
+	    <property name="service"             ref="sysConfigServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.SysConfigService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean> 
+    
+	<bean id="sysFileServiceImpl" class="com.bylz.quantumCloud.service.impl.SysFileServiceImpl" />
+	<bean id="sysFileService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="sysFileService" />  
+	    <property name="service"             ref="sysFileServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.SysFileService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean> 
+    
+	<bean id="sysLogServiceImpl" class="com.bylz.quantumCloud.service.impl.SysLogServiceImpl" />
+	<bean id="sysLogService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="sysLogService" />  
+	    <property name="service"             ref="sysLogServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.SysLogService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>  
+    
+	<bean id="sysRoleServiceImpl" class="com.bylz.quantumCloud.service.impl.SysRoleServiceImpl" />
+	<bean id="sysRoleService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="sysRoleService" />  
+	    <property name="service"             ref="sysRoleServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.SysRoleService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>  
+    
+	<bean id="sysRoleResourceServiceImpl" class="com.bylz.quantumCloud.service.impl.SysRoleResourceServiceImpl" />
+	<bean id="sysRoleResourceService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="sysRoleResourceService" />  
+	    <property name="service"             ref="sysRoleResourceServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.SysRoleResourceService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>  
+    
+	<bean id="sysUserRoleServiceImpl" class="com.bylz.quantumCloud.service.impl.SysUserRoleServiceImpl" />
+	<bean id="sysUserRoleService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="sysUserRoleService" />  
+	    <property name="service"             ref="sysUserRoleServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.SysUserRoleService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>      
+    
+	<bean id="sysUserServiceImpl" class="com.bylz.quantumCloud.service.impl.SysUserServiceImpl" />
+	<bean id="sysUserService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="sysUserService" />  
+	    <property name="service"             ref="sysUserServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.SysUserService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>  
+       
+    <bean id="qcodeMessageServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeMessageServiceImpl" />
+	<bean id="qcodeMessageService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeMessageService" />  
+	    <property name="service"             ref="qcodeMessageServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeMessageService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>
+    
+    <bean id="qcodeUserApplicationServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeUserApplicationServiceImpl" />
+	<bean id="qcodeUserApplicationService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeUserApplicationService" />  
+	    <property name="service"             ref="qcodeUserApplicationServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeUserApplicationService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>     
+    
+	<bean id="qcodeRedPacketServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeRedPacketServiceImpl" />
+	
+	<bean id="qcodeRedPacketService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeRedPacketService" />  
+	    <property name="service"             ref="qcodeRedPacketServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeRedPacketService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>
+    
+    <bean id="qcodeRedPacketChanceServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeRedPacketChanceServiceImpl" />
+	<bean id="qcodeRedPacketChanceService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeRedPacketChanceService" />  
+	    <property name="service"             ref="qcodeRedPacketChanceServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeRedPacketChanceService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean> 
+    
+    <bean id="qcodeWeChatEventRequestServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeWeChatEventRequestServiceImpl" />
+	<bean id="qcodeWeChatEventRequestService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeWeChatEventRequestService" />  
+	    <property name="service"             ref="qcodeWeChatEventRequestServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeWeChatEventRequestService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>
+    
+    <bean id="qcodeThirdLoginServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeThirdLoginServiceImpl" />
+	<bean id="qcodeThirdLoginService" class="org.springframework.remoting.rmi.RmiServiceExporter" >  
+		<property name="serviceName"         value="qcodeThirdLoginService" />  
+	    <property name="service"             ref="qcodeThirdLoginServiceImpl"/>  
+	    <property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeThirdLoginService"/>
+	    <property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" /> 
+    </bean>
+	<!--虚拟机申请-->
+	<bean id="qcodeApplyServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodeApplyServiceImpl" />
+	<bean id="qcodeApplyService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="qcodeApplyService" />
+		<property name="service"             ref="qcodeApplyServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodeApplyService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	<!--批量推送消息-->
+	<bean id="qcodePushServiceImpl" class="com.bylz.quantumCloud.service.impl.QcodePushServiceImpl" />
+	<bean id="qcodePushService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="qcodePushService" />
+		<property name="service"             ref="qcodePushServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.QcodePushService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	<!--论坛主题-->
+	<bean id="forumTopicServiceImpl" class="com.bylz.quantumCloud.service.impl.ForumTopicServiceImpl" />
+	<bean id="forumTopicService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="forumTopicService" />
+		<property name="service"             ref="forumTopicServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ForumTopicService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	<!--论坛用户-->
+	<bean id="forumUserServiceImpl" class="com.bylz.quantumCloud.service.impl.ForumUserServiceImpl" />
+	<bean id="forumUserService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="forumUserService" />
+		<property name="service"             ref="forumUserServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ForumUserService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="forumBrowseTaskServiceImpl" class="com.bylz.quantumCloud.service.impl.ForumBrowseTaskServiceImpl" />
+	<bean id="forumBrowseTaskService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="forumBrowseTaskService" />
+		<property name="service"             ref="forumBrowseTaskServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ForumBrowseTaskService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="dicServiceImpl" class="com.bylz.quantumCloud.service.impl.DicServiceImpl" />
+	<bean id="dicService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="dicService" />
+		<property name="service"             ref="dicServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.DicService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="statisticsCountServiceImpl" class="com.bylz.quantumCloud.service.impl.StatisticsCountServiceImpl" />
+	<bean id="statisticsCountService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="statisticsCountService" />
+		<property name="service"             ref="statisticsCountServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.StatisticsCountService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	
+	<!-- 量子教育用户视频获取 -->
+	<bean id="userVideoServiceImpl" class="com.bylz.quantumCloud.service.impl.UserVideoServiceImpl" />
+	<bean id="userVideoService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="userVideoService" />
+		<property name="service"             ref="userVideoServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.UserVideoService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	
+	
+	<!-- 量子教育用户考试信息 -->
+	<bean id="userExamServiceImpl" class="com.bylz.quantumCloud.service.impl.UserExamServiceImpl" />
+	<bean id="userExamService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="userExamService" />
+		<property name="service"             ref="userExamServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.UserExamService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	
+	
+	<!-- 量子教育用户考试信息 -->
+	<bean id="examQuestionSetServiceImpl" class="com.bylz.quantumCloud.service.impl.ExamQuestionSetServiceImpl" />
+	<bean id="examQuestionSetService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="examQuestionSetService" />
+		<property name="service"             ref="examQuestionSetServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ExamQuestionSetService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	
+	<!-- 量子教育用户考试信息 -->
+	<bean id="userBadgeServiceImpl" class="com.bylz.quantumCloud.service.impl.UserBadgeServiceImpl" />
+	<bean id="userBadgeService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="userBadgeService" />
+		<property name="service"             ref="userBadgeServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.UserBadgeService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<!-- 教育评论 -->
+	<bean id="tutorialReviewServiceImpl" class="com.bylz.quantumCloud.service.impl.TutorialReviewServiceImpl" />
+	<bean id="tutorialReviewService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="tutorialReviewService" />
+		<property name="service"             ref="tutorialReviewServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.TutorialReviewService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<!-- 兑换勋章 -->
+	<bean id="updateUserScoreServiceImpl" class="com.bylz.quantumCloud.service.impl.UpdateUserScoreServiceImpl" />
+	<bean id="updateUserScoreService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="updateUserScoreService" />
+		<property name="service"             ref="updateUserScoreServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.UpdateUserScoreService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	
+	
+	<!-- 积分流水 -->
+	<bean id="userScoreDetailServiceImpl" class="com.bylz.quantumCloud.service.impl.UserScoreDetailServiceImpl" />
+	<bean id="userScoreDetailService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="userScoreDetailService" />
+		<property name="service"             ref="userScoreDetailServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.UserScoreDetailService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	
+	
+	
+	<!-- 视频信息 -->
+	<bean id="videoInfoServiceImpl" class="com.bylz.quantumCloud.service.impl.VideoInfoServiceImpl" />
+	<bean id="videoInfoService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="videoInfoService" />
+		<property name="service"             ref="videoInfoServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.VideoInfoService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<!-- 敏感词 -->
+	<bean id="sensitiveWordServiceImpl" class="com.bylz.quantumCloud.service.impl.SensitiveWordServiceImpl" />
+	<bean id="sensitiveWordService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="sensitiveWordService" />
+		<property name="service"             ref="sensitiveWordServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.SensitiveWordService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+	
+	<!-- appbanner查询 -->
+	<bean id="appBannerImpl" class="com.bylz.quantumCloud.service.impl.AppBannerImpl" />
+	<bean id="bannerService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="bannerService" />
+		<property name="service"             ref="appBannerImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.BannerService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="appPushServieImpl" class="com.bylz.quantumCloud.service.impl.AppPushServieImpl" />
+	<bean id="appPushServie" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="appPushServie" />
+		<property name="service"             ref="appPushServieImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.AppPushServie"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="blockConfigServiceImpl" class="com.bylz.quantumCloud.service.impl.BlockConfigServiceImpl" />
+	<bean id="blockConfigService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="blockConfigService" />
+		<property name="service"             ref="blockConfigServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.BlockConfigService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="readBookServiceImpl" class="com.bylz.quantumCloud.service.impl.ReadBookServiceImpl" />
+	<bean id="readBookService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="readBookService" />
+		<property name="service"             ref="readBookServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.ReadBookService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="platformBlockServiceImpl" class="com.bylz.quantumCloud.service.impl.PlatformBlockServiceImpl" />
+	<bean id="platformBlockService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="platformBlockService" />
+		<property name="service"             ref="platformBlockServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.PlatformBlockService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="eduStatisticsServiceImpl" class="com.bylz.quantumCloud.service.impl.EduStatisticsServiceImpl" />
+	<bean id="eduStatisticsService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="eduStatisticsService" />
+		<property name="service"             ref="eduStatisticsServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.EduStatisticsService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+
+	<bean id="videoDetailServiceImpl" class="com.bylz.quantumCloud.service.impl.VideoDetailServiceImpl" />
+	<bean id="videoDetailService" class="org.springframework.remoting.rmi.RmiServiceExporter" >
+		<property name="serviceName"         value="videoDetailService" />
+		<property name="service"             ref="videoDetailServiceImpl"/>
+		<property name="serviceInterface"    value="com.bylz.quantumCloud.service.VideoDetailService"/>
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<property name="servicePort" value="${rmi.servicePort}" />
+	</bean>
+</beans>

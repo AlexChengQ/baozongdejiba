@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ForumUserVo">
+    
+    <!--根据登录用户查询论坛用户详情-->
+    <select id="getForumUser"  resultType="ForumUserVo" parameterType="filter">
+        SELECT
+            t.autograph,
+            t.birthday,
+            IFNULL(t.constellation,0) constellation,
+            IFNULL(getDicValue (
+                "constellation",
+                t.constellation
+            ),'保密')
+             constellationName,
+            t.email,
+            t.face,
+            t.name,
+            t.id,
+            t.sex,
+            getDicValue ("sex", t.sex) sexName,
+            t.tel
+        FROM
+            qcode_user t WHERE t.id = #{userId}
+    </select>
+
+    <!--修改论坛用户资料-->
+    <update id="updForumUser" parameterType="filter">
+        UPDATE qcode_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="face != null and face != ''">
+                face = #{face},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="tel != null and tel != ''">
+                tel = #{tel},
+            </if>
+            <if test="constellation != null and constellation != ''">
+                constellation = #{constellation},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="autograph != null and autograph != ''">
+                autograph = #{autograph},
+            </if>
+            <if test="birthday != null and birthday != ''">
+                birthday = #{birthday}
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <!--查询下拉框字典值-->
+    <select id="getSelectVal" resultType="com.bylz.quantumCloud.model.DicValueVo">
+        SELECT
+            dc.dic_context text,
+            dc.dic_flag value
+        FROM
+            dic d,
+            dic_context dc
+        WHERE
+            d.id = dc.dic_id
+        AND d.dic_name = 'constellation'
+    </select>
+
+    <!--查询未读信息-->
+    <select id="queryNoticCount" parameterType="filter" resultType="com.bylz.quantumCloud.model.ForumNotOnlineVo">
+          SELECT
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    forum_notonline fn
+                WHERE
+                    fn.type = '3'
+                AND fn.user_id = #{userId}
+            ) commentsCount,
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    forum_notonline fn
+                WHERE
+                    fn.type = '1'
+                AND fn.user_id = #{userId}
+            ) focusCount,
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    forum_notonline fn
+                WHERE
+                    fn.type = '2'
+                AND fn.user_id = #{userId}
+            ) collectionCount,
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    forum_notonline fn
+                WHERE
+                    fn.type = '4'
+                AND fn.user_id = #{userId}
+            ) pointsCount,
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    forum_notonline fn
+                WHERE
+                    fn.type = '5'
+                AND fn.user_id = #{userId}
+            ) sysCount
+        FROM
+            DUAL
+    </select>
+</mapper>

@@ -1,0 +1,78 @@
+ALTER TABLE `qcode_project`
+ADD INDEX `IX_qcodeProject_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeProject_userId` (`user_id`) USING BTREE ,
+ADD INDEX `IX_qcodeProject_taskTypeId` (`task_type_id`) USING BTREE ;
+
+ALTER TABLE `qcode_project_version`
+ADD INDEX `IX_qcodeProjectVersion_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeProjectVersion_projectId` (`project_id`) USING BTREE ;
+
+ALTER TABLE `qcode_user`
+ADD INDEX `IX_qcodeUser_id` (`id`) USING BTREE ;
+
+ALTER TABLE `qcode_user_application`
+ADD INDEX `IX_qcodeUserApplication_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeUserApplication_userId` (`user_id`) USING BTREE ;
+
+ALTER TABLE `qcode_we_chat_event_request`
+ADD INDEX `IX_qcodeWeChatEventRequest_id` (`id`) USING BTREE ;
+
+ALTER TABLE `qcode_task`
+ADD INDEX `IX_qcodeTask_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeTask_versionId` (`version_id`) USING BTREE ,
+ADD INDEX `IX_qcodeTask_taskId` (`task_id`) USING BTREE ;
+
+ALTER TABLE `qcode_apply`
+ADD INDEX `IX_qcodeApply_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeApply_userId` (`user_id`) USING BTREE ;
+
+ALTER TABLE `qcode_message`
+ADD INDEX `IX_qcodeMessage_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeMessage_userId` (`user_id`) USING BTREE ;
+
+
+ALTER TABLE `qcode_red_packet`
+ADD INDEX `IX_qcodeRedPacket_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeRedPacket_openId` (`open_id`) USING BTREE ,
+ADD INDEX `IX_qcodeRedPacket_userId` (`user_id`) USING BTREE ;
+
+ALTER TABLE `qcode_red_packet_chance`
+ADD INDEX `IX_qcodeRedPacketChance_id` (`id`) USING BTREE ;
+
+
+ALTER TABLE `qcode_third_login`
+ADD INDEX `IX_qcodeThirdLogin_id` (`id`) USING BTREE ,
+ADD INDEX `IX_qcodeThirdLogin_userId` (`user_id`) USING BTREE ;
+
+
+ALTER TABLE `sys_config`
+ADD INDEX `IX_sysConfig_id` (`id`) USING BTREE ;
+
+ALTER TABLE `sys_file`
+ADD INDEX `IX_sysFile_id` (`id`) USING BTREE ,
+ADD INDEX `IX_sysFile_folderId` (`folder_id`) USING BTREE ,
+ADD INDEX `IX_sysFile_refId` (`ref_id`) USING BTREE ,
+ADD INDEX `IX_sysFile_userId` (`user_id`) USING BTREE ;
+
+ALTER TABLE `sys_log`
+ADD INDEX `IX_sysLog_id` (`id`) USING BTREE ,
+ADD INDEX `IX_sysLog_userId` (`user_id`) USING BTREE ;
+
+ALTER TABLE `sys_role`
+ADD INDEX `IX_sysRole_id` (`role_id`) USING BTREE ,
+ADD INDEX `IX_sysRole_parentId` (`parent_id`) USING BTREE ;
+
+ALTER TABLE `sys_role_resource`
+ADD INDEX `IX_sysRoleResource_roleId` (`role_id`) USING BTREE ;
+
+ALTER TABLE `sys_user`
+ADD INDEX `IX_sysUser_id` (`id`) USING BTREE ;
+
+ALTER TABLE `sys_user_resource`
+ADD INDEX `IX_sysUserResource_id` (`id`) USING BTREE ,
+ADD INDEX `IX_sysUserResource_userId` (`user_id`) USING BTREE ;
+
+ALTER TABLE `sys_user_role`
+ADD INDEX `IX_sysUserRole_roleId` (`role_id`) USING BTREE ,
+ADD INDEX `IX_sysUserRole_userId` (`user_id`) USING BTREE ;
+

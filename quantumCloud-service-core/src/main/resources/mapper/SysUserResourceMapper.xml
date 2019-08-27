@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysUserResource" >
+	<!--
+	author liuxiantao
+	since  2017-04-06 	
+	id : id
+	user_id : 用户ID
+	resource : 资源名
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`user_id`,`resource`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id`  = #{id}
+		</if>
+		<if test="userId != null">
+			AND `user_id`  = #{userId}
+		</if>
+		<if test="resource != null and resource != ''">
+			AND `resource` like CONCAT('%', #{escape_resource}, '%')
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_user_resource 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysUserResource" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_user_resource 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="SysUserResource">
+		insert into sys_user_resource  (
+		`user_id` ,`resource` 
+		)
+		values (
+		#{userId},#{resource}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="SysUserResource">
+		UPDATE sys_user_resource
+		<set>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="resource != null">
+				`resource` = #{resource}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from sys_user_resource
+		where
+		`id`=#{id}
+	</delete>
+	
+</mapper>

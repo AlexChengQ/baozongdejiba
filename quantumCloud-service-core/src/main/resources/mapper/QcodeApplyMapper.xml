@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeApply">
+    <insert id="save" parameterType="QcodeApply">
+        INSERT INTO qcode_apply (
+        `user_id`,
+        `name`,
+        phone,
+        email,
+        vm_type,
+        purpose,
+        apply_status,
+        apply_time
+        )
+        VALUES
+        (#{userId},
+        #{name},
+        #{phone},
+        #{email},
+        #{vmType},
+        #{purpose},
+        #{applyStatus},
+        NOW()
+        )
+        <selectKey keyProperty="id" resultType="Long">
+            SELECT
+            LAST_INSERT_ID() AS ID
+        </selectKey>
+    </insert>
+    <!---->
+    <select id="selectList" parameterType="filter" resultType="QcodeApply">
+        SELECT
+            user_id userId
+        FROM
+            qcode_apply
+        WHERE
+            user_id = #{userId}
+        AND apply_status = #{applyStatus}
+    </select>
+
+    <select id="selectIndexList_count" parameterType="filter" resultType="int">
+        SELECT
+        COUNT(1)
+        FROM
+        qcode_apply qa
+        LEFT JOIN qcode_user qu ON qa.user_id = qu.id
+        RIGHT JOIN (
+        SELECT
+        user_id,
+        MIN(apply_status) min_status
+        FROM
+        qcode_apply
+        GROUP BY
+        user_id
+        ) q ON qa.user_id = q.user_id
+        AND qa.apply_status = q.min_status
+        WHERE
+        1 = 1
+        <if test="userName != null">
+            AND qu.name LIKE CONCAT(
+            '%',
+            #{userName},'%')
+        </if>
+        <if test="userEmail != null">
+            AND qu.email LIKE CONCAT(
+            '%',
+            #{userEmail},'%')
+        </if>
+    </select>
+    <!--分页查询列表-->
+    <select id="selectIndexList" parameterType="filter" resultType="Map">
+        SELECT
+        qa.id,
+        qa.user_id AS userId,
+        qa.`name` AS NAME,
+        qa.phone,
+        qa.email,
+        qa.vm_type AS vmType,
+        qa.purpose,
+        qa.apply_status AS applyStatus,
+        qu.`name` AS userName,
+        qu.email AS userEmail,
+        qa.apply_time AS applyTime
+        FROM
+        qcode_apply qa
+        LEFT JOIN qcode_user qu ON qa.user_id = qu.id
+        RIGHT JOIN (
+        SELECT
+        user_id,
+        MAX(apply_time) apply_time
+        FROM
+        qcode_apply
+        GROUP BY
+        user_id
+        ) q ON qa.user_id = q.user_id
+        AND qa.apply_time = q.apply_time
+        WHERE
+        1 = 1
+        <if test="userName != null">
+            AND qu.name LIKE CONCAT(
+            '%',
+            #{userName},'%')
+        </if>
+        <if test="userEmail != null">
+            AND qu.email LIKE CONCAT(
+            '%',
+            #{userEmail},'%')
+        </if>
+        <if test="order != null">
+            order by qa.vm_type,${order}
+        </if>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <!--修改-->
+    <update id="update" parameterType="QcodeApply">
+        UPDATE qcode_apply
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="phone != null">
+                `phone` = #{phone},
+            </if>
+            <if test="email != null">
+                `email` = #{email},
+            </if>
+            <if test="vmType != null">
+                `vm_type` = #{vmType},
+            </if>
+            <if test="applyStatus != null">
+                `apply_status` = #{applyStatus},
+            </if>
+        </set>
+        WHERE
+        `id` = #{id}
+    </update>
+
+    <!--申请记录查询-->
+    <select id="selectApplyRecordList" parameterType="filter" resultType="QcodeApply">
+        SELECT
+            qa.id,
+            qa.user_id AS userId,
+            qa.`name` AS NAME,
+            qa.phone,
+            qa.email,
+
+        IF (
+            qa.vm_type = '1',
+            '56位',
+
+        IF (
+            qa.vm_type = '2',
+            '64位',
+            '42位'
+        )
+        ) vmType,
+         qa.purpose,
+         qu.`name` AS userName,
+         qu.email AS userEmail,
+         qa.apply_time AS applyTime,
+
+        IF (
+            qa.apply_status = '1',
+            '申请中',
+
+        IF (
+            qa.apply_status = '2',
+            '通过',
+            '未通过'
+        )
+        ) applyStatus
+        FROM
+            qcode_apply qa
+        LEFT JOIN qcode_user qu ON qa.user_id = qu.id
+        WHERE qa.user_id = #{userId}
+        ORDER BY qa.apply_time DESC
+    </select>
+</mapper>

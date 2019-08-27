@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserBadge">
+
+
+    <!--查询用户获取勋章状态-->
+    <select id="selectBadgeStatus" parameterType="filter" resultType="UserBadge">
+        SELECT
+            count(*)
+        FROM
+            user_badge
+        where 
+            `badge_id` = #{badge_id} 
+        AND
+            `userid` = #{userid}
+    </select>
+
+    <!--新的勋章-->
+    <insert id="newbadge" parameterType="UserBadge">
+        INSERT INTO forum_topic (
+        `userid`,
+        `badge_id`
+        )
+        VALUES
+        (#{userid},
+        #{badge_id}
+        )
+    </insert>
+    
+    <!--查询用户视频与考试状态-->
+    <select id="selectvideo" parameterType="filter" resultType="UserExam">
+        SELECT
+            count(*)
+        FROM
+            user_video
+        WHERE 
+            vid=#{vid}
+        AND
+            userid=#{userid}
+
+    </select>
+
+</mapper>

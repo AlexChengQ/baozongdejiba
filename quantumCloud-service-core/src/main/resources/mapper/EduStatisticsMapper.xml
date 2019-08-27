@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="EduStatisticsVo">
+
+    <!--添加注册数，签到数、app下载数、帖子发布数、视频观看数-->
+    <insert id="addEduStatistics" parameterType="filter">
+       INSERT INTO statistics (
+        register_count,
+        view_video_count,
+        publish_forum_count,
+        sign_in_count,
+        app_download_count,
+        add_time
+        )
+        VALUES
+            (
+                -- 注册数
+                (SELECT
+                    COUNT(1)
+                FROM
+                    qcode_user qu
+                WHERE
+                    DATE_FORMAT(qu.register_time, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')),
+                    -- 视频观看数(今天-昨天 = 今天的观看数)
+                    (
+                    (SELECT sum(`view`) FROM video_info) -
+                    (SELECT IFNULL(view_video_count,0) FROM
+                    statistics WHERE DATE_FORMAT(NOW(), '%Y%m%d'))
+                  ),
+                        -- 帖子发布数
+                        (SELECT
+                            COUNT(1)
+                        FROM
+                            forum_topic ft
+                        WHERE
+                            DATE_FORMAT(ft.add_time, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')),
+                            -- 签到数
+                            (SELECT
+                                COUNT(1)
+                            FROM
+                                browse_detail bd
+                            WHERE
+                                DATE_FORMAT(bd.add_time, 'Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
+                            AND bd.type = '1'),
+                            -- app下载数
+                            (
+                              (SELECT
+                                sc.val
+                            FROM
+                                sys_config sc
+                            WHERE
+                                sc.keyname = 'andriodDown') -
+
+                            (SELECT IFNULL(app_download_count,0) FROM
+                    statistics WHERE DATE_FORMAT(add_time, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d'))
+                            ),
+                                NOW()
+            )
+    </insert>
+
+
+    <!--查询注册数，签到数、app下载数、帖子发布数、视频观看数-->
+    <select id="getStatistics" parameterType="filter" resultType="EduStatisticsVo">
+        SELECT
+            DATE_FORMAT(s.add_time, '%Y%m%d') addTime,
+            <choose>
+                <when test="type == '2'.toString()">
+                    s.register_count statisticsCount,
+                </when>
+                <when test="type == '3'.toString()">
+                    s.view_video_count statisticsCount,
+                </when>
+                <when test="type == '4'.toString()">
+                    s.publish_forum_count statisticsCount,
+                </when>
+                <when test="type == '5'.toString()">
+                    s.sign_in_count statisticsCount,
+                </when>
+                <when test="type == '6'.toString()">
+                    s.app_download_count statisticsCount,
+                </when>
+            </choose>
+            s.app_download_count appDownLoadCount,
+            s.publish_forum_count publishForumCount,
+            s.register_count registCount,
+            s.sign_in_count signInCount,
+            s.view_video_count viewVideoCount,
+            s.id,
+            s.add_time addTime
+        FROM
+            statistics s
+        <where>
+            s.add_time BETWEEN #{startDate}
+            AND #{endDate}
+            ORDER BY s.add_time asc
+        </where>
+        <if test="start_index != null and max_results != null">
+            limit #{start_index},#{max_results}
+        </if>
+    </select>
+
+    <select id="getStatistics_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        statistics s
+        <where>
+            <if test="startDate != null and endDate == null">
+                DATE_FORMAT(s.add_time, '%Y%m%d') &gt;= DATE_FORMAT(#{startDate},'%Y%m%d')
+            </if>
+            <if test="endDate != null and startDate == null">
+                DATE_FORMAT(s.add_time,'%Y%m%d') &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+            </if>
+            <if test="startDate != null and endDate != null">
+                DATE_FORMAT(#{startDate},'%Y%m%d') &lt;= DATE_FORMAT(s.add_time,'%Y%m%d')
+                AND
+                DATE_FORMAT(s.add_time,'%Y%m%d') &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectList" parameterType="filter" resultType="EduStatisticsVo">
+        SELECT
+            s.app_download_count appDownLoadCount,
+            s.publish_forum_count publishForumCount,
+            s.register_count registCount,
+            s.sign_in_count signInCount,
+            s.view_video_count viewVideoCount,
+            id
+        FROM
+        statistics s
+        WHERE
+        DATE_FORMAT(s.add_time,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d')
+    </select>
+
+    <update id="update">
+        UPDATE
+          statistics
+        <trim prefix="set" suffixOverrides=",">
+          <if test="appDownLoadCount != null and appDownLoadCount != ''">
+            app_download_count = #{appDownLoadCount},
+          </if>
+          <if test="publishForumCount != null and publishForumCount != ''">
+              publish_forum_count = #{publishForumCount},
+          </if>
+          <if test="registCount != null and registCount != ''">
+              register_count = #{registCount},
+          </if>
+          <if test="signInCount != null and signInCount != ''">
+              sign_in_count = #{signInCount},
+          </if>
+          <if test="viewVideoCount != null and viewVideoCount != ''">
+              view_video_count = #{viewVideoCount}
+          </if>
+        </trim>
+        WHERE
+          id = #{id}
+    </update>
+
+    <insert id="addEduStatistics1" parameterType="filter">
+    INSERT INTO statistics (
+    register_count,
+    view_video_count,
+    publish_forum_count,
+    sign_in_count,
+    app_download_count,
+    add_time
+    )
+    VALUES
+        (
+        <if test="appDownLoadCount != null and appDownLoadCount != ''">
+            0,
+            0,
+            0,
+            0,
+            #{appDownLoadCount},
+            NOW()
+        </if>
+        <if test="publishForumCount != null and publishForumCount != ''">
+            0,
+            0,
+            #{publishForumCount},
+            0,
+            0,
+            NOW()
+        </if>
+        <if test="registCount != null and registCount != ''">
+            #{registCount},
+            0,
+            0,
+            0,
+            0,
+            NOW()
+        </if>
+        <if test="signInCount != null and signInCount != ''">
+            0,
+            0,
+            0,
+            #{signInCount},
+            0,
+            NOW()
+        </if>
+        <if test="viewVideoCount != null and viewVideoCount != ''">
+            0,
+            #{viewVideoCount},
+            0,
+            0,
+            0,
+            NOW()
+        </if>
+        )
+    </insert>
+</mapper>

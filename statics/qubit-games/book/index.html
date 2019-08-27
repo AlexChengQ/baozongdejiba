@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/> <!-- 是否启用 WebApp 全屏模式 -->
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="format-detection" content="telephone=no">
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <title>量子搜索--四大名著</title>
+    <link rel="stylesheet" href="css/css.css" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+</head>
+<body>
+
+<div class="box-all">
+    <div class="box-left">
+        <ul class="card-box clearfix" id="foo">
+            <div>量子搜索--<span>四大名著</span></div>
+            <li class="box viewport-flip" id="foo-li">
+                <div class="flip-3d">
+                    <figure>
+                        <div><img src="images/sanguo.png" alt=""><div class="tips"><span>请拖动三国演义</span></div></div>
+                        <figcaption>
+                            <img src="images/fengmian.png" alt="">
+                            <img class="loader" src="images/loading.gif" alt="">
+                        </figcaption>
+                    </figure>
+                </div>
+            </li>
+            <li class="box viewport-flip" draggable="true">
+                <div class="flip-3d">
+                    <figure>
+                        <div><img src="images/shuihuz.png" alt=""></div>
+                        <figcaption>
+                            <img src="images/fengmian.png" alt="">
+                            <img class="loader" src="images/loading.gif" alt="">
+                        </figcaption>
+                    </figure>
+                </div>
+            </li>
+            <li class="box viewport-flip" draggable="true">
+                <div class="flip-3d">
+                    <figure>
+                        <div><img src="images/xiyouji.png" alt=""></div>
+                        <figcaption>
+                            <img src="images/fengmian.png" alt="">
+                            <img class="loader" src="images/loading.gif" alt="">
+                        </figcaption>
+                    </figure>
+                </div>
+            </li>
+            <li class="box viewport-flip" draggable="true">
+                <div class="flip-3d">
+                    <figure>
+                        <div><img src="images/hongloum.png" alt=""></div>
+                        <figcaption>
+                            <img src="images/fengmian.png" alt="">
+                            <img class="loader" src="images/loading.gif" alt="">
+                        </figcaption>
+                    </figure>
+                </div>
+            </li>
+        </ul>
+        <a class="button" style="margin:40px auto;display: block;width: 274px; cursor: pointer"><img class="zhixing" src="images/zhixing.png" alt=""><img class="reset" src="images/chongzhi.png" alt=""></a>
+    </div>
+    <div class="box-right">
+        <div class="no-pic">
+            <img src="images/moren.png" />
+        </div>
+        <div class="r-text">普通计算机计算</div>
+        <div class="tips_msg tips_show">经典计算机需要逐个查找，查询了<span class="tips_num"></span>次才找到这本书</div>
+        <div class="fm_pic">
+            <img class="pic_list pic_list1" src="images/fm1.gif" />
+            <img class="pic_list pic_list2" src="images/fm2.gif" />
+            <img class="pic_list pic_list3" src="images/fm3.gif" />
+            <img class="pic_list pic_list4" src="images/fm4.gif" />
+        </div>
+        <div  class="echarts" id="echarts2">
+            <!-- <img src="images/tu.png " /> -->
+        </div>        
+        <div class="r-text">量子计算规则</div>
+        <div class="tips_msg tips_fixed">量子计算机只需要一次执行就可以找到任一本书的位置</div>
+        <div>
+            <div class="one-one f_list">
+                <span class="zz-span">
+                    <img class="loader1" src="images/loading.gif" alt="">
+                </span>
+                <img src="images/one.png" />
+            </div>
+            <div class="one-two f_list">
+                <span class="zz-span">
+                    <img class="loader1" src="images/loading.gif" alt="">
+                </span>
+                <img src="images/two.png" />
+            </div>
+            <div class="one-three f_list">
+                <span class="zz-span">
+                    <img class="loader1" src="images/loading.gif" alt="">
+                </span>
+                <img src="images/three.png" />
+            </div>
+            <div class="one-four f_list">
+                <span class="zz-span">
+                    <img class="loader1" src="images/loading.gif" alt="">
+                </span>
+                <img src="images/four.png" />
+            </div>
+        </div>
+        <div  class="echarts" id="echarts">
+            <!-- <img src="images/tu.png " /> -->
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<script src="js/Sortable.min.js"></script>
+<script type="text/javascript" src="js/echarts.js"></script>
+<script type="text/javascript" src="js/macarons.js"></script>
+
+
+<script>
+    var sort=Sortable.create(document.getElementById('foo'), {
+        group: {
+            name:"words",
+            pull: true,
+            put: true
+        },
+        animation: 150 ,//动画参数
+      onSort:function(evt){ //发生排序发生该事件
+       
+
+          $(".zhixing").click(function(){
+              $(".loader").attr("src","images/loading.gif?ran="+Math.random());
+              $(".loader1").attr("src","images/loading.gif?ran="+Math.random());
+              $(".pic_list1").attr("src","images/fm1.gif?ran="+Math.random());
+              $(".pic_list2").attr("src","images/fm2.gif?ran="+Math.random());
+              $(".pic_list3").attr("src","images/fm3.gif?ran="+Math.random());
+              $(".pic_list4").attr("src","images/fm4.gif?ran="+Math.random());
+            var index = $("#foo-li").index();
+              $(".tips_num").html(index);
+        	  $(".echarts").show();
+        	  init(0);
+        	  init1(0);
+              $(".f_list").eq(index-1).show().siblings(".f_list").hide();
+              $(".fm_pic").show();
+              $(".pic_list").eq(index-1).show().siblings(".pic_list").hide();
+              var time = 4000+index*600;
+              setTimeout(function () {
+            	  init1(index)
+              }, time);
+              $(".flip-3d").addClass("active");
+              $(this).hide();
+              $(".no-pic").hide();
+              $(".reset").show();
+              $(".r-text").show();
+              $(".tips_fixed").show();
+
+              setTimeout(function () {
+                  $(".zz-span").show();
+                  $(".loader").show();
+                  $(".loader1").show();
+              }, 1000);
+              setTimeout(function () {
+                  $(".tips_show").css("visibility","visible");
+              },6000);
+              setTimeout(function () {
+                  $("#foo-li .flip-3d").removeClass("active");
+                  $(".loader").hide();
+                  $(".tips").hide();
+
+                  $(".zz-span").animate({top:"100px",opacity:0},500);
+                  $(".loader1").hide();
+                  init(index);//gao
+              }, 9000);
+              sort.destroy();
+          });
+          $(".reset").click(function(){
+            window.location.reload();
+          });
+
+      }
+
+    });
+
+    $(".zhixing").click(function() {
+        var index = $("#foo-li").index();
+        $(".tips_num").html(index);
+        setTimeout(function () {
+            $(".tips_show").css("visibility","visible");
+        },6000);
+    });
+
+//阻止火狐浏览器拖动新建页面
+document.body.ondrop=function(ev){
+    var ev=ev||window.event;
+    ev.preventDefault();
+    
+    ev.stopPropagation();
+}
+
+
+    $(document).ready(function () {
+        //窗体高度自适应
+        $(".box-left").width($(window).width() -580);
+        $(".box-all").height($(window).height());
+        $(".box-left").height($(window).height());
+
+        
+        $(".zhixing").click(function(){
+            $(".loader").attr("src","images/loading.gif?ran="+Math.random());
+            $(".loader1").attr("src","images/loading.gif?ran="+Math.random());
+            $(".pic_list1").attr("src","images/fm1.gif?ran="+Math.random());
+            $(".pic_list2").attr("src","images/fm2.gif?ran="+Math.random());
+            $(".pic_list3").attr("src","images/fm3.gif?ran="+Math.random());
+            $(".pic_list4").attr("src","images/fm4.gif?ran="+Math.random());
+            var index = $("#foo-li").index();
+        	$(".echarts").show();
+        	init(0);
+        	init1(0);
+            sort.destroy();
+
+            $(".f_list").eq(index-1).show().siblings(".f_list").hide();
+            $(".fm_pic").show();
+            $(".pic_list").eq(index-1).show().siblings(".pic_list").hide();
+            var time = 4000+index*600;
+            setTimeout(function () {
+          	  init1(index)
+            }, time);
+            $(".flip-3d").addClass("active");
+              $(this).hide();
+              $(".no-pic").hide();
+              $(".reset").show();
+
+            $(".r-text").show();
+            $(".tips_fixed").show();
+
+
+            setTimeout(function () {
+                $(".zz-span").show();
+                $(".loader").show();
+                $(".loader1").show();
+            }, 1000);
+            setTimeout(function () {
+                $("#foo-li .flip-3d").removeClass("active");
+                $(".zz-span").animate({top:"100px",opacity:0},500);
+                $(".loader").hide();
+                $(".loader1").hide();
+                $(".tips").hide();
+                init(index);//gao
+            }, 9000);
+
+
+        });
+
+        $(".reset").click(function(){
+            window.location.reload();
+        });
+
+
+
+    });
+
+    $(window).resize(function(){
+        $(".box-all").height($(window).height());
+        $(".box-left").height($(window).height());
+        if($(window).width() > 1200){
+            //窗体高度自适应
+            $(".box-left").width($(window).width() -580);
+
+        }
+    });
+
+function init(type){
+	var xAxisData = ['1','2','3','4'];
+	var seriesData;
+	switch(type)
+	{
+	case 0:
+		seriesData = [25,25,25,25]
+	  break;
+	case 1:
+		seriesData = [85,5,5,5]
+	  break;
+	case 2:
+		seriesData = [5,85,5,5]
+	  break;
+	case 3:
+		seriesData = [5,5,85,5]
+		  break;
+	case 4:
+		seriesData = [5,5,5,85]
+		  break;	  
+	default:
+	}
+	var option = {
+		    color: ['#4fbbff'],
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    xAxis : [
+		        {
+		            type : 'category',
+		            data : xAxisData,
+		            axisTick: {
+		                alignWithLabel: true
+		            }
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'value',
+		            max:100
+		        }
+		    ],
+		    series : [
+		        {
+		            name:'量子计算',
+		            type:'bar',
+		            barWidth: '40%',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#83bff6'},
+                                    {offset: 0.5, color: '#188df0'},
+                                    {offset: 1, color: '#188df0'}
+                                ]
+                            )
+                        }
+                    },
+		            data:seriesData
+		        }
+		    ]
+		};
+    var myChart = makeChart("echarts");
+    myChart.setOption(option);
+}
+
+function init1(type){
+	var xAxisData = ['1','2','3','4'];
+	var seriesData;
+	switch(type)
+	{
+	case 0:
+		seriesData = [25,25,25,25]
+	  break;
+	case 1:
+		seriesData = [85,5,5,5]
+	  break;
+	case 2:
+		seriesData = [5,85,5,5]
+	  break;
+	case 3:
+		seriesData = [5,5,85,5]
+		  break;
+	case 4:
+		seriesData = [5,5,5,85]
+		  break;	  
+	default:
+	}
+	var option = {
+		    color: ['#4fbbff'],
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    xAxis : [
+		        {
+		            type : 'category',
+		            data : xAxisData,
+		            axisTick: {
+		                alignWithLabel: true
+		            }
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'value',
+		            max:100
+		        }
+		    ],
+		    series : [
+		        {
+		            name:'量子计算',
+		            type:'bar',
+		            barWidth: '40%',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#83bff6'},
+                                    {offset: 0.5, color: '#188df0'},
+                                    {offset: 1, color: '#188df0'}
+                                ]
+                            )
+                        }
+                    },
+		            data:seriesData
+		        }
+		    ]
+		};
+    var myChart2 = makeChart("echarts2");
+    myChart2.setOption(option);
+}
+
+function makeChart (name) {
+    var main = document.getElementById(name);
+    var div = document.createElement('div');
+    var width = document.body.clientWidth;
+    div.style.cssText = width + 'px; height:200px';
+    if ($("#"+name+":has(div)").length<2){
+    	$("#"+name+"").html("");
+    	main.appendChild(div);
+    }    
+    return echarts.init(div);
+}
+</script>
+
+</body>
+</html>

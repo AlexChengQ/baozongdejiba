@@ -1,0 +1,141 @@
+﻿*{margin: 0;padding: 0;}
+/*红包*/
+.hb_title{
+    position: fixed;
+    width: 100%;
+    height: 60px;
+    background: #fff;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    line-height: 60px;
+    padding-left: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.hb_title span{
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.shade {
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    display: none;
+}
+
+.hongbao_box{
+    width: 580px;
+    height: 580px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -290px;
+    margin-top: -235px;
+}
+
+.hongbao_msg{
+    position: absolute;
+	top:-20px;
+	color:#8e4b00;
+    width: 560px;
+    height: 74px;
+    line-height: 22px;
+    text-align: justify;
+	z-index:9999999;
+	    border: 2px #de8828 dashed;
+    border-radius: 30px;
+    padding: 16px;
+	margin:0 auto ;
+}
+
+.hongbao_msg a{cursor: pointer;}
+
+.compute{
+    position: absolute;
+    width: 901px;
+    height: 182px;
+    top: -85px;
+    left: 50%;
+    margin-left: -450px;
+    display: none;
+}
+
+.compute img{
+    position: absolute;
+    top:0;
+    right: 0;
+}
+
+.compute img:last-child{
+    width: 182px;
+    height: 182px;
+    right: auto;
+    left: 0;
+    z-index: 1;
+}
+
+.receive,.scan{width: 100%;height: 100%;position: relative;}
+.receive div{
+    font-size: 24px;
+    color: #ffc100;
+    position: absolute;
+    left: 238px;
+    top: 140px;
+    z-index: 1;
+    letter-spacing: 1px;
+}
+.receive span{
+    position: absolute;
+    bottom: 270px;
+    left: 230px;
+    display: block;
+    animation: c_change .5s infinite;
+    display: none;
+}
+@keyframes c_change
+{
+    from {color:#de3121;}
+    to {color:#ffc100;}
+}
+
+@-webkit-keyframes c_change
+{
+    from {color:#de3121;}
+    to {color:#ffc100;}
+}
+.receive img{position: absolute;bottom: 10px;left: 0;}
+.receive p{position: absolute;bottom: 200px;left: 210px;width: 165px;height: 44px;line-height: 44px;background: url("../images/hb_02.png") no-repeat;cursor: pointer;text-align: center;color:#de3121;font-size: 20px;font-weight: bold;}
+.receive p:hover{background: url("../images/hb_03.png") no-repeat;}
+.hb_04,.hb_05,.hb_06{position: absolute;}
+.hb_04{bottom: 10px;left: 0;z-index: 102;}
+.hb_05{bottom: 48px;left: 195px;z-index: 101;transition: all .5s;width: 188px;height: 188px;}
+.hb_05.active{bottom: 392px;}
+.hb_06{bottom: 150px;left: 18px;z-index: 100;}
+.scan{display: none;}
+.scan div{
+    font-size: 20px;
+    color: #fcca03;
+    position: absolute;
+    bottom: 300px;
+    left: 245px;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    z-index: 103;
+}
+.scan p{
+    font-size: 16px;
+    color: #fff;
+    position: absolute;
+    bottom: 255px;
+    left: 216px;
+    z-index: 103;
+}

@@ -1,0 +1,1957 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ForumTopicVo">
+
+    <resultMap id="ForumTopicMap" type="com.bylz.quantumCloud.model.ForumTopicVo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="belonged" jdbcType="VARCHAR" property="belonged" />
+        <result column="id" jdbcType="VARCHAR" property="forumTopicId" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="userName" jdbcType="VARCHAR" property="userName" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="replyCount" jdbcType="INTEGER" property="replyCount" />
+        <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="applyStatus" jdbcType="BIGINT" property="applyStatus" />
+        <result column="approvalCount" jdbcType="INTEGER" property="approvalCount" />
+        <result column="noApprovalCount" jdbcType="INTEGER" property="noApprovalCount" />
+        <result column="noApplyCount" jdbcType="INTEGER" property="noApplyCount" />
+        <result column="collectCount" jdbcType="INTEGER" property="collectCount" />
+        <result column="topicFace" jdbcType="VARCHAR" property="topicFace" />
+        <result column="face" jdbcType="VARCHAR" property="face" />
+        <result column="seeCount" jdbcType="INTEGER" property="seeCount" />
+        <result column="userTitle" jdbcType="INTEGER" property="userTitle" />
+        <result column="blockName" jdbcType="VARCHAR" property="blockName" />
+        <collection property="labelList" ofType="com.bylz.quantumCloud.model.ForumLableVo" >
+            <id  column="forum_topic_id" jdbcType="BIGINT" property="forumTopicId" />
+            <result column="id" jdbcType="BIGINT" property="id" />
+            <result column="label" jdbcType="VARCHAR" property="label" />
+            <result column="add_time" property="addTime" />
+        </collection>
+    </resultMap>
+    <resultMap id="ForumTopicCollecMap" type="com.bylz.quantumCloud.model.ForumTopicVo">
+        <id column="id" jdbcType="BIGINT" property="forumTopicId" />
+        <result column="belonged" jdbcType="VARCHAR" property="belonged" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="replyCount" jdbcType="INTEGER" property="replyCount" />
+        <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="applyStatus" jdbcType="BIGINT" property="applyStatus" />
+        <result column="approvalCount" jdbcType="INTEGER" property="approvalCount" />
+        <result column="noApprovalCount" jdbcType="INTEGER" property="noApprovalCount" />
+        <result column="noApplyCount" jdbcType="INTEGER" property="noApplyCount" />
+        <result column="collectCount" jdbcType="INTEGER" property="collectCount" />
+        <result column="topicFace" jdbcType="VARCHAR" property="topicFace" />
+        <result column="face" jdbcType="VARCHAR" property="face" />
+        <result column="seeCount" jdbcType="INTEGER" property="seeCount" />
+        <collection property="collectList" ofType="com.bylz.quantumCloud.model.ForumCollectVo">
+            <id  column="forum_topic_id" jdbcType="BIGINT" property="forumTopicId" />
+            <result column="title" jdbcType="VARCHAR" property="title" />
+            <result column="user_id" jdbcType="VARCHAR" property="userId" />
+            <result column="userName" jdbcType="VARCHAR" property="userName" />
+            <result column="is_collect" jdbcType="VARCHAR" property="isCollection" />
+            <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="FeedBackMap" type="com.bylz.quantumCloud.model.FeedBackVo">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="problemType" jdbcType="VARCHAR" property="problemType"/>
+        <result column="userId" jdbcType="BIGINT" property="userId"/>
+        <result column="userName" jdbcType="VARCHAR" property="userName"/>
+        <result column="belonged" jdbcType="VARCHAR" property="belonged"/>
+        <result column="addTime"  property="addTime"/>
+        <collection property="relationFileList" ofType="com.bylz.quantumCloud.model.RelationFileVo">
+            <id column="relationId" jdbcType="VARCHAR" property="relationId"/>
+            <result column="fileId" jdbcType="VARCHAR" property="fileId"/>
+            <result column="fileName" jdbcType="VARCHAR" property="fileName"/>
+            <result column="relationFile" jdbcType="BLOB" property="bt"/>
+        </collection>
+    </resultMap>
+
+    <!--后台审核分页查询-->
+    <select id="selectAdminList_count" parameterType="filter" resultType="int">
+        SELECT COUNT(1) FROM
+        (SELECT
+        COUNT(DISTINCT if(ftr.apply_status = '0',ftr.id,NULL )) AS noApplyCount
+        FROM
+        forum_topic ft
+        LEFT JOIN
+        qcode_user su ON ft.user_id = su.id
+        LEFT JOIN forum_topic_reply ftr ON ft.id = ftr.forum_topic_id
+        WHERE
+        1=1
+        <if test="title != null and title != ''">
+            AND ft.title LIKE CONCAT(
+            '%',
+            #{title},'%')
+        </if>
+        <if test="userName != null  and userName != ''">
+            AND su.name LIKE CONCAT(
+            '%',
+            #{userName},'%')
+        </if>
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ft.apply_status = #{applyStatus}
+        </if>
+        GROUP BY
+        ft.id
+        ORDER BY ft.add_time DESC) t
+        <if test="noApplyCount==0">
+            WHERE
+            t.noApplyCount = 0
+        </if>
+        <if test="noApplyCount==1">
+            WHERE
+            t.noApplyCount > 0
+        </if>
+    </select>
+    <!--后台审核分页查询-->
+    <select id="selectAdminList" parameterType="filter" resultType="Map">
+        SELECT t.* FROM
+        (SELECT
+                ft.id,
+                ft.user_id AS userId,
+                su.name AS userName,
+                ft.title,
+                ft.content AS content,
+                        ft.add_time AS addTime,
+                ft.apply_status AS applyStatus,
+        COUNT(DISTINCT if(ftr.apply_status = '0',ftr.id,NULL )) AS noApplyCount
+            FROM
+                forum_topic ft
+            LEFT JOIN
+                qcode_user su ON ft.user_id = su.id
+            LEFT JOIN forum_topic_reply ftr ON ft.id = ftr.forum_topic_id
+            WHERE
+                1=1
+        <if test="title != null and title != ''">
+            AND ft.title LIKE CONCAT(
+            '%',
+            #{title},'%')
+        </if>
+        <if test="userName != null  and userName != ''">
+            AND su.name LIKE CONCAT(
+            '%',
+            #{userName},'%')
+        </if>
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ft.apply_status = #{applyStatus}
+        </if>
+        GROUP BY
+        ft.id
+        ORDER BY ft.add_time DESC) t
+        <if test="noApplyCount==0">
+            WHERE
+            t.noApplyCount = 0
+        </if>
+        <if test="noApplyCount==1">
+            WHERE
+            t.noApplyCount > 0
+        </if>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+
+
+    <select id="selectIndexList_count" parameterType="filter" resultType="int">
+        SELECT COUNT(1) FROM (
+        SELECT
+        1
+        FROM
+        forum_topic ft
+        LEFT JOIN qcode_user su ON ft.user_id = su.id
+        LEFT JOIN forum_label fl ON ft.id = fl.forum_topic_id
+        LEFT JOIN dic_context dc ON fl.label_id = dc.dic_flag AND dc.dic_id = '3'
+        LEFT JOIN dic ON dic.id = dc.dic_id AND dic.dic_name = 'Label'
+        WHERE 1=1
+        <if test="belonged != null and belonged != ''">
+            AND ft.belonged = #{belonged}
+        </if>
+        <if test="label != null and label != '' and label != 10000">
+            AND dc.dic_flag= #{label}
+        </if>
+        <if test="content != null and content != ''">
+            AND (ft.title LIKE CONCAT(
+            '%',
+            #{content},'%') OR ft.content LIKE CONCAT(
+            '%',
+            #{content},'%') OR dc.dic_context LIKE CONCAT(
+            '%',
+            #{content},'%') OR su.name LIKE concat('%',#{content},'%'))
+        </if>
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ft.apply_status = #{applyStatus}
+        </if>
+        <choose>
+            <when test="timeOrder == 1">
+                AND TO_DAYS(NOW()) - TO_DAYS(ft.add_time) &lt;= 3
+            </when>
+            <when test="timeOrder == 2">
+                AND TO_DAYS(NOW()) - TO_DAYS(ft.add_time) &lt;= 7
+            </when>
+            <when test="timeOrder == 3">
+                AND TO_DAYS(NOW()) - TO_DAYS(ft.add_time) &lt;= 30
+            </when>
+        </choose>
+        GROUP BY ft.id
+        ) a
+    </select>
+    <!--分页查询列表-->
+    <select id="selectIndexList" parameterType="filter" resultMap="ForumTopicMap">
+        SELECT
+        ft.id,
+        ft.user_id AS userId,
+        su.name AS userName,
+        case
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0))  >= 3000 then '量子传奇'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >= 600 then '量子巨匠'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >= 400 then '量子大师'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >=200 then '量子名士'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >=50 then '量子剑心'
+        else '量子浪客' end as userTitle,
+        su.face face,
+        ft.title,
+        ft.content AS content,
+        ft.belonged,
+        bl.block_name blockName,
+        COUNT(DISTINCT
+        <choose>
+            <when test="applyStatus != null and applyStatus != ''">
+                if(ftr.apply_status = '1',ftr.id,NULL)
+            </when>
+            <otherwise>
+                ftr.id
+            </otherwise>
+        </choose>
+
+        ) AS replyCount,
+        ft.add_time AS addTime,
+        dc.dic_context label,
+        fl.label_id,fl.forum_topic_id AS forumTopicId,
+        ft.topic_face topicFace,
+        ft.see_count seeCount
+        FROM
+        forum_topic ft
+        LEFT JOIN qcode_user su ON ft.user_id = su.id
+        LEFT JOIN user_bonus ub ON su.id = ub.userid
+        LEFT JOIN forum_topic_reply ftr ON ft.id = ftr.forum_topic_id
+        LEFT JOIN forum_topic_collect ftc ON ft.id = ftc.forum_topic_id
+        LEFT JOIN forum_label fl ON ft.id = fl.forum_topic_id
+        LEFT JOIN dic_context dc ON fl.label_id = dc.dic_flag  AND dc.dic_id = '3'
+        LEFT JOIN dic ON dic.id = dc.dic_id AND dic.dic_name = 'Label'
+        LEFT JOIN block bl ON bl.id = ft.belonged
+        WHERE
+          1=1
+        <if test="belonged != null and belonged != '' and isOutSearch == 0">
+            AND   ft.belonged = #{belonged}
+        </if>
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ft.apply_status = #{applyStatus}
+        </if>
+        <if test="applyStatus == null or applyStatus == ''">
+            AND  (CASE WHEN bl.isApproval = '1' THEN 'ft.apply_status = 1' ELSE  '1=1'  END )
+        </if>
+        <if test="label != null and label != '' and label != 10000">
+            AND dc.dic_flag= #{label}
+        </if>
+        <if test="content != null and content != ''">
+            AND (ft.title LIKE CONCAT(
+            '%',
+            #{content},'%') OR ft.content LIKE CONCAT(
+            '%',
+            #{content},'%') OR dc.dic_context LIKE CONCAT(
+            '%',
+            #{content},'%') OR su.name LIKE concat('%',#{content},'%'))
+        </if>
+        <choose>
+            <when test="timeOrder == 1">
+                AND TO_DAYS(NOW()) - TO_DAYS(ft.add_time) &lt;= 3
+            </when>
+            <when test="timeOrder == 2">
+                AND TO_DAYS(NOW()) - TO_DAYS(ft.add_time) &lt;= 7
+            </when>
+            <when test="timeOrder == 3">
+                AND TO_DAYS(NOW()) - TO_DAYS(ft.add_time) &lt;= 30
+            </when>
+        </choose>
+        <if test="orderType == 1">
+            AND ft.see_count &gt;= 50
+        </if>
+
+        <if test="start != null and limit != null">
+            AND ft.id IN
+            (SELECT id FROM (SELECT t.id FROM forum_topic t
+            LEFT JOIN qcode_user suu ON t.user_id = suu.id
+            LEFT JOIN forum_label fll ON t.id = fll.forum_topic_id
+            LEFT JOIN dic_context dcc ON fll.label_id = dcc.dic_flag
+            AND dcc.dic_id = '3'
+            <where>
+            <if test="applyStatus != null and applyStatus != ''">
+                t.apply_status = #{applyStatus}
+            </if>
+            <if test="belonged != null and belonged != ''">
+                AND t.belonged = #{belonged}
+            </if>
+                <if test="content != null and content != ''">
+                    AND (t.title LIKE CONCAT('%', #{content}, '%')
+                    OR t.content LIKE CONCAT('%', #{content}, '%')
+                    OR dcc.dic_context LIKE CONCAT('%', #{content}, '%')
+                    OR suu. NAME LIKE concat('%', #{content}, '%'))
+                </if>
+                <if test="orderType == 1">
+                    AND t.see_count &gt;= 50
+                </if>
+            </where>
+            GROUP BY t.id
+            ORDER BY t.top_level ASC,
+            t.top_time DESC,
+            <if test="orderType != null and orderType != ''">
+                t.see_count DESC
+            </if>
+            <if test="orderType == null or orderType == ''">
+                t.add_time DESC
+            </if>
+              limit #{start},#{limit}) AS temp)
+        </if>
+        GROUP BY
+        ft.id,
+        fl.label_id,
+        fl.id
+        <if test="repTime == null or repTime == ''">
+            order by ft.top_level ASC ,ft.top_time DESC,
+            <if test="orderType == 1">
+                ft.see_count DESC
+            </if>
+            <if test="orderType != 1">
+                ft.add_time DESC
+            </if>
+        </if>
+        <if test="repTime == 1">
+            order by ft.top_level ASC ,ft.top_time DESC ,
+            <if test="orderType == 1">
+                ft.see_count DESC
+            </if>
+            <if test="orderType != 1">
+                ft.add_time DESC
+            </if>
+
+        </if>
+        <if test="repTime == 2">
+            order by ft.top_level ASC ,ft.top_time DESC,
+            <if test="orderType == 1">
+                ft.see_count DESC
+            </if>
+            <if test="orderType != 1">
+                ft.add_time DESC
+            </if>
+        </if>
+    </select>
+    <!--根据id查询内容-->
+    <select id="selectList" parameterType="filter" resultType="ForumTopicVo">
+        SELECT
+        ft.id,
+        ft.user_id AS userId,
+        su.name AS userName,
+        su.face face,
+        case
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0))  >= 3000 then '量子传奇'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >= 600 then '量子巨匠'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >= 400 then '量子大师'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >=200 then '量子名士'
+        when
+        SUM(IFNULL(su.score, 0) + IFNULL(ub.score, 0)) >=50 then '量子剑心'
+        else '量子浪客' end as userTitle,
+        ft.title,
+        ft.content,
+        ft.belonged,
+        ft.content AS delContent,
+        COUNT(DISTINCT ftr.id) AS replyCount,
+        MAX(ftr.add_time) AS newReplyTime,
+        ft.add_time AS addTime,
+        ft.apply_status AS applyStatus,
+        ft.approval_count AS approvalCount,
+        ft.no_approval_count AS noApprovalCount,
+	    IFNULL(ftl.approval_count, 0) AS isApproval,
+	    IFNULL(ftl.no_approval_count, 0) AS isNoApproval,
+	    IF(ftc2.is_collect is NOT NULL ,ftc2.is_collect, '0' ) AS isCollect,
+        COUNT(DISTINCT if(ftc.is_collect = '1',ftc.id,NULL )) AS collectCount,
+        ft.shar_count AS sharCount ,
+         ft.topic_face AS topicFace,
+         ft.see_count AS seeCount
+        FROM
+        forum_topic ft
+        LEFT JOIN qcode_user su ON ft.user_id = su.id
+        LEFT JOIN user_bonus ub ON su.id = ub.userid
+        LEFT JOIN forum_topic_reply ftr ON ft.id = ftr.forum_topic_id
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ftr.apply_status = '1'
+        </if>
+        LEFT JOIN forum_topic_like ftl ON ftl.forum_topic_id = #{id}
+        AND ftl.forum_reply_id = 0
+        <choose>
+            <when test="userId != null and userId != ''">
+                AND ftl.user_id = #{userId}
+            </when>
+            <otherwise>
+                AND ftl.user_id = '-000001'
+            </otherwise>
+        </choose>
+        LEFT JOIN forum_topic_collect ftc ON ft.id = ftc.forum_topic_id
+        LEFT JOIN
+        forum_topic_collect ftc2 ON ft.id = ftc2.forum_topic_id
+        <choose>
+            <when test="userId != null and userId != ''">
+                AND ftc2.user_id = #{userId}
+            </when>
+            <otherwise>
+                AND ftc2.user_id = '-000001'
+            </otherwise>
+        </choose>
+
+        WHERE ft.id = #{id}
+        GROUP BY
+        ft.id
+    </select>
+
+
+    <select id="getIsApproval" parameterType="filter" resultType="String">
+        SELECT
+          isApproval
+        FROM
+          block
+        <where>
+            <if test="belonged != null and belonged != ''">
+                AND id = #{belonged}
+            </if>
+        </where>
+    </select>
+
+
+    <!--查询回复集合-->
+    <select id="findReplyList_count" parameterType="filter" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        forum_topic_reply ftr
+        WHERE
+        ftr.forum_topic_id = #{forumTopicId}
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ftr.apply_status = #{applyStatus}
+            AND ftr.apply_status = #{applyStatus}
+        </if>
+        <if test="content != null and content != ''">
+            AND ftr.content LIKE CONCAT('%',#{content},'%')
+        </if>
+    </select>
+    <!--查询回复集合-->
+    <select id="findReplyList" parameterType="filter" resultType="Map">
+        SELECT
+        ftr.id,
+        ftr.user_id AS userId,
+        ftr.apply_status AS applyStatus,
+        su0.face AS userFace,
+        su0. NAME AS userName,
+        ftr.content,
+        ftr.approval_count AS approvalCount,
+        IFNULL(ftl.approval_count, 0) AS isApproval,
+        ftr1.user_id AS repdUserId,
+        su1.face AS repdUserFace,
+        su1. NAME AS repdUserName,
+        ftr1.content AS repdContent,
+        ftr.add_time AS addTime,
+        <choose>
+            <when test="userId != null and userId != ''">
+                if(ftr.user_id = #{userId},'1','0')
+            </when>
+            <otherwise>
+                '0'
+            </otherwise>
+        </choose>
+         AS  delFlag,
+        ftr.p_ids AS pIds,
+        ftr.parent_id AS parentId
+        FROM
+        forum_topic_reply ftr
+        LEFT JOIN qcode_user su0 ON ftr.user_id = su0.id
+        LEFT JOIN forum_topic_like ftl ON ftl.forum_topic_id = #{forumTopicId}
+        AND ftl.forum_reply_id = ftr.id
+        AND ftl.user_id = #{userId}
+        LEFT JOIN forum_topic_reply ftr1 ON ftr.parent_id = ftr1.id
+        LEFT JOIN qcode_user su1 ON ftr1.user_id = su1.id
+        WHERE
+        ftr.forum_topic_id = #{forumTopicId}
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ftr.apply_status = #{applyStatus}
+        </if>
+        <if test="content != null and content != ''">
+            AND ftr.content LIKE CONCAT('%',#{content},'%')
+        </if>
+        ORDER BY
+        ftr.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <!--新增论坛-->
+    <insert id="save" parameterType="ForumTopicVo">
+        INSERT INTO forum_topic (
+        `user_id`,
+        `title`,
+        content,
+        reply_count,
+        add_time,
+        topic_face,
+        belonged,
+        top_time
+        )
+        VALUES
+        (#{userId},
+        #{title},
+        #{content},
+        #{replyCount},
+        NOW(),
+        #{topicFace},
+        #{belonged},
+        STR_TO_DATE('1994-01-01 00:00:00', '%Y-%m-%d %H:%i:%s')
+        )
+    </insert>
+
+    <!--查询最大的帖子Id-->
+    <select id="getMaxForumId" resultType="java.lang.Integer">
+        SELECT IFNULL(MAX(ID),1) FROM forum_topic
+    </select>
+
+    <!--添加标签-->
+    <insert id="saveLable" parameterType="filter">
+        INSERT INTO forum_label(forum_topic_id,label_id,add_time) values
+        <foreach collection="lableList" item="lableList" separator=",">
+            (
+              ${lableList.forumTopicId},${lableList.label},NOW()
+            )
+        </foreach>
+    </insert>
+
+    <!--查询所有标签-->
+    <select id="getAllLabel" parameterType="filter" resultType="com.bylz.quantumCloud.model.ForumLableVo">
+        SELECT
+            dc.dic_flag id,
+            dc.dic_context label
+        FROM
+            dic
+        LEFT JOIN dic_context dc ON dic.id = dc.dic_id
+        WHERE
+            dic.dic_name = 'Label' AND dc.deflag = '1'
+            ORDER BY dc.is_fixed DESC,dc.quotes_count DESC
+    </select>
+
+    <!--查询所有标签-->
+    <select id="getAllLabelNoFlag" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        max(dic_flag+0) +1
+        FROM
+        dic
+        LEFT JOIN dic_context dc ON dic.id = dc.dic_id
+        WHERE
+        dic.dic_name = 'Label'
+    </select>
+
+    <insert id="addForumReply" parameterType="filter">
+        INSERT INTO forum_topic_reply (
+        `forum_topic_id`,
+        `user_id`,
+        user_name,
+        <if test="repdUserId != null and repdUserId != ''">
+            repd_user_id,
+        </if>
+        content,
+        parent_id,
+        p_ids,
+        add_time
+        )
+        VALUES
+        (#{forumTopicId},
+        #{userId},
+        #{userName},
+        <if test="repdUserId != null and repdUserId != ''">
+            #{repdUserId},
+        </if>
+        #{content},
+        #{parentId},
+        CONCAT(#{pIds},#{parentId},','),
+        NOW()
+        )
+    </insert>
+    <update id="updReplyCount" parameterType="filter">
+        UPDATE forum_topic
+        SET reply_count = reply_count + 1
+
+        WHERE
+            id = #{forumTopicId}
+    </update>
+    <!--论坛主题审核-->
+    <update id="updTopicAudit" parameterType="filter">
+        UPDATE forum_topic
+        SET
+        <if test="sharCount!=null and sharCount!=''">
+            shar_count = shar_count+#{sharCount}
+        </if>
+        <if test="applyStatus!=null and applyStatus!=''">
+            apply_status = #{applyStatus}
+        </if>
+        <if test="approvalCount!=null and approvalCount!=''">
+            approval_count = approval_count+ #{approvalCount}
+        </if>
+        <if test="noApprovalCount!=null and noApprovalCount!=''">
+            no_approval_count = no_approval_count + #{noApprovalCount}
+        </if>
+        WHERE
+        id = #{id}
+    </update>
+
+    <!--论坛主题批量审核-->
+    <update id="updTopicBatchAudit" parameterType="filter">
+        UPDATE forum_topic
+        SET
+            apply_status = '1'
+        WHERE
+        id IN
+        <foreach collection="ids" item="ids" open="(" close=")" separator=",">
+            ${ids}
+        </foreach>
+    </update>
+
+    <!--论坛主题批量删除-->
+    <update id="delTopicBatchAudit" parameterType="filter">
+        DELETE  FROM forum_topic
+        WHERE
+        id IN
+        <foreach collection="ids" item="ids" open="(" close=")" separator=",">
+            ${ids}
+        </foreach>
+    </update>
+
+
+    <update id="replyAuditAll" parameterType="filter">
+        UPDATE forum_topic_reply SET apply_status = #{applyStatus}
+        WHERE
+        id IN
+        <foreach collection="replyIds" item="item" separator="," open="(" close=")">
+            ${item}
+        </foreach>
+    </update>
+    <!--修改回复表-->
+    <update id="updateReply" parameterType="filter">
+        UPDATE forum_topic_reply SET
+        <if test="approvalCount!=null and approvalCount!=''">
+            approval_count = approval_count + #{approvalCount}
+        </if>
+        <if test="noApprovalCount!=null and noApprovalCount!=''">
+            no_approval_count = no_approval_count + #{noApprovalCount}
+        </if>
+        WHERE
+        id = #{id}
+    </update>
+    <!--修改赞踩-->
+    <update id="updForumTopicLike" parameterType="filter">
+        UPDATE forum_topic_like
+        SET
+        <if test="approvalCount!=null and approvalCount!=''">
+            approval_count = approval_count+#{approvalCount}
+        </if>
+        <if test="noApprovalCount!=null and noApprovalCount!=''">
+            no_approval_count=no_approval_count+#{noApprovalCount}
+        </if>
+        WHERE
+        forum_topic_id = #{forumTopicId} AND forum_reply_id=#{forumReplyId} AND user_id = #{userId}
+    </update>
+    <!--新增赞踩-->
+    <insert id="saveForumTopicLike" parameterType="filter">
+
+        INSERT INTO forum_topic_like(
+        forum_topic_id,
+        forum_reply_id,
+        <if test="approvalCount!=null and approvalCount!=''">
+            approval_count,
+        </if>
+        <if test="noApprovalCount!=null and noApprovalCount!=''">
+            no_approval_count,
+        </if>
+        user_id,
+        add_time
+        )
+        SELECT #{forumTopicId},
+        #{forumReplyId},
+        <if test="approvalCount!=null and approvalCount!=''">
+            1,
+        </if>
+        <if test="noApprovalCount!=null and noApprovalCount!=''">
+            1,
+        </if>
+        #{userId},
+        NOW()
+        FROM DUAL
+        WHERE NOT EXISTS(
+        SELECT 1 FROM forum_topic_like tl WHERE tl.forum_topic_id = #{forumTopicId}
+        AND tl.forum_reply_id=#{forumReplyId}
+        AND tl.user_id = #{userId}
+        )
+    </insert>
+    <!--修改收藏-->
+    <update id="updCollect" parameterType="filter">
+        UPDATE forum_topic_collect
+        SET is_collect = #{isCollect}
+        WHERE
+            forum_topic_id = #{forumTopicId} AND user_id=#{userId}
+    </update>
+    <!--保存收藏-->
+    <insert id="saveCollect" parameterType="filter">
+        INSERT INTO forum_topic_collect (
+            forum_topic_id,
+            user_id,
+            is_collect,
+            add_time
+        ) SELECT
+            #{forumTopicId},
+            #{userId},
+            #{isCollect},
+            NOW()
+        FROM
+            DUAL
+        WHERE
+            NOT EXISTS (
+                SELECT
+                    1
+                FROM
+                    forum_topic_collect ftc
+                WHERE
+                    ftc.forum_topic_id = #{forumTopicId}
+                AND ftc.user_id = #{userId}
+            )
+    </insert>
+    <!--删除回复-->
+    <delete id="delReply" parameterType="filter">
+        DELETE FROM forum_topic_reply WHERE
+        <if test="nextId ==null">
+            id = #{id} and user_id = #{userId}
+        </if>
+        <if test="nextId !=null">
+           p_ids like CONCAT('%',#{id},'%')
+        </if>
+    </delete>
+
+    <!--批量删除回复-->
+    <delete id="delBatchReply" parameterType="filter">
+        DELETE FROM forum_topic_reply WHERE
+        id IN
+        <foreach collection="replyIds" open="(" close=")" separator="," item="replyIds">
+            ${replyIds}
+        </foreach>
+    </delete>
+
+    <!--添加关注-->
+    <insert id="addFocus" parameterType="filter">
+        INSERT INTO focus_details (
+            focus_user_id,
+            focus_date,
+            user_id
+        )
+        VALUES
+            (#{userId}, NOW(), #{focusId})
+    </insert>
+
+    <!--删除关注-->
+    <delete id="delFocus" parameterType="filter">
+        DELETE
+        FROM
+            focus_details
+        WHERE
+            user_id = #{focusId}
+        AND focus_user_id = #{userId}
+    </delete>
+
+    <!--查询我的帖子-->
+    <select id="getMyForum" parameterType="filter" resultType="Map">
+        SELECT
+            ft.id,
+            ft.title,
+            ft.add_time addTime,
+            IFNULL((SELECT COUNT(1) FROM forum_topic_reply ftr WHERE ftr.forum_topic_id = ft.id),0) AS replyCount,
+            IFNULL(ft.see_count,0) seeCount,
+            ft.topic_face topicFace,
+            CASE ft.apply_status WHEN '1' THEN '已审核' ELSE '未审核' END applyStatus
+        FROM
+            forum_topic ft
+        WHERE
+            ft.user_id = #{userId}
+            ORDER BY ft.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询我的帖子-->
+    <select id="getMyForum_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM
+        forum_topic ft
+        WHERE
+        ft.user_id = #{userId}
+        ORDER BY ft.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询我回复的帖子-->
+    <select id="getMyReplyForum" parameterType="filter" resultType="Map">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        ft.id,
+        ft.title,
+        ft.topic_face topicFace,
+        ftr.add_time addTime,
+        ftr.content,
+        '0' type
+        FROM
+        forum_topic_reply ftr
+        LEFT JOIN forum_topic ft ON ftr.forum_topic_id = ft.id
+        WHERE
+        ftr.user_id = #{userId}
+        UNION ALL
+        SELECT
+        vi.vid id,
+        vi.title,
+        vi.img,
+        tr.add_time addTime,
+        tr.content,
+        '1' type
+        FROM
+        tutorial_review tr,
+        video_info vi
+        WHERE
+        tr.forum_topic_id = vi.vid
+        AND tr.user_id = #{userId}
+        ) t
+        ORDER BY
+        t.addTime DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--我的回复-->
+    <select id="getMyReplyForum_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        forum_topic_reply ft
+        WHERE
+        ft.user_id = #{userId}
+        ORDER BY ft.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    
+    <!--查询浏览表中是否有记录-->
+    <select id="getBrowseDetail" parameterType="filter" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM browse_detail t WHERE t.ip = #{ip} AND t.forum_top_id = #{id}
+    </select>
+
+    <!--添加浏览记录-->
+    <insert id="saveBrowseDetail" parameterType="filter">
+        INSERT INTO browse_detail(ip,add_time,forum_top_id,type) VALUES (#{ip},NOW(),#{forumTopicId},#{type})
+    </insert>
+
+    <!--删除今天浏览记录-->
+    <delete id="delBrowse">
+        TRUNCATE TABLE browse_detail
+    </delete>
+
+    <!--修改主题表中浏览数-->
+    <update id="updBrowseCount" parameterType="filter">
+        UPDATE forum_topic t SET t.see_count = IFNULL(t.see_count,0)+1 WHERE t.id = #{forumTopicId}
+    </update>
+    
+    <!--查询不在线时被关注，收藏等的数量-->
+    <select id="getNotOnlineCount" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+            IFNULL(sum(t.op_count),0) opCount
+        FROM
+            forum_notonline t
+        WHERE
+            t.`status` = '0'
+        AND t.user_id = #{userId}
+    </select>
+
+    <!--查询收藏列表-->
+    <select id="queryCollect" parameterType="filter" resultType="Map">
+        SELECT
+            ft.id,
+            ft.title,
+            ft.topic_face topicFace,
+            ft.add_time addTime,
+            fc.user_id userId,
+            qu.name nickName
+        FROM
+            forum_topic_collect fc
+        LEFT JOIN forum_topic ft ON fc.forum_topic_id = ft.id
+        LEFT JOIN qcode_user qu ON fc.user_id = qu.id
+        WHERE
+            fc.is_collect = '1'
+        AND fc.user_id = #{userId}
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询收藏列表-->
+    <select id="queryCollect_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM
+        forum_topic_collect fc
+        WHERE
+        fc.is_collect = '1'
+        AND fc.user_id = #{userId}
+    </select>
+
+    <!--插入不在线时数据-->
+    <insert id="addNotOnlineData" parameterType="filter">
+        INSERT INTO forum_notonline (
+            op_count,
+            type,
+            STATUS,
+            user_id
+        )
+        VALUES
+            (
+            '1',
+            #{opType},
+            '0',
+            #{userId}
+            )
+    </insert>
+
+
+    <!--查询发帖人详情-->
+    <select id="queryForumUser" parameterType="filter" resultType="Map">
+        SELECT
+            IFNULL(SUM(t.shar_count),0) sharCount,
+            IFNULL((
+                SELECT
+                    COUNT(1)
+                FROM
+                    forum_topic_collect ftc
+                WHERE
+                    ftc.forum_topic_id = t.id
+                GROUP BY
+                    ftc.forum_topic_id
+            ),0) collectCount,
+            IFNULL((
+                SELECT
+                    COUNT(1)
+                FROM
+                    focus_details fd
+                WHERE
+                    fd.focus_user_id = t.user_id
+                GROUP BY
+                    fd.focus_user_id
+            ),0) focusCount,
+            qu.`name`,
+            qu.face,
+            qu.id,
+            <choose>
+                <when test="userId != null and userId != ''">
+                    CASE WHEN (SELECT COUNT(1) FROM focus_details f WHERE f.user_id = #{userId} AND f.focus_user_id = #{forumUserId}) > 0 THEN '1' ELSE '0' END isFocus
+                </when>
+                <otherwise>
+                    '0' isFocus
+                </otherwise>
+            </choose>
+        FROM
+            forum_topic t right JOIN qcode_user qu ON t.user_id = qu.id
+        WHERE
+            qu.id = #{forumUserId}
+        GROUP BY
+            t.user_id
+    </select>
+
+    <!--查询谁收藏了我的哪些帖子-->
+    <select id="queryCollectForum" parameterType="filter" resultMap="ForumTopicCollecMap">
+        SELECT
+            ftc.forum_topic_id forumTopicId,
+            qu.`name` userName,
+            ft.id,
+            ft.id,
+            ft.title,
+            ft.topic_face face
+        FROM
+            forum_topic_collect ftc
+        LEFT JOIN forum_topic ft ON ft.id = ftc.forum_topic_id
+        LEFT JOIN qcode_user qu ON ftc.user_id = qu.id
+        WHERE
+            ft.user_id = #{userId}
+            AND ftc.is_collect = '1'
+            ORDER BY ftc.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询谁收藏了我的哪些帖子-->
+    <select id="queryCollectForum_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM (
+        SELECT 1
+        FROM
+        forum_topic_collect ftc
+        LEFT JOIN forum_topic ft ON ft.id = ftc.forum_topic_id
+        WHERE
+          ft.user_id = #{userId}
+          GROUP BY ft.id) a
+    </select>
+
+    <!--查询谁点赞了我的哪些帖子-->
+    <select id="queryLikeForum" parameterType="filter" resultMap="ForumTopicCollecMap">
+        SELECT
+        ftl.forum_topic_id forumTopicId,
+        ftl.add_time,
+        qu.`name` userName,
+        ft.id forumTopicId,
+        ft.title,
+        ft.id,
+        ft.topic_face face
+        FROM
+        forum_topic_like ftl
+        LEFT JOIN forum_topic ft ON ft.id = ftl.forum_topic_id
+        LEFT JOIN qcode_user qu ON ftl.user_id = qu.id
+        WHERE
+        ft.user_id = #{userId}
+        AND ftl.forum_reply_id = '0'
+        AND ftl.approval_count > 0
+        ORDER BY ft.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询谁点赞了我的哪些帖子-->
+    <select id="queryLikeForum_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM (
+        SELECT 1
+        FROM
+        forum_topic_like ftl
+        LEFT JOIN forum_topic ft ON ft.id = ftl.forum_topic_id
+        WHERE
+        ft.user_id = #{userId}
+        GROUP BY ft.id) a
+    </select>
+
+
+    <!--查询谁点赞了我的哪些帖子对外接口-->
+    <select id="queryLikeForumApi" parameterType="filter" resultType="Map">
+        SELECT
+        quu.`name`,
+        ft.title,
+        ftl.add_time,
+        ft.id
+        FROM
+        forum_topic_like ftl
+        LEFT JOIN forum_topic ft ON ftl.forum_topic_id = ft.id
+        LEFT JOIN qcode_user qu ON qu.id = ft.user_id
+        LEFT JOIN qcode_user quu ON quu.id = ftl.user_id
+        WHERE
+        ft.user_id = ${userId}
+        AND ftl.approval_count > 0
+        AND ftl.forum_reply_id = '0'
+        ORDER BY ftl.add_time desc
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+
+    <!--查询谁点赞了我的哪些帖子对外接口-->
+    <select id="queryLikeForumApi_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          count(1)
+        FROM
+        forum_topic_like ftl
+        LEFT JOIN forum_topic ft ON ftl.forum_topic_id = ft.id
+        LEFT JOIN qcode_user qu ON qu.id = ft.user_id
+        LEFT JOIN qcode_user quu ON quu.id = ftl.user_id
+        WHERE
+        ft.user_id = ${userId}
+        AND ftl.approval_count > 0
+        AND ftl.forum_reply_id = '0'
+        ORDER BY ftl.add_time desc
+    </select>
+
+    <!--查询评论我的帖子的一级评论-->
+    <select id="queryLevelOneReply" parameterType="filter" resultType="ForumReplyVo">
+        SELECT
+            ftr.id,
+            ftr.parent_id parentId,
+            ftr.forum_topic_id forumTopicId,
+            ftr.user_id userId,
+            qu.name userName,
+            ftr.content,
+            ft.title,
+            ft.topic_face topicFace,
+            qu.face userFace,
+            ftr.add_time addTime,
+            ftr.p_ids pIds
+        FROM
+            forum_topic_reply ftr
+        LEFT JOIN forum_topic ft ON ft.id = ftr.forum_topic_id
+        LEFT JOIN qcode_user qu ON qu.id = ftr.user_id
+        WHERE
+            ftr.parent_id = '0'
+        AND ft.user_id = #{userId}
+        ORDER BY ftr.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询评论我的帖子及视频的一级评论-->
+    <select id="queryLevelOneReplyfv" parameterType="filter" resultType="ForumReplyVo">
+        SELECT *
+        FROM
+        (SELECT
+            ftr.id,
+            ftr.parent_id parentId,
+            ftr.forum_topic_id forumTopicId,
+            ftr.user_id userId,
+            qu. NAME userName,
+            ftr.content,
+            ft.title,
+            ft.topic_face topicFace,
+            qu.face userFace,
+            ftr.add_time addTime,
+            ftr.p_ids pIds,
+            '0' type
+            FROM
+            forum_topic ft,
+            forum_topic_reply ftr,
+            qcode_user qu
+            WHERE
+            ft.id = ftr.forum_topic_id
+            AND qu.id = ftr.user_id
+            AND (
+            ft.user_id = #{userId}
+            OR ftr.repd_user_id = #{userId}
+            )
+            UNION ALL
+            SELECT
+            tutr.id,
+            tutr.parent_id parentId,
+            tutr.forum_topic_id forumTopicId,
+            tutr.user_id userId,
+            quu.`name` userName,
+            tutr.content,
+            vi.title,
+            vi.img topicFace,
+            quu.face userFace,
+            tutr.add_time addTime,
+            tutr.p_ids pIds,
+            '1' type
+            FROM
+            tutorial_review tutr,
+            video_info vi,
+            qcode_user quu
+            WHERE
+            tutr.forum_topic_id = vi.vid
+            AND quu.id = tutr.user_id
+            AND tutr.repd_user_id = #{userId}) t
+            ORDER BY t.addTime DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询评论我的帖子的一级评论-->
+    <select id="queryLevelOneReply_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM
+        forum_topic_reply ftr
+        LEFT JOIN forum_topic ft ON ft.id = ftr.forum_topic_id
+        WHERE
+        ftr.parent_id = '0'
+        AND ft.user_id = #{userId}
+    </select>
+
+    <!--查询关注情况-->
+    <select id="getFocusUserDetails" parameterType="filter" resultType="com.bylz.quantumCloud.model.FocusUserVo">
+        SELECT
+        fd.id,
+        fd.focus_user_id focusUserId,
+        fd.focus_date focusDate,
+        fd.user_id userId,
+        fu.name nickName,
+        fu.autograph,
+        fu.face
+        FROM
+        focus_details fd,qcode_user fu
+        where
+        1 = 1
+        <if test="flag == '2'.toString()">
+            AND fd.user_id = fu.id
+            AND fd.focus_user_id = #{userId}
+        </if>
+        <if test="flag == '1'.toString()">
+            AND fd.focus_user_id = fu.id
+            AND fd.user_id = #{userId}
+        </if>
+        ORDER BY fd.focus_date DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查询关注情况-->
+    <select id="getFocusUserDetails_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        focus_details fd
+        where
+        <if test="flag == '2'.toString()">
+            fd.focus_user_id = #{userId}
+        </if>
+        <if test="flag == '1'.toString()">
+
+    fd.user_id = #{userId}
+</if>
+        </select>
+    <!--删除通知表中不在线信息-->
+    <delete id="delNoticMessage" parameterType="filter">
+        DELETE FROM forum_notonline WHERE user_id = #{userId} AND type = #{opType}
+    </delete>
+
+    <!--查询达人热帖-->
+    <select id="queryHot" resultType="Map">
+        SELECT
+            ft.id,
+            ft.topic_face topicFace,
+            ft.title,
+            IFNULL(ft.see_count, 0) seeCount,
+            IFNULL(ft.approval_count, 0) approvalCount
+        FROM
+            forum_topic ft
+        WHERE ft.apply_status = '1'
+        ORDER BY
+            ft.see_count,
+            ft.approval_count DESC
+        LIMIT 5
+    </select>
+    <!--举报帖子和评论-->
+    <insert id="reportTopicReply" parameterType="filter">
+        INSERT INTO topic_reply_report (
+            topic_id,
+            reply_id,
+            report_user_id,
+            type,
+            report_type,
+            report_content,
+            add_time
+        )
+        VALUES
+            (
+                #{topicId},#{replyId},#{userId},#{type},#{reportType},#{reportContent},NOW())
+    </insert>
+    <!--查询父级评论-->
+    <select id="getParentReply_count" parameterType="filter" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        forum_topic_reply ftr
+        WHERE ftr.id !=#{pId} AND ftr.id IN
+        <foreach collection="pIds" item="item" separator="," open="(" close=")">
+            ${item}
+        </foreach>
+    </select>
+    <!--查询查询父级评论-->
+    <select id="getParentReply" parameterType="filter" resultType="Map">
+        SELECT
+        ftr.id,
+        ftr.user_id AS userId,
+        su0. NAME AS userName,
+        su0.face,
+        ftr.content,
+        ftr.add_time AS addTime
+        FROM
+        forum_topic_reply ftr
+        LEFT JOIN qcode_user su0 ON ftr.user_id = su0.id
+        WHERE ftr.id !=#{pId} AND ftr.id IN
+        <foreach collection="pIds" item="item" separator="," open="(" close=")">
+            ${item}
+        </foreach>
+        ORDER BY
+        ftr.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--分页查询举报列表-->
+    <select id="getReportPage_count" parameterType="filter" resultType="int">
+        SELECT COUNT(1) FROM topic_reply_report
+        WHERE 1=1
+        <if test="id != null and id !=''">
+            AND id = #{id}
+        </if>
+        <if test="type != null and type !=''">
+            AND type = #{type}
+        </if>
+        <if test="reportContent != null and reportContent !=''">
+            AND report_content = #{reportContent}
+        </if>
+    </select>
+    <!--分页查询举报列表-->
+    <select id="getReportPage" parameterType="filter" resultType="Map">
+        SELECT
+        trr.id,
+        trr.type,
+        trr.report_type AS reportType,
+        trr.report_content AS reportContent,
+        trr.add_time AS addTime,
+        ft.title AS topicTitle,
+        ftr.content AS replyContent,
+        qu.`name` AS reportUserName,
+        IF (
+        trr.report_type = 1,
+        '违规内容',
+
+        IF (
+        trr.report_type = 2,
+        '涉嫌广告',
+
+        IF (
+        trr.report_type = 3,
+        '文不对题',
+
+        IF (
+        trr.report_type = 4,
+        '抄袭内容',
+
+        IF (
+        trr.report_type = 5,
+        '其他理由',
+        '---'
+        )
+        )
+        )
+        )
+        ) AS reportTypeName,
+        IF(trr.type='01','帖子','评论') AS typeName
+        FROM topic_reply_report trr
+        LEFT JOIN forum_topic ft on  trr.topic_id = ft.id
+        LEFT JOIN forum_topic_reply ftr on trr.reply_id = ftr.id
+        LEFT JOIN qcode_user qu ON trr.report_user_id = qu.id
+        WHERE 1=1
+        <if test="id != null and id !=''">
+            AND trr.id = #{id}
+        </if>
+        <if test="type != null and type !=''">
+            AND trr.type = #{type}
+        </if>
+        <if test="reportType != null and reportType !=''">
+            AND trr.report_type = #{reportType}
+        </if>
+        <if test="reportContent != null and reportContent !=''">
+            AND trr.report_content = #{reportContent}
+        </if>
+        ORDER BY
+        trr.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--插入反馈意见-->
+    <insert id="saveFeedback" parameterType="filter">
+        INSERT INTO feedback (
+            id,
+            belonged,
+            problem_type,
+            title,
+            content,
+            user_id,
+            add_time
+        )
+        VALUES
+	    (
+		  #{id},#{belonged},
+		  #{problemType},
+		  #{title},
+		  #{content},
+		  #{userId},
+		  NOW()
+		  )
+    </insert>
+
+    <!--插入反馈意见图片-->
+    <insert id="saveFeedbackFile" parameterType="filter">
+        INSERT INTO relation_files (
+        id,
+        relation_id,
+        relation_file,
+        file_type,
+        file_size,
+        file_name
+        )
+        VALUES
+        (
+        #{fileId},
+        #{relationId},
+        #{bt},
+        '1',
+        #{fileSize},
+        #{fileName}
+        )
+    </insert>
+
+    <!--插入反馈意见图片
+    <insert id="saveFeedbackFile11" parameterType="filter">
+        INSERT INTO relation_files (
+            id,
+            relation_id,
+            relation_file,
+            file_type,
+            file_size,
+            file_name
+        )
+        VALUES
+        <foreach collection="fileList" item="fileList" separator=",">
+            (
+            #{fileList.fileId,jdbcType=VARCHAR},
+            #{fileList.relationId,jdbcType=VARCHAR},
+            #{fileList.bt,jdbcType=BLOB},
+            '1',
+            #{fileList.fileSize},
+            #{fileList.fileName}
+            )
+        </foreach>
+    </insert>-->
+
+    <!--查询所有反馈意见-->
+    <select id="getForumFeedBackList" parameterType="filter" resultMap="FeedBackMap">
+        SELECT
+            fb.id,
+            fb.title,
+            getDicValue ('Block', fb.belonged) belonged,
+            getDicValue ('ProType', fb.problem_type) problemType,
+            fb.content content,
+            fb.user_id userId,
+            qu.`name` userName,
+            fb.add_time addTime,
+            rf.id fileId,
+            rf.relation_id relationId,
+            rf.relation_file relationFile,
+            rf.file_name fileName
+        FROM
+            feedback fb
+        LEFT JOIN relation_files rf ON fb.id = rf.relation_id
+        LEFT JOIN qcode_user qu ON qu.id = fb.user_id
+        <where>
+            <if test="id != null and id != ''">
+                fb.id = #{id}
+            </if>
+            <if test="belonged != null and belonged != ''">
+                AND fb.belonged = #{belonged}
+            </if>
+            <if test="problemType != null and problemType != ''">
+                AND fb.problem_type = #{problemType}
+            </if>
+            <if test="start != null and limit != null">
+                AND fb.id IN (SELECT id FROM (SELECT id FROM feedback ORDER BY add_time DESC limit #{start},#{limit}) AS temp)
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getForumFeedBackList_count" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM feedback fb
+        <where>
+            <if test="belonged != null and belonged != ''">
+                fb.belonged = #{belonged}
+            </if>
+            <if test="problemType != null and problemType != ''">
+                AND fb.problem_type = #{problemType}
+            </if>
+        </where>
+    </select>
+
+    <!--查询附件-->
+    <select id="getFileById" parameterType="filter" resultType="com.bylz.quantumCloud.model.RelationFileVo">
+        SELECT
+            rf.id fileId,
+            rf.relation_file bt
+        FROM
+            relation_files rf
+        WHERE rf.id = #{id}
+    </select>
+
+    <!--查询所有版块-->
+    <select id="getAllBelonged" resultType="Map" parameterType="filter">
+        SELECT
+            id,
+            block_name blockName,
+            block_desc blockDesc,
+            create_time createTime,
+            isApproval
+        FROM
+            block
+        <where>
+            <if test="blockName != null and blockName != ''">
+                block_name = #{blockName}
+            </if>
+        </where>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    
+    <update id="update" >
+        UPDATE
+          block
+        SET
+          isApproval = #{isApproval}
+        WHERE
+          id = #{id}
+    </update>
+    
+    <select id="getAllBelonged_count" resultType="java.lang.Integer">
+        SELECT
+          count(1)
+        FROM
+        block
+        <if test="belonged != null and belonged != ''">
+            AND dc.dic_flag = #{belonged}
+        </if>
+    </select>
+
+    <!--获得有机会成为版主的用户-->
+    <select id="getModerator" resultType="com.bylz.quantumCloud.model.QcodeUser" parameterType="filter">
+        SELECT
+            t.id,
+            t. name,
+            t.email,
+            t.`level`,
+            t.register_time registerTime
+        FROM
+            (
+                SELECT
+                    qu.id,
+                    qu.`name`,
+                    qu.email,
+                    qu.`level`,
+                    qu.register_time
+                FROM
+                    qcode_user qu,
+                    forum_topic ft
+                WHERE
+                    qu.id = ft.user_id
+                AND qu.is_disable = '0'
+                AND ft.belonged = #{belonged}
+                UNION ALL
+                SELECT
+                    qu.id,
+                    qu.`name`,
+                    qu.email,
+                    qu.`level`,
+                    qu.register_time
+                    FROM
+                    qcode_user qu,
+                    forum_topic_reply fr,
+                    forum_topic ft
+                WHERE
+                    qu.id = fr.user_id
+                    AND fr.forum_topic_id = ft.id
+                    AND qu.is_disable = '0'
+                    AND ft.belonged = #{belonged}
+            ) t
+        <where>
+            <if test="name != null and name != ''">
+                t.name = LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="email != null and email != ''">
+                t.email LIKE CONCAT('%',#{email},'%')
+            </if>
+        </where>
+        GROUP BY
+            t.id,
+            t. name,
+            t.email,
+            t.`level`,
+            t.register_time
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getModerator_count" resultType="java.lang.Integer" parameterType="filter">
+        SELECT COUNT(1) FROM (
+        SELECT
+          DISTINCT *
+        FROM
+        (
+        SELECT
+        qu.id,
+        qu.`name`,
+        qu.email,
+        qu.`level`,
+        qu.register_time
+        FROM
+        qcode_user qu,
+        forum_topic ft
+        WHERE
+        qu.id = ft.user_id
+        AND qu.is_disable = '0'
+        AND ft.belonged = #{belonged} GROUP BY qu.id
+        UNION ALL
+        SELECT
+        qu.id,
+        qu.`name`,
+        qu.email,
+        qu.`level`,
+        qu.register_time
+        FROM
+        qcode_user qu,
+        forum_topic_reply fr,
+        forum_topic ft
+        WHERE
+        qu.id = fr.user_id
+        AND fr.forum_topic_id = ft.id
+        AND qu.is_disable = '0'
+        AND ft.belonged = #{belonged}
+        GROUP BY qu.id
+        ) t
+        <where>
+            <if test="name != null and name != ''">
+                t.name = LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="email != null and email != ''">
+                t.email LIKE CONCAT('%',#{email},'%')
+            </if>
+        </where>
+        ) t1
+    </select>
+
+    <!--设置版主-->
+    <insert id="setSaveModerator" parameterType="filter">
+        INSERT INTO moderator (
+            user_id,
+            belonged,
+            add_time,
+            add_user_id,
+            upd_user_id,
+            upd_time
+        )
+        VALUES
+          <foreach collection="ids" item="ids" separator=",">
+              (
+              ${ids},
+              #{belonged},
+              NOW(),
+              #{userId},
+              #{userId},
+              NOW()
+              )
+          </foreach>
+
+    </insert>
+
+    <!--删除版主-->
+    <delete id="delModerator" parameterType="filter">
+        DELETE FROM moderator WHERE belonged = #{belonged}
+    </delete>
+
+    <!--查看版主-->
+    <select id="viewModerator" parameterType="filter" resultType="com.bylz.quantumCloud.model.ModeratorVo">
+        SELECT
+            m.id,
+            m.belonged,
+            bl.block_name belongedName,
+            qu. name userName,
+            qu.email,
+            qu.level,
+            m.add_time addTime
+        FROM
+            moderator m,
+            qcode_user qu,
+            block bl
+        WHERE
+            m.user_id = qu.id
+        AND bl.id = m.belonged
+        AND belonged = #{belonged}
+        <if test="email != null and email != ''">
+            AND qu.email LIKE CONCAT('%',#{email},'%')
+        </if>
+        <if test="registerTime_range_start != null">
+            AND  DATE_FORMAT(m.add_time,'%Y-%m-%d')  <![CDATA[>= ]]>  DATE_FORMAT(#{registerTime_range_start},'%Y-%m-%d')
+        </if>
+        <if test="registerTime_range_end != null">
+            AND  DATE_FORMAT(m.add_time,'%Y-%m-%d')  <![CDATA[<= ]]>  DATE_FORMAT(#{registerTime_range_end},'%Y-%m-%d')
+        </if>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="viewModerator_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        moderator m,
+        qcode_user qu,
+        block bl
+        WHERE
+        m.user_id = qu.id
+        AND bl.id = m.belonged
+        AND belonged = #{belonged}
+        <if test="email != null and email != ''">
+            AND qu.email LIKE CONCAT('%',#{email},'%')
+        </if>
+        <if test="registerTime_range_start != null">
+            AND  DATE_FORMAT(m.add_time,'%Y-%m-%d')  <![CDATA[>= ]]>  DATE_FORMAT(#{registerTime_range_start},'%Y-%m-%d')
+        </if>
+        <if test="registerTime_range_end != null">
+            AND  DATE_FORMAT(m.add_time,'%Y-%m-%d')  <![CDATA[<= ]]>  DATE_FORMAT(#{registerTime_range_end},'%Y-%m-%d')
+        </if>
+    </select>
+
+    <!--置顶-->
+    <update id="setTop" parameterType="filter">
+        UPDATE forum_topic SET top_level = #{topLevel},top_time = NOW() WHERE id = #{forumTopicId}
+    </update>
+
+    <!--删除帖子-->
+    <delete id="delForum" parameterType="filter">
+        DELETE FROM forum_topic WHERE id = #{id}
+    </delete>
+
+    <!--查询字典表中有无字典内容-->
+    <select id="haseDicContent" parameterType="filter" resultType="Map">
+        SELECT
+            COUNT(1) hasCount,
+            deflag deflag
+        FROM
+            dic_context t
+        WHERE
+            t.dic_context = #{labelName}
+        AND t.dic_id = '3'
+    </select>
+
+    <!--查询字典表中此人添加标签个数-->
+    <select id="dicContentCount" parameterType="filter" resultType="int">
+        SELECT
+            COUNT(1)
+        FROM
+            dic_context t
+        WHERE
+            t.add_user_id = #{userId}
+        AND t.dic_id = '3'
+    </select>
+
+    <!--将标签添加进字典表-->
+    <insert id="insertLable" parameterType="filter">
+        INSERT INTO dic_context (
+            dic_id,
+            dic_context,
+            dic_desc,
+            add_time,
+            add_user_id,
+            upd_user_id,
+            deflag,
+            dic_flag
+        ) VALUES
+          <foreach collection="myLabelList" separator="," item="myLabelList" index="index">
+            (
+              '3',
+              '${myLabelList}',
+              '${myLabelList}',
+              NOW(),
+              #{userId},
+              #{userId},
+              '1',
+              ${maxCount} + ${index}+1
+              )
+          </foreach>
+    </insert>
+
+    <!--查询标签最大字典值-->
+    <select id="getMaxDicContent" resultType="int">
+        SELECT MAX(dic_flag+0) FROM dic_context WHERE dic_id = '3'
+    </select>
+    
+    <!--修改引用次数-->
+    <update id="quotesCount" parameterType="filter">
+        UPDATE dic_context SET quotes_count = quotes_count+1 WHERE dic_flag IN
+        <foreach collection="lableList" item="lableList" separator="," open="(" close=")">
+            ${lableList.label}
+        </foreach>
+    </update>
+
+    <!--修改字典种标签是否有效标识-->
+    <update id="updDicFlag" parameterType="filter">
+        UPDATE dic_context SET deflag = '1' WHERE
+        dic_flag IN
+        <foreach collection="list" item="list" separator="," close=")" open="(">
+            ${list}
+        </foreach>
+        AND dic_id = '3'
+    </update>
+
+    <!--根据帖子id查询标签id-->
+    <select id="getDicFlagByFID" parameterType="filter" resultType="java.lang.String">
+        SELECT label_id dicFlag FROM forum_label WHERE forum_topic_id IN
+        <foreach collection="ids" item="ids" open="(" close=")" separator=",">
+            ${ids}
+        </foreach>
+    </select>
+
+    <!--删除字典中标签-->
+    <delete id="delDicFlag" parameterType="filter">
+        DELETE FROM dic_context WHERE dic_id = '3' AND dic_flag IN
+        <foreach collection="list" item="list" separator="," close=")" open="(">
+            ${list}
+        </foreach>
+        AND dic_flag NOT IN ('0','1','2','3','4')
+    </delete>
+
+    <!--查询未审核的帖子-->
+    <select id="noAuditForum" resultType="java.lang.String">
+       SELECT ft.title FROM forum_topic ft WHERE ft.apply_status = '0'
+    </select>
+
+    <!--查询评论未审核数量及其所对应帖子-->
+    <select id="noAuditReply" resultType="ForumTopicVo">
+        SELECT
+            count(1) noApplyCount,
+            ft.title title
+        FROM
+            forum_topic_reply ftr,
+            forum_topic ft
+        WHERE
+            ftr.forum_topic_id = ft.id
+        AND ftr.apply_status = '0'
+        GROUP BY
+            ft.id,
+            ft.title
+    </select>
+    
+    
+    
+    <!--查询手机端精华帖子id-->
+    <select id="qualityforumtopic" parameterType="filter" resultType="Map">
+		SELECT 
+			distinct (forum_topic_id),forum_topic.content,title,qu.name,qu.face,
+			IFNULL((SELECT COUNT(1) FROM forum_topic_reply WHERE forum_topic_reply.forum_topic_id = forum_topic.id),0) AS replyCount,
+			(
+				SELECT 
+					max(add_time) 
+				FROM 
+					forum_topic_reply 
+				WHERE 
+					forum_topic.id=forum_topic_reply.forum_topic_id 
+				GROUP BY
+					forum_topic_reply.forum_topic_id
+			) lasttime,
+               case
+                    when
+                    IFNULL(qu.score, 0) + IFNULL(ub.score, 0)  >= 3000 then '量子传奇'
+                    when
+                    IFNULL(qu.score, 0) + IFNULL(ub.score, 0) >= 600 then '量子巨匠'
+                    when
+                   IFNULL(qu.score, 0) + IFNULL(ub.score, 0) >= 400 then '量子大师'
+                    when
+                   IFNULL(qu.score, 0) + IFNULL(ub.score, 0) >=200 then '量子名士'
+                    when
+                    IFNULL(qu.score, 0) + IFNULL(ub.score, 0) >=50 then '量子剑心'
+                    else '量子浪客' end as userTitle
+
+			
+		FROM 
+			forum_topic_reply,forum_topic,qcode_user qu LEFT JOIN user_bonus ub ON ub.userid = qu.id
+		WHERE 
+			forum_topic.id=forum_topic_reply.forum_topic_id AND qu.id=forum_topic.user_id
+		AND forum_topic.id in (
+				SELECT 
+					forum_topic_id 
+				FROM 
+					(SELECT 
+						count(forum_topic_id) num ,forum_topic_id 
+					FROM 
+						forum_topic_reply 
+					GROUP BY 
+						forum_topic_id 
+					ORDER BY
+						num desc limit 5
+					) id
+		)
+    </select>
+    
+    <!--查询官方指定id发布的新闻作为-->
+    <select id="recommendnews" parameterType="filter" resultType="Map">
+        SELECT
+            ft.id,
+            ft.title,
+            ft.user_id,
+            ft.add_time addTime,
+            IFNULL((SELECT COUNT(1) FROM forum_topic_reply ftr WHERE ftr.forum_topic_id = ft.id),0) AS replyCount,
+            IFNULL(ft.see_count,0) seeCount,
+            ft.topic_face topicFace
+        FROM
+            forum_topic ft
+        WHERE 
+            ft.user_id="743"
+        ORDER BY addTime desc
+        LIMIT 5
+    </select>
+
+
+    <!--查询我给谁点赞了-->
+    <select id="getMyLike" parameterType="filter" resultType="Map">
+        SELECT
+            ft.id,
+            ft.title,
+            ftl.add_time
+        FROM
+            forum_topic_like ftl,
+            forum_topic ft
+        WHERE
+            ftl.forum_topic_id = ft.id
+        AND ftl.user_id = #{userId}
+        AND ftl.approval_count > 0
+    </select>
+
+</mapper>

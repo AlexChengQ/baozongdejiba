@@ -1,0 +1,140 @@
+﻿1、申请部分包含要填⼊的姓名，联系⽅式（电话，邮箱），使⽤何种虚拟机，以及使⽤的⽬的
+注意突出标题和申请。界⾯不需要太花哨
+
+其⼀，登录后才可申请，否则跳转到登录页⾯。
+其⼆，每个⽤户是否申请为⼀个布尔值。分为2种状态。为真，页⾯显⽰为“您已成功申请，请耐⼼等待技术部分的答复”；为假，页⾯显⽰申请表格。
+其三，每个⽤户的布尔值默认为假；申请后，布尔值⾃动改为真。可以⼿动将该值设定为假。
+其四，⽤户的表格以某种形式传送到oqc@originqc.com
+
+
+CREATE TABLE `qcode_apply` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '创建人id',
+  `name` varchar(20) DEFAULT NULL COMMENT '姓名',
+  `phone` varchar(20) DEFAULT NULL COMMENT '电话',
+  `email` varchar(50) DEFAULT NULL COMMENT '邮箱',
+  `vm_type` varchar(50) DEFAULT NULL COMMENT '使⽤何种虚拟机（1、56位 2、64位 3、42位）',
+  `purpose` varchar(500) DEFAULT NULL COMMENT '使用目的',
+  `apply_status` char(1) DEFAULT NULL COMMENT '申请状态（0：未申请，1：已申请，2：通过，3：未通过）',
+  `apply_time` datetime DEFAULT NULL COMMENT '申请时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='申请表';
+
+2、邮件推送表
+CREATE TABLE `qcode_push` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '创建人id',
+  `title` varchar(255) DEFAULT NULL COMMENT '主题',
+  `content` varchar(500) DEFAULT NULL COMMENT '内容',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='邮件推送表';
+
+3、用户表增加新字段判断新老用户
+ALTER TABLE qcode_user ADD is_old_user CHAR (1) NOT NULL DEFAULT 0 COMMENT '是否为老用户（0、否，1、是）';
+
+
+4、①页面加载时查询论坛主题表，将查询到的结果显示到页面
+   ②点击连接时，跳转论坛内容，查询论坛主题回复表及论坛主题表，将查询结果显示在页面
+   ③回复时，点击回复按钮，页面获取被回复人的id，回复内容提交时传入后端，后端记录回复内容等相关信息
+CREATE TABLE `forum_topic` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '论坛主题id',
+  `user_id` bigint(20) NOT NULL COMMENT '发帖人id',
+  `title` varchar(100) NOT NULL COMMENT '主题',
+  `content` varchar(500) NOT NULL COMMENT '主题内容',
+  `reply_count` int(11) NOT NULL COMMENT '回复数',
+  `add_time` datetime NOT NULL COMMENT '添加时间',
+  `apply_status` char(1) DEFAULT '0' COMMENT '审核状态（0、未审核，1、已审核）',
+  `approval_count` int(11) DEFAULT '0' COMMENT '赞同数量',
+  `no_approval_count` int(11) DEFAULT '0' COMMENT '不赞同数量',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='论坛主题表';
+
+
+
+
+CREATE TABLE `forum_topic_reply` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `forum_topic_id` bigint(20) NOT NULL COMMENT '回复主题id',
+  `user_id` bigint(20) NOT NULL COMMENT '回复用户id',
+  `user_name` varchar(50) NOT NULL COMMENT '回复用户名',
+  `repd_user_id` bigint(20) DEFAULT NULL COMMENT '被回复人id',
+  `content` varchar(500) NOT NULL COMMENT '回复内容',
+  `add_time` datetime NOT NULL COMMENT '添加时间',
+  `parent_id` bigint(20) DEFAULT '0' COMMENT '父id',
+  `apply_status` char(1) DEFAULT '0' COMMENT '审核状态（0、未审核，1、已审核）',
+  `approval_count` int(11) DEFAULT '0' COMMENT '赞同数量',
+  `no_approval_count` int(11) DEFAULT '0' COMMENT '不赞同数量',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=utf8 COMMENT='论坛回复表';
+
+CREATE TABLE `forum_topic_like` (
+  `forum_topic_id` bigint(20) NOT NULL COMMENT '论坛主题id',
+  `forum_reply_id` bigint(20) DEFAULT '0'  COMMENT '论坛主题回复id',
+  `user_id` bigint(20) NOT NULL COMMENT '赞踩用户id',
+  `approval_count` int(11) DEFAULT '0' COMMENT '赞同数量',
+  `no_approval_count` int(11) DEFAULT '0' COMMENT '不赞同数量'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='论坛赞踩表';
+
+//增加fnStripTags函数去除htnl标签
+SET GLOBAL log_bin_trust_function_creators=1;   
+DROP FUNCTION IF EXISTS fnStripTags;   
+DELIMITER |   
+CREATE FUNCTION fnStripTags( Dirty TEXT )   
+RETURNS TEXT   
+DETERMINISTIC    
+BEGIN  
+  DECLARE iStart, iEnd, iLength INT;   
+    WHILE LOCATE( '<', Dirty ) > 0 AND LOCATE( '>', Dirty, LOCATE( '<', Dirty )) > 0 DO   
+      BEGIN  
+        SET iStart = LOCATE( '<', Dirty ), iEnd = LOCATE( '>', Dirty, LOCATE('<', Dirty ));   
+        SET iLength = ( iEnd - iStart) + 1;   
+        IF iLength > 0 THEN  
+          BEGIN  
+            SET Dirty = INSERT( Dirty, iStart, iLength, '');   
+          END;   
+        END IF;   
+      END;   
+    END WHILE;
+    
+     WHILE LOCATE( '&nbsp;', Dirty ) > 0 DO   
+      BEGIN  
+        SET iStart = LOCATE( '&nbsp;', Dirty );   
+        SET iLength = 6;
+        SET Dirty = INSERT( Dirty, iStart, iLength, '');         
+      END;   
+    END WHILE;    
+       
+    RETURN Dirty;   
+END;   
+|   
+DELIMITER ; 
+<!-- 增加论坛回复表`forum_topic_collect`  -->
+
+CREATE TABLE `forum_topic_collect` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `forum_topic_id` bigint(20) NOT NULL COMMENT '主题id',
+  `user_id` bigint(20) NOT NULL COMMENT '收藏用户id',
+  `is_collect` char(1) DEFAULT '0' COMMENT '是否收藏（0：未收藏，1：已收藏）',
+  `add_time` datetime NOT NULL COMMENT '添加时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='论坛主题收藏';
+<!-- 增加论坛主表forum_topic 字段  `shar_count`-->
+ALTER TABLE forum_topic ADD  `shar_count` int(11) DEFAULT 0 COMMENT '分享次数';
+<!-- 更改longtext类型 -->
+alter table forum_topic modify column content longtext; 
+
+ALTER TABLE forum_topic_reply ADD p_ids varchar(500) NOT NULL COMMENT '父ids';
+
+CREATE TABLE `topic_reply_report` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `topic_id` bigint(20) NOT NULL COMMENT '帖子id',
+  `reply_id` bigint(20) DEFAULT NULL COMMENT '评论id',
+  `type` varchar(2) NOT NULL COMMENT '举报类别（01、帖子。02、评论）',
+	`report_content` varchar(255) NOT NULL COMMENT '举报内容',
+  `add_time` datetime NOT NULL COMMENT '添加时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='论坛评论举报';
+
+
+

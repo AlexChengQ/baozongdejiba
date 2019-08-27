@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppBanner">
+    <!--添加banner-->
+    <insert id="saveBanner" parameterType="filter">
+        INSERT INTO app_banner (
+            TOP,
+            URL,
+            BANNER
+        )
+        VALUES
+            (
+                #{TOP},
+                #{URL},
+                #{BANNER}
+             )
+    </insert>
+    
+    <!--修改banner详细信息-->
+    <update id="updBanner" parameterType="filter">
+        UPDATE app_banner SET TOP = #{TOP},URL = #{URL},BANNER = #{BANNER} WHERE id = #{id}
+    </update>
+
+    <!--查询appbanner-->
+    <select id="getBanner" parameterType="filter" resultType="Map">
+    	SELECT TOP,URL,BANNER,TYPE,KEYID FROM app_banner LIMIT 3
+    </select>
+</mapper>

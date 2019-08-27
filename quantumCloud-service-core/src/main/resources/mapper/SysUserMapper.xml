@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysUser" >
+	<!--
+	author liuxiantao
+	since  2017-04-06 	
+	id : id
+	fullname : 姓名
+	username : 登录名
+	password : 密码(MD5加密后)
+	email : 邮箱
+	last_login_time : 最后登录时间
+	status : 状态(0:已删除,1:启用,2:禁用)
+	is_superadmin : 类型(0:普通管理员,1:超级管理员)
+	remark : 备注
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`fullname`,`username`,`password`,`email`,`last_login_time`,`status`,`is_superadmin`,`remark`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id`  = #{id}
+		</if>
+		<if test="fullname != null and fullname != ''">
+			AND `fullname` like CONCAT('%', #{escape_fullname}, '%')
+		</if>
+		<if test="username != null and username != ''">
+			AND `username` like CONCAT('%', #{escape_username}, '%')
+		</if>
+		<if test="password != null and password != ''">
+			AND `password` like CONCAT('%', #{escape_password}, '%')
+		</if>
+		<if test="email != null and email != ''">
+			AND `email` like CONCAT('%', #{escape_email}, '%')
+		</if>
+		<if test="lastLoginTime != null">
+			AND `last_login_time`  = #{lastLoginTime}
+		</if>
+		<if test="status != null">
+			AND `status`  = #{status}
+		</if>
+		<if test="isSuperadmin != null">
+			AND `is_superadmin`  = #{isSuperadmin}
+		</if>
+		<if test="remark != null and remark != ''">
+			AND `remark` like CONCAT('%', #{escape_remark}, '%')
+		</if>
+		<if test = "isUsername != null and isUsername !=''">
+			AND id <![CDATA[ <> ]]> #{isId} AND username = #{isUsername}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_user 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysUser" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_user 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+
+	<select id="selectListWithRole_count" parameterType="filter" resultType="int" >
+		SELECT count(1)
+		FROM sys_user
+		<trim
+				prefix="WHERE"
+				prefixOverrides="AND |OR" >
+			<include refid="where_sql"/>
+		</trim>
+	</select>
+
+	<select id="selectListWithRole" parameterType="filter" resultType="java.util.Map" >
+		SELECT
+		<include refid="fields_sql"/>,role_name
+		FROM sys_user a left join sys_user_role b on a.id = b.user_id left join sys_role c on b.role_id = c.role_id
+		<trim
+				prefix="WHERE"
+				prefixOverrides="AND |OR" >
+			<include refid="where_sql"/>
+		</trim>
+		<if test="order != null">
+			order by ${order}
+		</if>
+		<if test="start != null and limit != null">
+			limit #{start},#{limit}
+		</if>
+	</select>
+	
+	<insert id="save" parameterType="SysUser">
+		insert into sys_user  (
+		`fullname` ,`username` ,`password` ,`email` ,`last_login_time` ,`status` ,`is_superadmin` ,`remark` 
+		)
+		values (
+		#{fullname},#{username},#{password},#{email},#{lastLoginTime},#{status},#{isSuperadmin},#{remark}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="SysUser">
+		UPDATE sys_user
+		<set>
+			<if test="fullname != null">
+				`fullname` = #{fullname},
+			</if>
+			<if test="username != null">
+				`username` = #{username},
+			</if>
+			<if test="password != null">
+				`password` = #{password},
+			</if>
+			<if test="email != null">
+				`email` = #{email},
+			</if>
+			<if test="lastLoginTime != null">
+				`last_login_time` = #{lastLoginTime},
+			</if>
+			<if test="status != null">
+				`status` = #{status},
+			</if>
+			<if test="isSuperadmin != null">
+				`is_superadmin` = #{isSuperadmin},
+			</if>
+			<if test="remark != null">
+				`remark` = #{remark}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from sys_user
+		where
+		`id`=#{id}
+	</delete>
+	
+	<select id="login" parameterType="filter" resultType="SysUser" >
+        select * from sys_user where `username` = #{escape_username}
+    </select>
+
+	<select id="selectByUserName" parameterType="filter" resultType="SysUser" >
+		SELECT
+		<include refid="fields_sql"/>
+		from sys_user
+		<trim
+				prefix="WHERE"
+				prefixOverrides="AND |OR" >
+			<if test="username != null and username != ''">
+				AND username =  #{username}
+			</if>
+			<if test="id!=null and id!=''">
+				AND id <![CDATA[ <> ]]> #{id}
+			</if>
+		</trim>
+	</select>
+	
+</mapper>

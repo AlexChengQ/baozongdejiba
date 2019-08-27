@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>量子纠缠--薛定谔的猫</title>
+    <link rel="stylesheet" href="css/all.css">
+
+</head>
+<body>
+<div class="box">
+    <div class="cat_container">
+        <div class="cat_title">量子纠缠--<span>薛定谔的猫</span></div>
+        <img class="bg_img" src="images/bg.jpg" alt="">
+        <div class="cat_box" id="div1" ontouchend="drop(event)"  ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+        <img id="drag1" class="cat" src="images/cat.png" draggable="true" ondragstart="drag(event)" alt="">
+        <div class="tips_words">请将猫放入箱子</div>
+        <img class="tips_01" src="images/img_01.png" alt="">
+        <img class="tips_02" src="images/img_02.png" alt="">
+        <img class="gif" src="images/bg2.gif" alt="">
+        <div class="check_msg">
+            <h2>到达目的地</h2>
+            <a>查看结果</a>
+        </div>
+        <img class="tips_03" src="images/img_03.png" alt="">
+        <img class="tips_06" src="images/img_06.png" alt="">
+        <img class="gif_01" src="images/gif_01.gif" alt="">
+        <img class="tips_04" src="images/img_04.png" alt="">
+        <img class="tips_05" src="images/img_05.png" alt="">
+        <img class="bg_img01" src="images/bg3.jpg" alt="">
+        <img class="img_one" src="images/one.jpg" alt="">
+        <img class="tips_07" src="images/img_07.png" alt="">
+        <button class="reset">再试一次</button>
+
+        <div class="overlay"></div>
+    </div>
+</div>
+
+
+
+
+<script src="js/jquery-3.1.1.min.js"></script>
+<script src="js/index.js"></script>
+<style>
+    /*@media (max-width: 600px) {*/
+        /*.cat_container {*/
+            /*width: 100%;*/
+            /*height: 100%;*/
+            /*left: 0;*/
+            /*top: 0;*/
+            /*margin: 0;*/
+        /*}*/
+        /*.tips_words {*/
+            /*left: 0;right: 0;*/
+        /*}*/
+        /*.cat_container > img {*/
+            /*position: absolute;*/
+            /*width: 100%;*/
+            /*height: auto;*/
+        /*}*/
+        /*.cat{*/
+            /*width: 100px!important;*/
+            /*right: 10px;*/
+            /*z-index: 9999;*/
+        /*}*/
+        /*.cat_box{*/
+            /*left: 10px;*/
+        /*}*/
+        /*.tips_01 {*/
+            /*width: 147px!important;*/
+            /*left: 0px;*/
+            /*top: 383px;*/
+        /*}*/
+        /*.tips_02 {*/
+            /*width: 200px!important;*/
+            /*right: 40px;*/
+        /*}*/
+        /*.tips_06 {*/
+            /*width: 200px!important;*/
+            /*right: 0;*/
+            /*top: 294px;*/
+        /*}*/
+        /*.gif {*/
+            /*top: 25%;*/
+        /*}*/
+        /*.check_msg{*/
+            /*right: 10px;*/
+            /*top: 180px;*/
+        /*}*/
+        /*.tips_03 {*/
+            /*right: 30px;*/
+            /*left: auto;*/
+            /*bottom: 130px;*/
+            /*width: auto!important;*/
+        /*}*/
+        /*.gif_01{*/
+            /*left: 60px;*/
+            /*width: 50px!important;*/
+            /*bottom: 70px;*/
+        /*}*/
+        /*.tips_05 {*/
+            /*left: 0;*/
+        /*}*/
+        /*.img_one {*/
+            /*left: 0;*/
+            /*top: 50%;*/
+        /*}*/
+        /*.tips_04 {*/
+            /*left: 0;*/
+        /*}*/
+        /*.tips_07 {*/
+            /*width: auto!important;*/
+            /*left: 0;*/
+        /*}*/
+        /*.reset {*/
+            /*right: 50px!important;*/
+            /*bottom: 266px;*/
+        /*}*/
+    /*}*/
+    /*@media (max-width: 321px) {*/
+        /*.cat_container {*/
+            /*width: 100%;*/
+            /*height: 100%;*/
+            /*left: 0;*/
+            /*top: 0;*/
+            /*margin: 0;*/
+        /*}*/
+        /*.tips_words {*/
+            /*left: 0;right: 0;*/
+        /*}*/
+        /*.cat_container > img {*/
+            /*position: absolute;*/
+            /*width: 100%;*/
+            /*height: auto;*/
+        /*}*/
+        .cat{
+            width: 100px!important;
+            right: 10px;
+            z-index: 9999;
+        }
+        /*.cat_box{*/
+            /*left: 10px;*/
+        /*}*/
+        /*.tips_01 {*/
+            /*width: 147px!important;*/
+            /*left: 0px;*/
+            /*top: 383px;*/
+        /*}*/
+        /*.tips_02 {*/
+            /*width: 200px!important;*/
+            /*right: 40px;*/
+        /*}*/
+        /*.tips_06 {*/
+            /*width: 200px!important;*/
+            /*right: 0;*/
+            /*top: 294px;*/
+        /*}*/
+        /*.gif {*/
+            /*top: 25%;*/
+        /*}*/
+        /*.check_msg{*/
+            /*right: 10px;*/
+            /*top: 180px;*/
+        /*}*/
+        /*.tips_03 {*/
+            /*right: 30px;*/
+            /*left: auto;*/
+            /*bottom: 130px;*/
+            /*width: auto!important;*/
+        /*}*/
+        /*.gif_01{*/
+            /*left: 60px;*/
+            /*width: 50px!important;*/
+            /*bottom: 70px;*/
+        /*}*/
+        /*.tips_05 {*/
+            /*left: 0;*/
+        /*}*/
+        /*.img_one {*/
+            /*left: 0;*/
+            /*top: 50%;*/
+        /*}*/
+        /*.tips_04 {*/
+            /*left: 0;*/
+        /*}*/
+        /*.tips_07 {*/
+            /*width: 260px!important;*/
+            /*left: 0;*/
+        /*}*/
+        /*.reset {*/
+            /*right: 50px!important;*/
+            /*bottom: 230px;*/
+        /*}*/
+        /*.tips_01 {*/
+            /*top: 283px;*/
+        /*}*/
+        /*.tips_02 {*/
+            /*right: 0;*/
+        /*}*/
+        /*.tips_06 {*/
+            /*top: 190px;*/
+        /*}*/
+        /*.tips_03 {*/
+            /*bottom: 140px;*/
+        /*}*/
+    /*}*/
+
+</style>
+<script>
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                $(".box").css({"background":"url('images/bodyBg.jpg') no-repeat"},{"background-size":"100% 100%"});
+                $(".box").css("background-size","100% 100%");
+                $(".cat_container").css("min-height","667");
+                $(".cat_container").css("top","66%");
+                $(".cat_container").css("border","6px solid #fff");
+            }
+        }
+        return flag;
+    }
+    IsPC()
+    // if($(window).width()<=600) {
+    //     $("body").css({background:"images/bodyBg.jpg"},{top:"0"})
+    // }
+    var flag = false;
+    var cur = {
+        x:0,
+        y:0
+    }
+    var nx,ny,dx,dy,x,y ;
+    function down(){
+        flag = true;
+        var touch ;
+        if(event.touches){
+            touch = event.touches[0];
+        }else {
+            touch = event;
+        }
+        cur.x = touch.clientX;
+        cur.y = touch.clientY;
+        dx = div2.offsetLeft;
+        dy = div2.offsetTop;
+    }
+    function move(){
+        if(flag){
+            var touch ;
+            if(event.touches){
+                touch = event.touches[0];
+            }else {
+                touch = event;
+            }
+            nx = touch.clientX - cur.x;
+            ny = touch.clientY - cur.y;
+
+            x = dx+nx;
+            y = dy+ny;
+            if(x<0){
+                x = 0
+            }else if((x+100)>$(window).width()){
+                x=$(window).width()-105
+            }
+            if(y<0){
+                y = 0
+            }else if((y+100)>$(window).height()){
+                y=$(window).height()-105
+            }
+            div2.style.left = x+"px";
+            div2.style.top = y +"px";
+
+            if($("#drag1")[0].offsetTop>$("#div1")[0].offsetTop&&$("#drag1")[0].offsetTop<$("#div1")[0].offsetTop+146&&$("#drag1")[0].offsetLeft>$("#div1")[0].offsetLeft&&$("#drag1")[0].offsetLeft<$("#div1")[0].offsetLeft+150){
+                event.preventDefault();
+                $(".cat_box").addClass("active");
+            }else {
+                event.preventDefault();
+                $(".cat_box").removeClass("active");
+            }
+            //阻止页面的滑动默认事件
+            document.addEventListener("touchmove",function(){
+                // event.preventDefault();
+            },false);
+        }
+    }
+    var div2 = document.getElementById("drag1");
+    var div1 = document.getElementById("div1");
+    //鼠标释放时候的函数
+    function end(){
+        if($("#drag1")[0].offsetTop>$("#div1")[0].offsetTop&&$("#drag1")[0].offsetTop<$("#div1")[0].offsetTop+146&&$("#drag1")[0].offsetLeft>$("#div1")[0].offsetLeft&&$("#drag1")[0].offsetLeft<$("#div1")[0].offsetLeft+150){
+            // div1.drop(ev)
+            // drop(div1)
+            $(".cat_box").removeClass("active");
+            $(".cat").hide();
+            setTimeout(function(){
+                $(".overlay").show();
+            },1000);
+            setTimeout(function(){
+                $(".tips_01").fadeIn();
+            },2000);
+            setTimeout(function(){
+                $(".tips_02").fadeIn();
+            },3000);
+            setTimeout(function(){
+                $(".tips_06").fadeIn();
+            },4000);
+            setTimeout(function(){
+                $(".bg_img").hide();
+                $(".cat_box").hide();
+                $(".tips_01").hide();
+                $(".tips_02").hide();
+                $(".tips_06").hide();
+                $(".overlay").hide();
+                $(".gif").show();
+            },7000);
+            setTimeout(function(){
+                $(".check_msg").fadeIn();
+            },12000);
+        }else {
+            console.log("2w22")
+        }
+            flag = false;
+    }
+
+    div2.addEventListener("touchstart",function(){
+        down();
+    },false)
+    div2.addEventListener("touchmove",function(){
+        move();
+    },false)
+    div2.addEventListener("touchend",function(){
+        end();
+    },false);
+</script>
+</body>
+</html>

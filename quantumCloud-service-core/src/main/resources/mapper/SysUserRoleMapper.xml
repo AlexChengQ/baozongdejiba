@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysUserRole" >
+	<!--
+	author liuxiantao
+	since  2017-04-06 	
+	role_id : 角色ID
+	user_id : 用户ID
+	-->
+	
+	<sql id="fields_sql">
+	`role_id`,`user_id`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="roleId != null">
+			AND `role_id`  = #{roleId}
+		</if>
+		<if test="userId != null">
+			AND `user_id`  = #{userId}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_user_role 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysUserRole" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_user_role 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="SysUserRole">
+		insert into sys_user_role  (
+		`role_id` ,`user_id` 
+		)
+		values (
+		#{roleId},#{userId}
+		)
+	</insert>
+
+	<update id="update" parameterType="SysUserRole">
+		UPDATE sys_user_role
+		<set>
+			<if test="roleId != null">
+				role_id = #{roleId},
+			</if>
+		</set>
+		WHERE
+		user_id = #{userId}
+	</update>
+
+	<delete id="delete" parameterType="SysUserRole">
+		delete from sys_user_role
+		where
+		`role_id` = #{roleId} and
+		`user_id` = #{userId}
+	</delete>
+	
+</mapper>

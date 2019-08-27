@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppPush">
+
+    <insert id="save" parameterType="filter">
+        INSERT INTO app_push (
+            title,
+            content,
+            <if test="userType != null and userType != ''">
+                userType,
+            </if>
+            <if test="type != null and type != ''">
+                type,
+            </if>
+            add_time,
+            is_push
+        )
+        VALUES
+            (
+                #{title},
+                #{content},
+                <if test="userType != null and userType != ''">
+                    #{userType},
+                </if>
+                <if test="type != null and type != ''">
+                    #{type},
+                </if>
+                NOW(),
+                '0'
+             )
+    </insert>
+    
+    <update id="update" parameterType="filter">
+        UPDATE
+          app_push
+        <trim prefix="set" suffixOverrides=",">
+        <if test="title != null and title != ''">
+            title = #{title},
+        </if>
+        <if test="content != null and content != ''">
+            content = #{content},
+        </if>
+
+        <if test="userType != null and userType != ''">
+            type = #{type},
+        </if>
+        <if test="userType != null and userType != ''">
+           userType = #{userType},
+        </if>
+        <if test="isPush != null and isPush != ''">
+            is_push = #{isPush}
+        </if>
+        </trim>
+        WHERE
+          id = #{id}
+    </update>
+
+    <select id="selectList" parameterType="filter" resultType="AppPush">
+    	SELECT
+            id,
+            title,
+            content,
+            type,
+            userType,
+            add_time addTime,
+            is_push isPush
+    	FROM
+    	  app_push
+        <where>
+          <if test="title != null and title != ''">
+              title LIKE CONCAT('%',#{title},'%')
+          </if>
+          <if test="content != null and content != ''">
+              content LIKE CONCAT('%',#{content},'%')
+          </if>
+          <if test="id != null and id != ''">
+              id = #{id}
+          </if>
+          <if test="isPush != null and isPush != ''">
+              is_push = #{isPush}
+          </if>
+        </where>
+
+        <if test="start != null and limit != ''">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectList_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        app_push
+        <where>
+            <if test="title != null and title != ''">
+                title LIKE CONCAT('%',#{title},'%')
+            </if>
+            <if test="content != null and content != ''">
+                content LIKE CONCAT('%',#{content},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="delete" parameterType="filter">
+        DELETE FROM app_push WHERE id = #{id}
+    </delete>
+</mapper>

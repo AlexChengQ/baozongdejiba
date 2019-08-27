@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeProjectVersion" >
+	<!--
+	author JT
+	since  2017-07-28 	
+	id : 版本id
+	name : 版本名称
+	project_id : 项目id
+	create_time : 创建时间
+	code : 量子比特数
+	svg_xml : svg_xml内容
+	pic : 图片路径
+	is_del : 是否删除(0:否,1:是)
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`name`,`project_id`,`create_time`,`code`,'' as `svg_xml`,`pic`,`is_del`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="name != null and name != ''">
+			AND `name` like CONCAT('%', #{escape_name}, '%')
+		</if>
+		<if test="projectId != null">
+			AND `project_id` =${projectId}
+		</if>
+		<if test="createTime != null">
+			AND `create_time`  = #{createTime}
+		</if>
+		<if test="code != null and code != ''">
+			AND `code` like CONCAT('%', #{escape_code}, '%')
+		</if>
+		<if test="svgXml != null and svgXml != ''">
+			AND `svg_xml` like CONCAT('%', #{escape_svgXml}, '%')
+		</if>
+		<if test="pic != null and pic != ''">
+			AND `pic` like CONCAT('%', #{escape_pic}, '%')
+		</if>
+		<if test="isDel != null">
+			AND `is_del` =${isDel}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_project_version 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+
+    <select id="selectversionbyid" parameterType="filter" resultType="QcodeProjectVersion" >
+    	SELECT
+		qcode_project_version.id,qcode_project_version.name,qcode_project_version.project_id,qcode_project_version.create_time,
+		qcode_project_version.code,svg_xml,qcode_project_version.pic,qcode_project_version.is_del
+	    FROM qcode_project_version 
+        LEFT JOIN qcode_project ON qcode_project_version.project_id=qcode_project.id
+        <trim prefix="WHERE" prefixOverrides="AND |OR" >
+	        <if test="id != null">
+				AND qcode_project_version.id =${id}
+			</if>
+			<if test="name != null and name != ''">
+				AND qcode_project_version.name like CONCAT('%', #{escape_name}, '%')
+			</if>
+			<if test="projectId != null">
+				AND qcode_project_version.project_id =${projectId}
+			</if>
+			<if test="createTime != null">
+				AND qcode_project_version.create_time  = #{createTime}
+			</if>
+			<if test="code != null and code != ''">
+				AND qcode_project_version.code like CONCAT('%', #{escape_code}, '%')
+			</if>
+			<if test="svgXml != null and svgXml != ''">
+				AND qcode_project_version.svg_xml like CONCAT('%', #{escape_svgXml}, '%')
+			</if>
+			<if test="pic != null and pic != ''">
+				AND qcode_project_version.pic like CONCAT('%', #{escape_pic}, '%')
+			</if>
+			<if test="isDel != null">
+				AND qcode_project_version.is_del =${isDel}
+			</if>
+        </trim>
+        AND qcode_project.user_id=#{userid}
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+     
+     
+     
+     
+    <select id="selectversionbyid_count" parameterType="filter" resultType="int" >
+    	SELECT
+		count(1)
+	    FROM qcode_project_version 
+        LEFT JOIN qcode_project ON qcode_project_version.project_id=qcode_project.id
+        <trim prefix="WHERE" prefixOverrides="AND |OR" >
+	        <if test="id != null">
+				AND qcode_project_version.id =${id}
+			</if>
+			<if test="name != null and name != ''">
+				AND qcode_project_version.name like CONCAT('%', #{escape_name}, '%')
+			</if>
+			<if test="projectId != null">
+				AND qcode_project_version.project_id =${projectId}
+			</if>
+			<if test="createTime != null">
+				AND qcode_project_version.create_time  = #{createTime}
+			</if>
+			<if test="code != null and code != ''">
+				AND qcode_project_version.code like CONCAT('%', #{escape_code}, '%')
+			</if>
+			<if test="svgXml != null and svgXml != ''">
+				AND qcode_project_version.svg_xml like CONCAT('%', #{escape_svgXml}, '%')
+			</if>
+			<if test="pic != null and pic != ''">
+				AND qcode_project_version.pic like CONCAT('%', #{escape_pic}, '%')
+			</if>
+			<if test="isDel != null">
+				AND qcode_project_version.is_del =${isDel}
+			</if>
+        </trim>
+        AND qcode_project.user_id=#{userid}
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeProjectVersion" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_project_version 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeProjectVersion">
+		insert into qcode_project_version  (
+		`name` ,`project_id` ,`create_time` ,`code` ,`svg_xml` ,`pic` ,`is_del` 
+		)
+		values (
+		#{name},#{projectId},#{createTime},#{code},#{svgXml},#{pic},#{isDel}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeProjectVersion">
+		UPDATE qcode_project_version
+		<set>
+			<if test="name != null">
+				`name` = #{name},
+			</if>
+			<if test="projectId != null">
+				`project_id` = #{projectId},
+			</if>
+			<if test="createTime != null">
+				`create_time` = #{createTime},
+			</if>
+			<if test="code != null">
+				`code` = #{code},
+			</if>
+			<if test="svgXml != null">
+				`svg_xml` = #{svgXml},
+			</if>
+			<if test="pic != null">
+				`pic` = #{pic},
+			</if>
+			<if test="isDel != null">
+				`is_del` = #{isDel}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from qcode_project_version
+		where
+		`id`=#{id}
+	</delete>
+	
+</mapper>

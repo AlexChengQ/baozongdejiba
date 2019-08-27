@@ -1,0 +1,21 @@
+/*我的*/
+.my{background-image: url(../images/mybg.jpg);background-position:bottom;background-repeat: no-repeat;position: relative;height:162px; background-size: cover;}
+.my-box{width:96%;position: absolute;bottom:-20px;height:60px;padding-top:44px;background:#fff;left:2%;}
+.my-pic{position: absolute;top:-40px;left:50%;margin-left:-40px;background:#fff;width:80px;height:80px;   -webkit-border-radius:50%;  -moz-border-radius:50%;  border-radius:50%;}
+.my-pic img{width:80px;height:80px;-webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%;}
+.my-text{color:#666;font-size: 18px;text-align: center;font-weight:400;}
+.my-text-bh{color:#999;font-size: 14px;text-align: center;padding-top: 6px;}
+
+@media screen and (max-width:320px){
+    .my{height:160px;}
+}
+
+.case{overflow: hidden; border-tOP:1px #e6e6e6 solid}
+.case a{display: block;float:left;width:33%;text-align: center;height:42px;line-height:42px; font-size: 14px;border-right:1px #e6e6e6 solid}
+.case a:last-child{border-right:none}
+.case a:active{color:rgba(0, 0, 0, 0.6);  background-color:#DEDEDE;}
+.case-shadow{box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);}
+.case-list{overflow: hidden; border-tOP:1px #e6e6e6 solid}
+.case-list a{display: block;float:left;width:49%;text-align: center;height:42px;line-height:42px; font-size: 14px;border-right:1px #e6e6e6 solid}
+.case-list a:last-child{border-right:none}
+.case-list a:active{color:rgba(0, 0, 0, 0.6);  background-color:#DEDEDE;}

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ReadBook">
+    <!--添加推荐阅读-->
+    <insert id="save" parameterType="filter">
+        INSERT INTO qcode_read (
+            title,
+            author,
+            translator,
+            context,
+            image,
+            publisher,
+            submitted,
+            joriginallyannounced,
+            site,
+            type
+            <if test="version != null and version != ''">
+                ,version
+            </if>
+
+        )
+        VALUES
+            (
+                #{title},
+                #{author},
+                #{translator},
+                #{context},
+                #{image},
+                #{publisher},
+                #{submitted},
+                #{joriginallyannounced},
+                #{site},
+                #{type}
+                <if test="version != null and version != ''">
+                    ,#{version}
+                </if>
+
+             )
+    </insert>
+    
+    <!--修改推荐阅读-->
+    <update id="update" parameterType="filter">
+        UPDATE qcode_read qr
+        SET qr.author = #{author},
+         qr.context = #{context},
+         <if test="image != null and image != ''">
+             qr.image = #{image},
+         </if>
+         qr.version = #{version},
+         qr.joriginallyannounced = #{joriginallyannounced},
+         qr.publisher = #{publisher},
+         qr.site = #{site},
+         qr.submitted = #{submitted},
+         qr.title = #{title},
+         qr.translator = #{translator},
+         qr.type = #{type}
+        WHERE
+            qr.id = #{id}
+    </update>
+
+    <!--查询推荐阅读-->
+    <select id="selectList" parameterType="filter" resultType="ReadBook">
+    	SELECT
+            qr.id,
+            qr.author,
+            qr.title,
+            qr.context,
+            qr.image,
+            qr.joriginallyannounced,
+            qr.publisher,
+            qr.site,
+            qr.submitted,
+            qr.type,
+            qr.translator,
+            qr.version
+        FROM
+            qcode_read qr
+        <where>
+            <if test="title != null and title != ''">
+                qr.title LIKE CONCAT('%',#{title},'%')
+            </if>
+            <if test="type != null and type != ''">
+                AND qr.type = #{type}
+            </if>
+            <if test="id != null and id != ''">
+                AND qr.id = #{id}
+            </if>
+        </where>
+        <if test="limit != null and start != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectList_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          count(1)
+        FROM
+        qcode_read qr
+        <where>
+            <if test="title != null and title != ''">
+                qr.title LIKE CONCAT('%',#{title},'%')
+            </if>
+            <if test="type != null and type != ''">
+                AND qr.type = #{type}
+            </if>
+            <if test="id != null and id != ''">
+                AND qr.id = #{id}
+            </if>
+        </where>
+        <if test="limit != null and start != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--删除推荐视频-->
+    <delete id="delete" parameterType="filter">
+        DELETE FROM qcode_read WHERE id = #{id}
+    </delete>
+</mapper>

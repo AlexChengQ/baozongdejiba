@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VideoDetailVo">
+    <select id="getVideoTotal" parameterType="filter" resultType="VideoDetailVo">
+        SELECT
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    video_statis vs
+                WHERE
+                    vs.type = 1
+            ) totalView,
+            (
+                SELECT
+                    count(1)
+                FROM
+                    video_statis vs
+                WHERE
+                    vs.type = 2
+            ) totalShare,
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    video_statis vs
+                WHERE
+                    vs.type = 3
+            ) totalReply
+        FROM
+            DUAL
+    </select>
+
+    <select id="getVideoSingle" parameterType="filter" resultType="Map">
+        SELECT
+            t.triggerDay,
+            MAX(
+                CASE flag
+                WHEN 'frequency' THEN
+                    triggerCount
+                ELSE
+                    0
+                END
+            ) 'frequency',
+            MAX(
+                CASE flag
+                WHEN 'peopleNum' THEN
+                    triggerCount
+                ELSE
+                    0
+                END
+            ) 'peopleNum'
+        FROM
+            (
+                SELECT
+                    DATE_FORMAT(add_time, '%Y%m%d') triggerDay,
+                    COUNT(id) triggerCount,
+                    'frequency' AS flag
+                FROM
+                    video_statis
+                WHERE
+                    add_time BETWEEN #{startDate}
+                AND #{endDate}
+                AND type = #{type}
+                GROUP BY
+                    triggerDay
+                UNION ALL
+                    SELECT
+                        triggerDay,
+                        COUNT(1),
+                        'peopleNum' AS flag
+                    FROM
+                        (
+                            SELECT
+                                DATE_FORMAT(add_time, '%Y%m%d') triggerDay,
+                                COUNT(1) triggerCount,
+                                ip
+                            FROM
+                                video_statis
+                            WHERE
+                                add_time BETWEEN #{startDate}
+                            AND #{endDate}
+                            AND type = #{type}
+                            GROUP BY
+                                triggerDay
+                            ORDER BY
+                                add_time
+                        ) t
+                    GROUP BY
+                        t.triggerDay,
+                        t.ip
+            ) t
+        GROUP BY
+            t.triggerDay;
+
+
+    </select>
+
+    <!--查询单个视频数据概览-->
+    <select id="getListVideo" parameterType="filter" resultType="Map">
+        SELECT
+        vi.vid,
+        vi.title,
+        vi.add_time,
+        CONCAT(vi.video_url, vi.url) videoUrl,
+        vi.free,
+        (
+            SELECT
+                COUNT(1)
+            FROM
+                video_statis vs
+            WHERE
+                vs.vid = vi.vid
+            AND vs.type = 1
+            <if test="startDate != null and endDate == null">
+                AND add_time &gt;= DATE_FORMAT(#{startDate},'%Y%m%d')
+            </if>
+            <if test="endDate != null and startDate == null">
+                AND add_time &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+            </if>
+            <if test="startDate != null and endDate != null">
+                AND DATE_FORMAT(#{startDate},'%Y%m%d') &lt;= add_time
+                AND
+                add_time &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+            </if>
+        ) playCount,
+        (
+            SELECT
+                COUNT(1)
+            FROM
+                video_statis vs
+            WHERE
+                vs.vid = vi.vid
+            AND vs.type = 2
+        <if test="startDate != null and endDate == null">
+            AND add_time &gt;= DATE_FORMAT(#{startDate},'%Y%m%d')
+        </if>
+        <if test="endDate != null and startDate == null">
+            AND add_time &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND DATE_FORMAT(#{startDate},'%Y%m%d') &lt;= add_time
+            AND
+            add_time &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+        </if>
+        ) shareCount,
+        (
+            SELECT
+                COUNT(1)
+            FROM
+                video_statis vs
+            WHERE
+                vs.vid = vi.vid
+            AND vs.type = 3
+        <if test="startDate != null and endDate == null">
+            AND add_time &gt;= DATE_FORMAT(#{startDate},'%Y%m%d')
+        </if>
+        <if test="endDate != null and startDate == null">
+            AND add_time &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND DATE_FORMAT(#{startDate},'%Y%m%d') &lt;= add_time
+            AND
+            add_time &lt;= DATE_FORMAT(#{endDate},'%Y%m%d')
+        </if>
+        ) replyCount
+    FROM
+        video_info vi
+        <if test="limit != null and start != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+
+    <select id="getListVideo_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        video_info
+    </select>
+</mapper>

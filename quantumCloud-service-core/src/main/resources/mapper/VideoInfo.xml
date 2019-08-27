@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VideoInfoVo">
+
+    <!--查询用户视频与考试状态-->
+    <select id="selectuservideoinfo" parameterType="filter" resultType="java.util.LinkedHashMap">
+        SELECT
+        vid,title,url,video_url,view,lectureurl,img,brief,block,free,video_time
+        FROM
+        video_info
+        order by block
+    </select>
+
+
+    <select id="selectuservideoinfoById" parameterType="filter" resultType="Map">
+        SELECT
+        vid,title,url,video_url,view,lectureurl,img,brief,block,free,(SELECT vb.img FROM video_block vb WHERE vb.blockid = #{blockId}) blockImg
+        FROM
+        video_info WHERE block = #{blockId}
+        order by block
+    </select>
+
+
+    <select id="selectcatalog" parameterType="filter" resultType="Map">
+        SELECT
+        blockid,name,brief,catalog,img,type,url
+        FROM
+        video_block
+        ORDER BY type ASC
+    </select>
+
+
+    <!-- 精品课程查询，按照 -->
+    <select id="qualityclass" parameterType="filter" resultType="Map">
+        SELECT
+        img,brief,title,view,free,vid
+        FROM video_info
+        ORDER BY toplevel desc limit 4
+    </select>
+
+    <!--根据blockId获取视频链接-->
+    <select id="getVideoUrlByBlockId" parameterType="filter" resultType="Map">
+        SELECT CONCAT(video_url,url) videoUrl FROM video_info WHERE block = #{blockId}
+    </select>
+
+    <!--根据视频id查视频信息和题目-->
+    <select id="getVideoInfoExamInfoByVid" parameterType="filter" resultType="java.util.LinkedHashMap">
+        SELECT
+        vi.block,
+        vi.brief,
+        vi.free,
+        vi.img,
+        vi.lectureurl,
+        vi.title,
+        vi.url,
+        vi.video_url video_url,
+        vi.vid,
+        vi.`view`,
+        vi.video_time,
+        (SELECT COUNT(1) FROM video_collect vc WHERE vc.video_id = vi.vid) collectNum,
+		(SELECT COUNT(1) FROM video_collect vcc WHERE vcc.user_id = #{userId} AND vcc.video_id = vi.vid) isCollect
+        FROM
+        video_info vi
+        WHERE
+        vi.vid = #{vid}
+    </select>
+
+    <!--根据vid查询题目-->
+    <select id="getExamInfo" resultType="Map" parameterType="filter">
+        SELECT exam_id,block_id,question_id FROM exam_question_set WHERE CONCAT(block_id,exam_id) = #{vid}
+    </select>
+
+    <!--根据关键词搜索视频-->
+    <select id="selectList" parameterType="filter" resultType="java.util.LinkedHashMap">
+        SELECT
+            v.img,
+            v.brief,
+            v.title,
+            v.vid,
+            v.url,
+            v.block,
+            v.free,
+            v.lectureurl,
+            v.toplevel,
+            v.video_time,
+            v.video_url,
+            v.`view`,
+            (SELECT name FROM video_block vb WHERE vb.blockid = v.block) blockName
+        FROM
+            video_info v
+        <where>
+            <if test="title != null and title != ''">
+                v.title like CONCAT('%',#{title},'%')
+            </if>
+            <if test="vid != null and vid != ''">
+                AND v.vid = #{vid}
+            </if>
+        </where>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--根据关键词搜索视频-->
+    <select id="selectList_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          count(1)
+        FROM
+        video_info v
+        <where>
+            <if test="title != null and title != ''">
+                v.title like CONCAT('%',#{title},'%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="filter">
+        INSERT INTO `qcode_web_new`.`video_info` (
+            `video_time`,
+            `img`,
+            `brief`,
+            `title`,
+            `vid`,
+            `url`,
+            `view`,
+            `lectureurl`,
+            `block`,
+            `toplevel`,
+            `free`,
+            `video_url`,
+            add_time
+        )
+        VALUES
+            (
+                #{video_time},
+                #{img},
+                #{brief},
+                #{title},
+                #{vid},
+                #{url},
+                '0',
+                #{lectureurl},
+                #{block},
+                #{toplevel},
+                #{free},
+                #{video_url},
+                NOW()
+            )
+
+    </insert>
+
+    <!--查询版块下最大vid-->
+    <select id="getMaxVid" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+            IFNULL(MAX(vid),0)
+        FROM
+            video_info
+        WHERE
+            block = #{block}
+    </select>
+
+    <!--查询试题表中最大的试题根据版块id和examid-->
+    <select id="getMaxQuestionId" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          MAX(question_id)
+        FROM
+            exam_question_set
+        WHERE
+            block_id = #{blockId}
+            AND
+            exam_id = #{examId}
+    </select>
+
+    <insert id="saveExam" parameterType="filter">
+        INSERT INTO exam_question_set (
+            answer,
+            question_id,
+            content,
+            block_id,
+            question_type,
+            exam_id,
+            answerdetail,
+            resolutiontype
+        )
+        VALUES
+            (
+            #{answer},
+            #{questionid},
+            #{content},
+            #{blockid},
+            '0',
+            #{examid},
+            #{answerdetail},
+            #{resolutiontype}
+            )
+    </insert>
+
+    <select id="getExamByVideo" parameterType="filter" resultType="com.bylz.quantumCloud.model.ExamQuestionSet">
+        SELECT
+            eqs.answer,
+            eqs.answerdetail,
+            eqs.block_id blockid,
+            eqs.content,
+            eqs.exam_id examid,
+            eqs.question_id questionid
+        FROM
+            exam_question_set eqs,
+            video_info vi
+        WHERE
+            CONCAT(eqs.block_id, eqs.exam_id) = vi.vid
+        AND vid = #{vid}
+    </select>
+
+
+    <delete id="delete" parameterType="filter">
+        DELETE FROM video_info WHERE vid = #{vid}
+    </delete>
+
+    <update id="update" parameterType="filter">
+        UPDATE
+          video_info vi
+        <trim prefix="set" suffixOverrides=",">
+            <if test="block != null and block != ''">
+                vi.block = #{block},
+            </if>
+            <if test="brief != null and brief != ''">
+                vi.brief = #{brief},
+            </if>
+            <if test="free != null and free != ''">
+                vi.free = #{free},
+            </if>
+            <if test="img != null and img != ''">
+                vi.img = #{img},
+            </if>
+            <if test="lectureurl != null and lectureurl != ''">
+                vi.lectureurl = #{lectureurl},
+            </if>
+            <if test="title != null and title != ''">
+                vi.title = #{title},
+            </if>
+            <if test="toplevel != null and toplevel != ''">
+                vi.toplevel = #{toplevel},
+            </if>
+            <if test="url != null and url != ''">
+                vi.url = #{url},
+            </if>
+            <if test="video_time != null and video_time != ''">
+                vi.video_time = #{video_time},
+            </if>
+            <if test="video_url != null and video_url != ''">
+                vi.video_url = #{video_url}
+            </if>
+        </trim>
+        WHERE
+        vid = #{vid}
+    </update>
+
+    <select id="getHaveVideo" parameterType="filter" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM video_info WHERE title = #{title}
+    </select>
+
+    <!--所有没有题目的视频-->
+    <select id="getNotExamVideo" parameterType="filter" resultType="java.util.LinkedHashMap">
+        SELECT
+            vi.block,
+            vi.brief,
+            vi.free,
+            vi.img,
+            vi.lectureurl,
+            vi.title,
+            vi.url,
+            vi.video_url video_url,
+            vi.vid,
+            vi.`view`,
+            vi.video_time
+        FROM
+            video_info vi
+        WHERE
+            NOT EXISTS (
+                SELECT
+                    1
+                FROM
+                    exam_question_set eqs
+                WHERE
+                    vi.vid = CONCAT(eqs.block_id, eqs.exam_id)
+            )
+    </select>
+
+    <!--用户未学习的视频，未学习：未看视频未答题-->
+    <select id="getNotStdVideo" parameterType="filter" resultType="java.util.LinkedHashMap">
+        SELECT
+            vi.block,
+            vi.brief,
+            vi.free,
+            vi.img,
+            vi.lectureurl,
+            vi.title,
+            vi.url,
+            vi.video_url video_url,
+            vi.vid,
+            vi.`view`,
+            vi.video_time
+        FROM
+            video_info vi
+        WHERE
+            NOT EXISTS (
+                SELECT
+                    1
+                FROM
+                    user_video uv
+                WHERE
+                    vi.vid = uv.vid
+                AND uv.userid = #{userId}
+            )
+        AND NOT EXISTS (
+            SELECT
+                1
+            FROM
+                user_exam ue
+            WHERE
+                CONCAT(ue.blockid, ue.examid) = vi.vid
+            AND ue.userid = #{userId}
+        )
+
+    </select>
+
+    <!--有视频有题目但未回答题目的视频-->
+    <select id="hasExamNotDoVideo" parameterType="filter" resultType="java.util.LinkedHashMap">
+        SELECT
+            *
+        FROM
+            video_info vi
+        WHERE
+            EXISTS (
+                SELECT
+                    1
+                FROM
+                    exam_question_set eqs
+                WHERE
+                    vi.vid = CONCAT(eqs.block_id, eqs.exam_id)
+            )
+        AND NOT EXISTS (
+            SELECT
+                1
+            FROM
+                user_exam ue
+            WHERE
+                vi.vid = CONCAT(ue.blockid, ue.examid)
+            AND ue.userid = #{userId}
+        )
+    </select>
+
+    <!--查询用户已学完的视频数量-->
+    <select id="getStdFinishVideo" parameterType="filter" resultType="map">
+        SELECT COUNT(1) finishCount,(SELECT COUNT(1) FROM video_info WHERE block = #{blockId}) allCount FROM (
+            SELECT
+                vi.block
+            FROM
+                video_info vi
+            WHERE
+                EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        user_video uv
+                    WHERE
+                        uv.vid = vi.vid
+                    AND uv.addscore = 1
+            AND uv.userid = #{userId}
+                )
+            AND EXISTS (
+                SELECT
+                    1
+                FROM
+                    user_exam ue
+                WHERE
+                    vi.vid = CONCAT(ue.blockid, ue.examid)
+                AND LENGTH(REPLACE(ue. STATUS, '1', '')) = LENGTH(REPLACE(ue. STATUS, '|', ''))  AND ue.userid=#{userId}
+            )
+
+
+            UNION ALL
+            -- 查询用户观看完的视频且没有题目
+            SELECT
+                vi.block
+            FROM
+                video_info vi,
+                user_video uv
+            WHERE
+                vi.vid = uv.vid
+            AND NOT EXISTS (
+                SELECT
+                    1
+                FROM
+                    exam_question_set eqs
+                WHERE
+                    vi.vid = CONCAT(eqs.block_id, eqs.exam_id)
+            )
+            AND uv.userid = #{userId}
+            AND uv.addscore = 1) t WHERE t.block = #{blockId}
+    </select>
+
+    <!--查询临时表数据根据vid-->
+    <select id="getVideoTempByVid" parameterType="filter" resultType="map">
+        SELECT
+         *
+         FROM
+         upload_video_temp
+         WHERE
+         vid = #{vid}
+         AND type = #{type}
+         ORDER BY add_time DESC
+         limit 1
+    </select>
+
+    <!--查询临时表数据根据vid-->
+    <select id="getVideoTempByVid1" parameterType="filter" resultType="map">
+        SELECT
+        *
+        FROM
+        upload_video_temp
+        WHERE
+        vid = #{vid}
+    </select>
+
+    <!--保存上传文件至临时表-->
+    <insert id="saveVideoTemp" parameterType="filter">
+        INSERT
+        INTO
+        upload_video_temp
+        (vid,
+        video_name,
+        type,
+        catalog,
+        add_time
+        )
+      VALUES
+	  (
+	    #{vid},
+	    #{videoName},
+	    #{type},
+	    #{catalog},
+	    NOW()
+	  )
+    </insert>
+
+    <!--修改临时表数据-->
+    <update id="updTemp" parameterType="filter">
+        UPDATE upload_video_temp SET video_name = #{videoName} WHERE vid = #{vid} AND type = #{type}
+    </update>
+
+    <delete id="delTempVideo" parameterType="filter">
+        DELETE FROM upload_video_temp WHERE vid = #{vid}
+    </delete>
+</mapper>

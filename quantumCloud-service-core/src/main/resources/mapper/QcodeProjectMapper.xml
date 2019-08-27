@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeProject" >
+	<!--
+	author JT
+	since  2017-07-28 	
+	id : id
+	name : 项目名称
+	user_id : 创建人id
+	create_time : 创建时间
+	qubit_num : 量子比特数
+	classicalbit_num : 经典比特数
+	repeat : 重复试验次数	
+	pic : 图片
+	desc : 项目描述
+	task_type_id : 任务类型id(1:模拟,2:芯片)
+	is_del : 是否删除(0:否,1:是)
+	name_english : 英文名称
+	desc_english : 英文描述
+	analog_type : 模拟类型（0：Monte-Carlo，1：概率方法）
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`name`,`user_id`,`create_time`,`qubit_num`,`classicalbit_num`,`repeat`,`pic`,`desc`,`task_type_id`,`is_del`,`name_english`,`desc_english`,`analog_type`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="name != null and name != ''">
+			AND `name` = #{name}
+		</if>
+		<if test="userId != null">
+			AND `user_id` =${userId}
+		</if>
+		<if test="createTime != null">
+			AND `create_time`  = #{createTime}
+		</if>
+		<if test="qubitNum != null">
+			AND `qubit_num` =${qubitNum}
+		</if>
+		<if test="classicalbitNum != null">
+			AND `classicalbit_num` =${classicalbitNum}
+		</if>
+		<if test="repeat != null">
+			AND `repeat` =${repeat}
+		</if>		
+		<if test="pic != null and pic != ''">
+			AND `pic` like CONCAT('%', #{escape_pic}, '%')
+		</if>
+		<if test="desc != null and desc != ''">
+			AND `desc` like CONCAT('%', #{escape_desc}, '%')
+		</if>
+		<if test="taskTypeId != null">
+			AND `task_type_id` =${taskTypeId}
+		</if>
+		<if test="isDel != null">
+			AND `is_del` =${isDel}
+		</if>
+		<if test="nameEnglish != null and nameEnglish != ''">
+			AND `name_english` =#{nameEnglish}
+		</if>
+		<if test="descEnglish != null and descEnglish != ''">
+			AND `desc_english` =#{descEnglish}
+		</if>
+		<if test="analogType != null">
+			AND `analog_type` =${analogType}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_project 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeProject" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_project 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeProject">
+		insert into qcode_project  (
+		`name` ,`user_id` ,`create_time` ,`qubit_num` ,`classicalbit_num` ,`repeat` ,`pic` ,`desc` ,`task_type_id` ,`is_del` ,`name_english` ,`desc_english` ,`analog_type`
+		)
+		values (
+		#{name},#{userId},#{createTime},#{qubitNum},#{classicalbitNum},#{repeat},#{pic},#{desc},#{taskTypeId},#{isDel},#{nameEnglish},#{descEnglish},#{analogType}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeProject">
+		UPDATE qcode_project
+		<set>
+			<if test="name != null">
+				`name` = #{name},
+			</if>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="createTime != null">
+				`create_time` = #{createTime},
+			</if>
+			<if test="qubitNum != null">
+				`qubit_num` = #{qubitNum},
+			</if>
+			<if test="classicalbitNum != null">
+				`classicalbit_num` = #{classicalbitNum},
+			</if>
+			<if test="repeat != null">
+				`repeat` = #{repeat},
+			</if>			
+			<if test="pic != null">
+				`pic` = #{pic},
+			</if>
+			<if test="desc != null">
+				`desc` = #{desc},
+			</if>
+			<if test="taskTypeId != null">
+				`task_type_id` = #{taskTypeId},
+			</if>
+			<if test="isDel != null">
+				`is_del` = #{isDel},
+			</if>
+			<if test="nameEnglish != null and nameEnglish != ''">
+				`name_english` =#{nameEnglish},
+			</if>
+			<if test="descEnglish != null and descEnglish != ''">
+				`desc_english` =#{descEnglish},
+			</if>
+			<if test="analogType != null">
+				`analog_type` =${analogType}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from qcode_project
+		where
+		`id`=#{id}
+	</delete>
+	
+    <select id="getProjectByTaskId" parameterType="filter" resultType="QcodeProject" >
+    	SELECT qp.*
+	    FROM qcode_task qt 
+			LEFT JOIN qcode_project_version qpv on qpv.id = qt.version_id
+	    	LEFT JOIN qcode_project qp on qp.id = qpv.project_id
+			<trim prefix="WHERE" prefixOverrides="AND |OR" >
+				<if test="taskId != null">
+					qt.`task_id` =${taskId}
+				</if>
+	        </trim>	    	
+    </select>
+    
+    
+    <sql id="fields_selectIndexList">
+		QU.name AS username ,QU.email,
+		QP.`id`,QP.`name`,QP.`user_id`,QP.`create_time`,QP.`task_type_id`,QP.`analog_type`,
+		COUNT(QPV.id) AS  version_num
+	</sql>
+    <sql id="where_selectIndexList">
+   		<if test="username != null and username != ''">
+			AND  QU.name LIKE  CONCAT('%',#{username}, '%') 
+		</if>
+		<if test="email != null and email != ''">
+			AND  QU.`email` LIKE  CONCAT('%',#{email}, '%') 
+		</if>
+		<if test="name != null and name != ''">
+			AND ( QP.`name` LIKE CONCAT('%', #{name} ,'%')  OR  QP.`name_english` LIKE CONCAT('%', #{name} ,'%') )
+		</if>
+		<if test="createTime != null">
+			AND  DATE_FORMAT(QP.`create_time`,'%Y-%m-%d')  =  DATE_FORMAT(#{createTime},'%Y-%m-%d')
+		</if>
+		<if test="createTime_range_start != null">
+			AND  DATE_FORMAT(QP.`create_time`,'%Y-%m-%d')  <![CDATA[>= ]]>  DATE_FORMAT(#{createTime_range_start},'%Y-%m-%d')
+		</if>
+		<if test="createTime_range_end != null">
+				AND  DATE_FORMAT(QP.`create_time`,'%Y-%m-%d')  <![CDATA[<= ]]>  DATE_FORMAT(#{createTime_range_end},'%Y-%m-%d')
+		</if>
+		<if test="taskTypeId != null">
+			AND QP.`task_type_id` =${taskTypeId}
+		</if>
+    </sql>
+    
+    <select id="selectIndexList_count" parameterType="filter" resultType="int" >
+	    SELECT count(1)
+		FROM (
+	       	SELECT count(1)
+			FROM  qcode_project QP
+			LEFT JOIN qcode_user QU ON QP.user_id = QU.id
+			LEFT JOIN qcode_project_version QPV  ON QP.id = QPV.project_id
+			<trim
+	            prefix="WHERE"
+	            prefixOverrides="AND |OR" >
+	          	QP.`user_id`  != 0 <!-- 去除教程 -->
+	            <include refid="where_selectIndexList"/>
+	        </trim>
+	        GROUP BY  QP.`id`
+        ) A
+    </select>
+    
+    <select id="selectIndexList" parameterType="filter" resultType="Map" >
+    	SELECT
+		<include refid="fields_selectIndexList"/>
+	    FROM qcode_project QP
+		LEFT JOIN qcode_user QU ON QP.user_id = QU.id
+		LEFT JOIN qcode_project_version QPV  ON QP.id = QPV.project_id
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+         	 QP.`user_id`  != 0 <!-- 去除教程 -->
+            <include refid="where_selectIndexList"/>
+        </trim>
+        GROUP BY  QP.`id`
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>	
+</mapper>

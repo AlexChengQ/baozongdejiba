@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserVideo">
+
+
+    <!--查询用户视频与考试状态-->
+    <select id="selectuservideo" parameterType="filter" resultType="UserVideo">
+        SELECT
+            vid,progress,title,datatime,addscore
+        FROM
+            user_video
+        where 
+            userid=#{userid}
+    </select>
+
+
+    <!--更新视频观看状态-->
+    <update id="UpdUserVideo" parameterType="UserVideo">
+        UPDATE user_video
+        <set>
+            <if test="addscore != null">
+                `addscore` = #{addscore},
+            </if>
+            <if test="progress != null">
+                `progress` = #{progress},
+            </if>
+                `datatime` = NOW()
+        </set>
+        WHERE
+        `userid` = #{userid}
+        AND
+        `vid` = #{vid}
+    </update>
+
+
+
+    <!--查询用户视频与考试状态-->
+    <select id="selectvideo" parameterType="filter" resultType="UserVideo">
+        SELECT
+            count(*) userid,addscore
+        FROM
+            user_video
+        WHERE 
+            vid=#{vid}
+        AND
+            userid=#{userid}
+
+    </select>
+
+    <!--插入视频观看记录-->
+    <insert id="save" parameterType="UserVideo">
+        INSERT INTO user_video (
+        `userid`,
+        `vid`,
+        progress,
+        title,
+        datatime,
+        addscore
+        )
+        VALUES
+        (#{userid},
+        #{vid},
+        #{progress},
+        #{title},
+        NOW(),
+        #{addscore}
+        )
+    </insert>
+</mapper>

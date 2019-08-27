@@ -1,0 +1,20 @@
+var saveQcodeRecruitConfig = {
+	positionname:[{rule:length,params:{min:0,max:50},msg:"岗位名称 长度不在0-50范围"}],
+	positionnameEnglish:[{rule:length,params:{min:0,max:200},msg:"岗位名称英文标题 长度不在0-200范围"}],
+	remark:[{rule:length,params:{min:0,max:50},msg:"提示 长度不在0-50范围"}],
+	remarkEnglish:[{rule:length,params:{min:0,max:200},msg:"英文提示 长度不在0-200范围"}],
+	category:[{rule:length,params:{min:0,max:50},msg:"招聘类别 长度不在0-50范围"}],
+	department:[{rule:length,params:{min:0,max:50},msg:"所属部门 长度不在0-50范围"}],
+	departmentEnglish:[{rule:length,params:{min:0,max:50},msg:"所属部门英文标题 长度不在0-50范围"}],
+	workingPlace:[{rule:length,params:{min:0,max:50},msg:"工作地点 长度不在0-50范围"}],
+	workingPlaceEnglish:[{rule:length,params:{min:0,max:200},msg:"英文工作地点 长度不在0-200范围"}],
+	num:[{rule:length,params:{min:0,max:50},msg:"招聘人数 长度不在0-50范围"}],
+	jobDescription:[{rule:length,params:{min:0,max:2147483647},msg:"工作内容 长度不在0-2147483647范围"}],
+	jobDescriptionEnglish:[{rule:length,params:{min:0,max:2147483647},msg:"英文工作内容 长度不在0-2147483647范围"}],
+	jobRequirements:[{rule:length,params:{min:0,max:2147483647},msg:"专业及要求 长度不在0-2147483647范围"}],
+	jobRequirementsEnglish:[{rule:length,params:{min:0,max:2147483647},msg:"英文专业及要求 长度不在0-2147483647范围"}],
+	baseRequirements:[{rule:length,params:{min:0,max:2147483647},msg:"基本要求 长度不在0-2147483647范围"}],
+	baseRequirementsEnglish:[{rule:length,params:{min:0,max:2147483647},msg:"英文基本要求 长度不在0-2147483647范围"}],
+	isShow:[{rule:integer,msg:"是否展示(0:不展示,1:展示) 必须是数字"}],
+	publishTime:[{rule:date,msg:"发布时间 必须是日期"}]
+};

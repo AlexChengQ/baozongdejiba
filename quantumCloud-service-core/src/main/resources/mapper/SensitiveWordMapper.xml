@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SensitiveWordVo">
+    <select id="selectList" parameterType="filter" resultType="SensitiveWordVo">
+        SELECT
+         id,
+         sensitive_word sensitiveWord,
+         add_time
+         FROM
+         sensitive_word
+         <where>
+             <if test="sensitiveWord != null and sensitiveWord != ''">
+                 sensitive_word LIKE concat('%',#{sensitiveWord},'%')
+             </if>
+             <if test="id != null and id != ''">
+                 AND id = #{id}
+             </if>
+         </where>
+        ORDER BY add_time DESC
+        <if test="limit != null and start != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectList_count" parameterType="filter" resultType="int">
+        SELECT
+         count(1)
+        FROM
+        sensitive_word
+        <where>
+            <if test="sensitiveWord != null and sensitiveWord != ''">
+                sensitive_word LIKE concat('%',#{sensitiveWord},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="save" parameterType="SensitiveWordVo">
+        INSERT
+        INTO
+         sensitive_word(`sensitive_word`,`add_time`)
+         VALUES
+         (
+         #{sensitiveWord},
+         NOW()
+         )
+    </insert>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM sensitive_word WHERE id = #{id}
+    </delete>
+
+    <select id="findList" parameterType="filter" resultType="String">
+        SELECT sensitive_word FROM sensitive_word
+    </select>
+
+    <update id="update" parameterType="SensitiveWordVo">
+        UPDATE
+          sensitive_word
+        SET
+          sensitive_word = #{sensitiveWord},
+          add_time = NOW()
+        WHERE
+          id = #{id}
+    </update>
+
+</mapper>

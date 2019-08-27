@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysLog" >
+	<!--
+	author liuxiantao
+	since  2017-04-06 	
+	id : id
+	operation : 操作
+	oper_content : 操作内容
+	user_id : 操作人账号
+	username : 操作人
+	user_agent : 客户端
+	IP : IP
+	oper_date : 操作日期
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`operation`,`oper_content`,`user_id`,`username`,`user_agent`,`IP`,`oper_date`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id`  = #{id}
+		</if>
+		<if test="operation != null and operation != ''">
+			AND `operation` like CONCAT('%', #{escape_operation}, '%')
+		</if>
+		<if test="operContent != null and operContent != ''">
+			AND `oper_content` like CONCAT('%', #{escape_operContent}, '%')
+		</if>
+		<if test="userId != null and userId != ''">
+			AND `user_id` like CONCAT('%', #{escape_userId}, '%')
+		</if>
+		<if test="username != null and username != ''">
+			AND `username` like CONCAT('%', #{escape_username}, '%')
+		</if>
+		<if test="userAgent != null and userAgent != ''">
+			AND `user_agent` like CONCAT('%', #{escape_userAgent}, '%')
+		</if>
+		<if test="ip != null and ip != ''">
+			AND `IP` like CONCAT('%', #{escape_ip}, '%')
+		</if>
+		<if test="operDate != null">
+			AND `oper_date`  = #{operDate}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_log 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysLog" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_log 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="SysLog">
+		insert into sys_log  (
+		`operation` ,`oper_content` ,`user_id` ,`username` ,`user_agent` ,`IP` ,`oper_date` 
+		)
+		values (
+		#{operation},#{operContent},#{userId},#{username},#{userAgent},#{ip},#{operDateString}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="SysLog">
+		UPDATE sys_log
+		<set>
+			<if test="operation != null">
+				`operation` = #{operation},
+			</if>
+			<if test="operContent != null">
+				`oper_content` = #{operContent},
+			</if>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="username != null">
+				`username` = #{username},
+			</if>
+			<if test="userAgent != null">
+				`user_agent` = #{userAgent},
+			</if>
+			<if test="ip != null">
+				`IP` = #{ip},
+			</if>
+			<if test="operDate != null">
+				`oper_date` = #{operDate}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from sys_log
+		where
+		`id`=#{id}
+	</delete>
+
+	<insert id="saveBatch" parameterType="filter">
+		insert into sys_log  (
+		`operation` ,`oper_content` ,`user_id` ,`username` ,`user_agent` ,`IP`, `oper_date`
+		)
+		values
+		<foreach collection="list" item="item" index="index"  separator=",">
+			(
+			"${item.operation}","${item.operContent}","${item.userId}","${item.username}","${item.userAgent}","${item.ip}","${item.operDateString}"
+			)
+		</foreach>
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

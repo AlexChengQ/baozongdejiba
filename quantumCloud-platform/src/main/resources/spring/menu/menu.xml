@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+	<util:list id="rootList" list-class="java.util.ArrayList" value-type="java.lang.String">
+		<value>0, 1,首页,/index.html,ADMIN|NONE,true,fa-dashboard</value>
+	</util:list>
+
+	<util:list id="fixRules" list-class="java.util.ArrayList" value-type="java.lang.String">
+		<value>/files/** =  anon</value>
+		<value>/assets/** =  anon</value>
+		<value>/login.* =  anon</value>
+		<value>/logout.* = logout</value>
+		<value>/doLogin.* =  anon</value>
+		<value>/Register/* =  anon</value>
+		<value>/Mine/modify.html =  anon</value>
+		<value>/Mine/forget.html =  anon</value>
+		<value>/Mine/modifySave.json =  anon</value>
+		<value>/Mine/sendCheckEmail.json =  anon</value>
+		<value>/ =  anon</value>
+		<value>/QCode/index.html =  anon,autoLogin</value>
+		<value>/QCode/semiQuantumComputer.html =  anon</value>
+		<value>/QCode/superQuantumComputer.html =  anon</value>
+		<value>/QCode/commingSoon.html =  anon</value>
+		<value>/QCode/community.html =  anon</value>
+		<value>/QCode/apply.html =  anon</value>
+		<value>/QCode/projectShow.html =  anon</value>
+		<value>/QCode/library.html =  anon</value>
+		<value>/tutorial/quantumApps.html =  anon</value>
+		<value>/tutorial/quantumLooking.html =  anon</value>
+
+		<value>/QCode/visitorSaveProject.json=  anon</value>
+		<value>/QCode/visitorIndex.html=  anon</value>
+
+		<value>/QCode/showVersion.json =  anon</value>
+		<value>/QCode/taskShow.html =  anon</value>
+		<value>/QCode/userMsg.json =  anon</value>
+		<value>/QCode/getTaskData.json =  anon</value>
+		<value>/QCode/getTaskRate.json =  anon</value>
+		<value>/QCode/running.json =  anon</value>
+		<value>/QCode/library.html =  anon</value>
+		<value>/QCode/question.html =  anon</value>
+		<value>/QCode/brief/* =  anon</value>
+		<value>/homePage.html =  anon</value>
+		<value>/api/QCode/QRunes2/submitTask.json =  anon</value>
+		<value>/api/QCode/QRunes2/queryTask.json =  anon</value>
+		<value>/api/QCode/submitTask.json =  anon</value>
+		<value>/api/QCode/queryTask.json =  anon</value>
+		<value>/api/QCode/terminateTask.json =  anon</value>
+		<value>/api/weChatEvent =  anon</value>
+		<value>/QCode/test.json = anon</value>
+		<value>/loginByWeiXin.html = anon</value>
+		<value>/QCode/getUserStatus.json = anon</value>
+
+		<value>/QCode/LibAlgorithm.html* = anon</value>
+		<value>/QCode/visitorRunning.json = anon</value>
+		<value>/qcode/forumtopic/community.html =  anon</value>
+		<value>/qcode/forumtopic/index.html =  anon</value>
+		<value>/qcode/forumtopic/communityList.html =  anon</value>
+		<value>/qcode/forumtopic/queryHot.html =  anon</value>
+		<value>/qcode/forumtopic/communitydetail.html =  anon</value>
+		<value>/qcode/forumtopic/queryUser.json =  anon</value>
+		<value>/qcode/forumtopic/getReply.json =  anon</value>
+		<value>/qcode/forumtopic/communityPublish.html =  anon</value>
+		<value>/QCode/videoLibrary.html =  anon</value>
+		<value>/qcode/forumtopic/api/forumTopicList.json =  anon</value>
+		<value>/qcode/forumtopic/api/forumDetailsById.json =  anon</value>
+		<value>/qcode/forumtopic/api/forumTopicListPage.json =  anon</value>
+		<value>/qcode/forumtopic/api/queryHot.json =  anon</value>
+		<value>/qcode/forumtopic/api/queryQualityForumTopic.json =  anon</value>
+		<value>/qcode/forumtopic/api/recommendedNews.json =  anon</value>
+		<value>/ssoLogin.* =  anon</value>
+
+		<value>/** =autoLogin, authc</value>
+	</util:list>
+</beans>

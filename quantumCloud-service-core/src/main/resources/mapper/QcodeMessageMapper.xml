@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeMessage" >
+	<!--
+	author liuxiantao
+	since  2017-12-26 	
+	id : id
+	user_id : 创建人id
+	title : 主题
+	content : 内容
+	create_time : 创建时间
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`user_id`,`title`,`content`,`create_time`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="userId != null">
+			AND `user_id` =${userId}
+		</if>
+		<if test="title != null and title != ''">
+			AND `title` like CONCAT('%', #{escape_title}, '%')
+		</if>
+		<if test="content != null and content != ''">
+			AND `content` like CONCAT('%', #{escape_content}, '%')
+		</if>
+		<if test="createTime != null">
+			AND `create_time`  = #{createTime}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_message 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeMessage" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_message 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeMessage">
+		insert into qcode_message  (
+		`user_id` ,`title` ,`content` ,`create_time` 
+		)
+		values (
+		#{userId},#{title},#{content},#{createTime}
+		)
+		<selectKey keyProperty="id" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeMessage">
+		UPDATE qcode_message
+		<set>
+			<if test="userId != null">
+				`user_id` = #{userId},
+			</if>
+			<if test="title != null">
+				`title` = #{title},
+			</if>
+			<if test="content != null">
+				`content` = #{content},
+			</if>
+			<if test="createTime != null">
+				`create_time` = #{createTime}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from qcode_message
+		where
+		`id`=#{id}
+	</delete>
+	
+	  <sql id="fields_selectIndexList">
+		QU.name,QU.email,QU.org_name,
+		QM.`id`,QM.`user_id`,QM.`title`,QM.`content`,QM.`create_time`
+	</sql>
+    <sql id="where_selectIndexList">
+   		<if test="name != null and name != ''">
+			AND  QU.name LIKE  CONCAT('%',#{name}, '%') 
+		</if>
+		<if test="email != null and email != ''">
+			AND  QU.`email` LIKE  CONCAT('%',#{email}, '%') 
+		</if>
+		<if test="orgName != null and orgName != ''">
+			AND  QU.`org_name` LIKE  CONCAT('%',#{orgName}, '%') 
+		</if>
+		<if test="id != null">
+			AND QM.`id` = ${id}
+		</if>
+    </sql>
+    
+    <select id="selectIndexList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		 FROM qcode_message QM
+ 		 LEFT JOIN qcode_user QU ON QM.user_id = QU.id
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_selectIndexList"/>
+        </trim>
+    </select>
+    
+    <select id="selectIndexList" parameterType="filter" resultType="Map" >
+    	SELECT
+		<include refid="fields_selectIndexList"/>
+	     FROM qcode_message QM
+ 		 LEFT JOIN qcode_user QU ON QM.user_id = QU.id
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_selectIndexList"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>	
+    
+	
+</mapper>

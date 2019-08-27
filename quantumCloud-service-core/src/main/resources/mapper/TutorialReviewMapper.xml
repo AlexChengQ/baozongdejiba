@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TutorialReviewVo">
+    <select id="findReplyList_count" parameterType="filter" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        tutorial_review ftr
+        WHERE
+        ftr.forum_topic_id = #{forumTopicId}
+        <if test="applyStatus != null and applyStatus != ''">
+            AND ftr.apply_status = #{applyStatus}
+            AND ftr.apply_status = #{applyStatus}
+        </if>
+        <if test="content != null and content != ''">
+            AND ftr.content LIKE CONCAT('%',#{content},'%')
+        </if>
+    </select>
+    <!--查询回复集合-->
+    <select id="findReplyList" parameterType="filter" resultType="Map">
+        SELECT
+        ftr.id,
+        ftr.user_id AS userId,
+        ftr.apply_status AS applyStatus,
+        su0.face AS userFace,
+        su0. NAME AS userName,
+        ftr.content,
+        ftr.approval_count AS approvalCount,
+        ftr1.user_id AS repdUserId,
+        su1.face AS repdUserFace,
+        su1. NAME AS repdUserName,
+        ftr1.content AS repdContent,
+        ftr.add_time AS addTime,
+        <choose>
+            <when test="userId != null and userId != ''">
+                if(ftr.user_id = #{userId},'1','0')
+            </when>
+            <otherwise>
+                '0'
+            </otherwise>
+        </choose>
+        AS  delFlag,
+        ftr.p_ids AS pIds,
+        ftr.parent_id AS parentId,
+        (SELECT LENGTH(p_ids)-LENGTH(REPLACE(p_ids,',',''))-1 FROM tutorial_review tr WHERE tr.id = ftr.id) replyCount,
+        (SELECT count(1) FROM video_reply_like vrl WHERE vrl.reply_id = ftr.id AND vrl.likes_user_id = #{userId}) likeFlag,
+
+        (SELECT COUNT(1) FROM video_reply_like vrl WHERE vrl.reply_id = ftr.id) likeCount
+        FROM
+        tutorial_review ftr
+        LEFT JOIN qcode_user su0 ON ftr.user_id = su0.id
+        LEFT JOIN tutorial_review ftr1 ON ftr.parent_id = ftr1.id
+        LEFT JOIN qcode_user su1 ON ftr1.user_id = su1.id
+        WHERE
+        ftr.forum_topic_id = #{forumTopicId}
+        <if test="content != null and content != ''">
+            AND ftr.content LIKE CONCAT('%',#{content},'%')
+        </if>
+
+        <if test="orderby == 1 or orderby == null">
+            ORDER BY
+            ftr.add_time DESC
+        </if>
+        <if test="orderby == 2">
+            ORDER BY
+            ftr1.add_time DESC
+        </if>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <insert id="addTutorialReply" parameterType="filter">
+        INSERT INTO tutorial_review (
+        `forum_topic_id`,
+        `user_id`,
+        user_name,
+        <if test="repdUserId != null and repdUserId != ''">
+            repd_user_id,
+        </if>
+        content,
+        parent_id,
+        p_ids,
+        add_time
+        )
+        VALUES
+        (#{forumTopicId},
+        #{userId},
+        #{userName},
+        <if test="repdUserId != null and repdUserId != ''">
+            #{repdUserId},
+        </if>
+        #{content},
+        #{parentId},
+        CONCAT(#{pIds},#{parentId},','),
+        NOW()
+        )
+    </insert>
+
+    <!--查询父级评论-->
+    <select id="getParentReply_count" parameterType="filter" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        tutorial_review ftr
+        WHERE ftr.id !=#{pId} AND ftr.id IN
+        <foreach collection="pIds" item="item" separator="," open="(" close=")">
+            ${item}
+        </foreach>
+    </select>
+
+    <!--查询查询父级评论-->
+    <select id="getParentReply" parameterType="filter" resultType="Map">
+        SELECT
+        ftr.id,
+        ftr.user_id AS userId,
+        su0. NAME AS userName,
+        ftr.content,
+        ftr.add_time AS addTime
+        FROM
+        tutorial_review ftr
+        LEFT JOIN qcode_user su0 ON ftr.user_id = su0.id
+        WHERE ftr.id !=#{pId} AND ftr.id IN
+        <foreach collection="pIds" item="item" separator="," open="(" close=")">
+            ${item}
+        </foreach>
+        ORDER BY
+        ftr.add_time DESC
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!--查看观看次数-->
+    <select id="getReadCount" parameterType="filter" resultType="com.bylz.quantumCloud.model.VideoInfoVo">
+        SELECT vid,video_time,img,brief,title,url,lectureurl,view FROM video_info WHERE vid = #{videoId}
+    </select>
+
+    <!--添加观看次数-->
+    <insert id="addReadCount" parameterType="filter">
+        INSERT INTO video_info(vid,view) VALUES (#{videoId},view+1)
+    </insert>
+
+    <!--添加观看次数-->
+    <insert id="updReadCount" parameterType="filter">
+        UPDATE video_info SET view = view+1 WHERE vid = #{videoId}
+    </insert>
+
+    <!--回答详细-->
+    <select id="askAndanswer" parameterType="filter" resultType="com.bylz.quantumCloud.model.TutorialReviewVo">
+        SELECT
+        tr.user_name userName,
+        tr.content content,
+        tr.forum_topic_id forumTopicId,
+        tr.id,
+        trr.user_name repdUserName,
+        IFNULL(trr.content,'') repdContent
+        FROM
+        tutorial_review tr
+        LEFT JOIN tutorial_review trr
+        ON
+        <if test="flag == 1">
+            tr.id = trr.parent_id
+        </if>
+        <if test="flag == 0">
+            trr.id = tr.parent_id
+        </if>
+        WHERE
+        tr.user_id = #{userId}
+        <if test="flag == 1">
+            AND tr.parent_id = '0'
+        </if>
+        <if test="flag == 0">
+            AND tr.parent_id != '0'
+        </if>
+        ORDER BY tr.add_time DESC
+        limit 0,3
+    </select>
+
+
+    <!--根据id查询页面-->
+    <select id="getPagerNumById" parameterType="filter" resultType="int">
+        select IFNULL(rownum,0) FROM
+          (SELECT
+                @rownum:=@rownum+1 AS rownum,
+                ftr.id,
+                ftr.user_id AS userId,
+                ftr.apply_status AS applyStatus,
+                su0.face AS userFace,
+                su0. NAME AS userName,
+                ftr.content,
+                ftr.approval_count AS approvalCount,
+                ftr1.user_id AS repdUserId,
+                su1.face AS repdUserFace,
+                su1. NAME AS repdUserName,
+                ftr1.content AS repdContent,
+                ftr.add_time AS addTime,
+                if(ftr.user_id = #{userId},
+                '1',
+                '0')                       AS  delFlag,
+                ftr.p_ids AS pIds,
+                ftr.parent_id AS parentId
+
+            FROM
+                tutorial_review ftr
+            LEFT JOIN
+                qcode_user su0 ON ftr.user_id = su0.id
+            LEFT JOIN
+                tutorial_review ftr1 ON ftr.parent_id = ftr1.id
+            LEFT JOIN
+                qcode_user su1 ON ftr1.user_id = su1.id,
+            (SELECT @rownum:=0) t
+            WHERE
+                ftr.forum_topic_id = #{videoId}
+            ORDER BY
+                ftr.add_time DESC ) t where t.id = #{id}
+    </select>
+
+    <!--插入反馈意见-->
+    <insert id="saveFeedback" parameterType="filter">
+        INSERT INTO edu_feedback (
+        id,
+        content,
+        contact_information,
+        `type`,
+        add_time,
+        img_url
+        )
+        VALUES
+        (
+        #{id},
+        #{content},
+        #{contactInformation},
+        #{type},
+        NOW(),
+        #{fileUrl}
+        )
+    </insert>
+
+    <!--插入反馈意见图片-->
+    <insert id="saveFeedbackFile" parameterType="filter">
+        INSERT INTO relation_files (
+        id,
+        relation_id,
+        relation_file,
+        file_type,
+        file_size,
+        file_name
+        )
+        VALUES
+        (
+        #{fileId},
+        #{relationId},
+        #{bt},
+        '1',
+        #{fileSize},
+        #{fileName}
+        )
+    </insert>
+
+    <!--添加收藏-->
+    <insert id="saveCollect" parameterType="filter">
+        INSERT
+          INTO
+           video_collect
+           (
+          `user_id`,
+          `title`,
+          `video_id`,
+          `add_time`
+          )
+        VALUES
+        (
+        #{userId},
+        #{title},
+        #{videoId},
+        NOW()
+        )
+    </insert>
+
+    <delete id="delCollect" parameterType="filter">
+        DELETE FROM video_collect WHERE user_id = #{userId} AND video_id = #{videoId}
+    </delete>
+
+    <select id="selectCollect" parameterType="filter" resultType="com.bylz.quantumCloud.model.CollectVo">
+        SELECT
+         vc.id,
+         vc.user_id userId,
+         vc.title,
+         vc.video_id videoId,
+         vi.img
+         FROM
+         video_collect vc,video_info vi
+          WHERE
+          vc.video_id = vi.vid
+          AND vc.user_id = #{userId}
+        ORDER BY add_time desc
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectCollect_count" parameterType="filter" resultType="com.bylz.quantumCloud.model.CollectVo">
+        SELECT count(1) FROM video_collect WHERE user_id = #{userId}
+    </select>
+
+    <!--根据用户id查询有无看过视频-->
+    <select id="getVideo" parameterType="filter" resultType="com.bylz.quantumCloud.model.UserVideo">
+        SELECT uv.progress,uv.vid,uv.userid,uv.title,vi.img,uv.datatime datetime FROM user_video uv,video_info vi WHERE uv.vid = vi.vid AND uv.userid = #{userId}
+    </select>
+
+    <select id="getEaxm" parameterType="filter" resultType="com.bylz.quantumCloud.model.UserExam">
+        SELECT
+        examid,
+        userid,
+        status,
+        blockid,
+        datetime
+        FROM
+        user_exam
+        WHERE
+        userid = #{userId}
+        <if test="videoId != null and videoId != ''">
+            AND
+            concat(examid,blockid) = #{videoId}
+        </if>
+    </select>
+
+    <!--插入证书-->
+    <insert id="saveCertificate" parameterType="filter">
+        INSERT
+        INTO
+        certificate
+        (
+        `certificate_id`,
+        `user_id`,
+        `add_time`
+        )VALUES (
+        #{certificateId},
+        #{userId},
+        NOW()
+        )
+    </insert>
+
+    <!--查询证书-->
+    <select id="getCertificateStatus" parameterType="filter" resultType="Map">
+       SELECT t.certificate_id, IFNULL(t.certificate_id,0) certificateStatus  FROM certificate t WHERE t.user_id =#{userId}
+    </select>
+
+    <!--删除评论-->
+    <delete id="delete" parameterType="filter">
+        DELETE FROM tutorial_review WHERE id = #{id}
+    </delete>
+
+    <!--视频评论点赞-->
+    <insert id="save" parameterType="filter">
+        INSERT INTO video_reply_like (
+            reply_id,
+            likes_user_id,
+            add_time
+        )
+        VALUES
+            (#{replyId}, #{likesUserId}, NOW())
+    </insert>
+
+    <!--取消视频评论点赞-->
+    <delete id="deleteLike" parameterType="filter">
+        DELETE FROM video_reply_like WHERE reply_id = #{replyId} AND likes_user_id = #{likesUserId}
+    </delete>
+
+    <!--举报帖子和评论-->
+    <insert id="reportTopicReply" parameterType="filter">
+        INSERT INTO topic_reply_report (
+        topic_id,
+        reply_id,
+        report_user_id,
+        type,
+        report_type,
+        report_content,
+        catalog,
+        add_time
+        )
+        VALUES
+        (
+        #{topicId},#{replyId},#{userId},#{type},#{reportType},#{reportContent},#{catalog},NOW())
+    </insert>
+</mapper>

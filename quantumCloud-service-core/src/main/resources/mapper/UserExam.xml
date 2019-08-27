@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserExam">
+
+
+    <!--查询用户所有考试状态-->
+    <select id="selectuserexam" parameterType="filter" resultType="UserExam">
+        SELECT
+            examid,status,blockid,datetime
+        FROM
+            user_exam
+        where 
+            userid=#{userid}
+        order by datetime desc
+    </select>
+
+
+    <!--更新题目回答状态-->
+    <update id="UpdUserExam" parameterType="UserExam">
+        UPDATE user_exam
+        <set>
+            `datetime` = NOW(),
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+        </set>
+        WHERE
+        `examid` = #{examid}
+        AND
+        `userid` = #{userid}
+        AND
+        `blockid` = #{blockid}
+    </update>
+
+
+    <!--查询用户考试状态-->
+    <select id="selectexamexist" parameterType="filter" resultType="UserExam">
+        SELECT
+            count(userid) userid,status
+        FROM
+            user_exam
+        WHERE 
+        `examid` = #{examid}
+        AND
+        `userid` = #{userid}
+        AND
+        `blockid` = #{blockid}           
+    </select>
+
+
+    <select id="uexambyid" parameterType="filter" resultType="UserExam">
+        SELECT
+            examid,status,blockid,userid
+        FROM
+            user_exam
+        WHERE 
+        `examid` = #{examid}
+        AND
+        `userid` = #{userid}
+        AND
+        `blockid` = #{blockid}           
+    </select>
+
+    <!--插入考试记录-->
+    <insert id="save" parameterType="UserExam">
+        INSERT INTO user_exam (
+        `examid`,
+        `status`,
+        `userid`,
+        `datetime`,
+        `blockid`
+        )
+        VALUES
+        (#{examid},
+        #{status},
+        #{userid},
+        NOW(),
+        #{blockid}
+        )
+    </insert>
+</mapper>

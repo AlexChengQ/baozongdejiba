@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QcodeWeChatEventRequest" >
+	<!--
+	author houdongdong
+	since  2018-01-31 	
+	id : id
+	unique_identification : 请求唯一标识
+	-->
+	
+	<sql id="fields_sql">
+	`id`,`unique_identification`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="id != null">
+			AND `id` =${id}
+		</if>
+		<if test="uniqueIdentification != null and uniqueIdentification != ''">
+			AND `unique_identification` = #{uniqueIdentification}
+		</if>
+    </sql>
+    
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM qcode_we_chat_event_request 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="QcodeWeChatEventRequest" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM qcode_we_chat_event_request 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order} asc
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="QcodeWeChatEventRequest">
+		insert into qcode_we_chat_event_request  (
+		`unique_identification` 
+		)
+		values (
+		#{uniqueIdentification}
+		)
+		<selectKey keyProperty="id" resultType="Integer">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="QcodeWeChatEventRequest">
+		UPDATE qcode_we_chat_event_request
+		<set>
+			<if test="uniqueIdentification != null">
+				`unique_identification` = #{uniqueIdentification}
+			</if>
+		</set>
+		WHERE
+		`id` = #{id}
+	</update>
+
+	<delete id="delete" parameterType="Integer">
+		delete from qcode_we_chat_event_request
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	</delete>
+	
+</mapper>

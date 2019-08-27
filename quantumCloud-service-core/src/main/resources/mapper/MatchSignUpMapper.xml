@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MatchSignUpVo">
+    <!--添加banner-->
+    <insert id="save" parameterType="filter">
+        INSERT INTO match_sign_up (
+            user_name,
+            age,
+            sex,
+            tel,
+            face,
+            industry,
+            company,
+            position,
+            education,
+            remarks,
+            user_id
+        )
+        VALUES
+            (
+                #{userName},
+                #{age},
+                #{sex},
+                #{tel},
+                #{face},
+                #{industry},
+                #{company},
+                #{position},
+                #{education},
+                #{remarks},
+                #{userId}
+             )
+    </insert>
+    
+
+
+    <select id="selectList" parameterType="filter" resultType="MatchSignUpVo">
+        SELECT
+            msu.id,
+            msu.user_name userName,
+            msu.sex,
+            msu.age,
+            msu.tel,
+            msu.face,
+            msu.industry,
+            msu.company,
+            msu.position,
+            msu.education,
+            msu.remarks,
+            msu.user_id userId
+        FROM
+            match_sign_up msu
+        <where>
+            <if test="userName != null and userName != ''">
+                msu.user_name = #{userName}
+            </if>
+            <if test="tel != null and tel != ''">
+                AND tel = #{tel}
+            </if>
+        </where>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="selectList_count" parameterType="filter" resultType="java.lang.Integer">
+        SELECT
+          COUNT(1)
+        FROM
+          match_sign_up msu
+        <where>
+            <if test="userName != null and userName != ''">
+                msu.user_name = #{userName}
+            </if>
+            <if test="tel != null and tel != ''">
+                AND tel = #{tel}
+            </if>
+        </where>
+        <if test="start != null and limit != null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+</mapper>

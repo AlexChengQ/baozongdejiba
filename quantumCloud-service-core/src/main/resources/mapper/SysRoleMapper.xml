@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysRole" >
+	<!--
+	author liuxiantao
+	since  2017-04-06 	
+	role_id : role_id
+	parent_id : 上级角色ID,0为顶级
+	role_name : 角色名称
+	descn : 描述
+	enabled : 是否生效(0:无效,1:有效)
+	-->
+	
+	<sql id="fields_sql">
+	`role_id`,`parent_id`,`role_name`,`descn`,`enabled`
+	</sql>
+	
+	<sql id="where_sql">
+		<if test="roleId != null">
+			AND `role_id`  = #{roleId}
+		</if>
+		<if test="parentId != null">
+			AND `parent_id`  = #{parentId}
+		</if>
+		<if test="roleName != null and roleName != ''">
+			AND `role_name` like CONCAT('%', #{escape_roleName}, '%')
+		</if>
+		<if test="descn != null and descn != ''">
+			AND `descn` like CONCAT('%', #{escape_descn}, '%')
+		</if>
+		<if test="enabled != null">
+			AND `enabled`  = #{enabled}
+		</if>
+    </sql>
+    <select id="selectList_count" parameterType="filter" resultType="int" >
+       	SELECT count(1)
+		FROM sys_role 
+		<trim
+            prefix="WHERE"
+            prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+    </select>
+    
+    <select id="selectList" parameterType="filter" resultType="SysRole" >
+    	SELECT
+		<include refid="fields_sql"/>
+	    FROM sys_role 
+		<trim prefix="WHERE" prefixOverrides="AND |OR" >
+            <include refid="where_sql"/>
+        </trim>
+	    <if test="order != null">
+	    order by ${order}
+	    </if>
+	    <if test="start != null and limit != null">
+	    limit #{start},#{limit}
+	    </if>
+    </select>
+	
+	<insert id="save" parameterType="SysRole">
+		insert into sys_role  (
+		`parent_id` ,`role_name` ,`descn` ,`enabled` 
+		)
+		values (
+		#{parentId},#{roleName},#{descn},#{enabled}
+		)
+		<selectKey keyProperty="roleId" resultType="Long">
+			SELECT
+			LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="SysRole">
+		UPDATE sys_role
+		<set>
+			<if test="parentId != null">
+				`parent_id` = #{parentId},
+			</if>
+			<if test="roleName != null">
+				`role_name` = #{roleName},
+			</if>
+			<if test="descn != null">
+				`descn` = #{descn},
+			</if>
+			<if test="enabled != null">
+				`enabled` = #{enabled}
+			</if>
+		</set>
+		WHERE
+		`role_id` = #{roleId}
+	</update>
+
+	<delete id="delete" parameterType="Long">
+		delete from sys_role
+		where
+		`role_id`=#{roleId}
+	</delete>
+	 <select id="selectByRoleName" parameterType="filter" resultType="SysRole" >
+       SELECT
+    	<include refid="fields_sql"/>
+    	from sys_role
+	     <trim
+	            prefix="WHERE"
+	            prefixOverrides="AND |OR" >
+	      <if test="roleName != null and roleName != ''">
+	        AND role_name =  #{roleName}
+	      </if>
+			 <if test="roleId!=null and roleId!=''">
+				 AND role_id <![CDATA[ <> ]]> #{roleId}
+			 </if>
+	    </trim>
+    </select>
+</mapper>
